@@ -94,7 +94,7 @@ We present a single-route phase–certificate in a bounded-real framework on \(\
 \[
 \Upsilon\ =\ \frac{(2/\pi)\,M_\psi}{c_0(\psi)}\ <\ \tfrac{1}{2},\qquad M_\psi=\tfrac{4}{\pi}\,C_\psi^{(H^1)}\,\sqrt{C_{\rm box}^{(\zeta)}}.
 \]
-No bandlimit or prime budget enters the certificate; in the \(\zeta\)–normalized boundary gauge the \(k{=}1\) layer does not appear (no $C_P$ term). All inputs are unconditional; outward rounding policy is consolidated in Appendix H.
+No bandlimit or prime budget enters the certificate; in the \(\zeta\)–normalized boundary gauge the \(k{=}1\) layer does not appear (no $C_P$ term). We retain two compatible RHS bounds (CR–Green with Whitney box energy, and the Hilbert-envelope bound); all printed numerics use the conservative box-energy route. All inputs are unconditional; outward rounding policy is consolidated in Appendix H.
 \end{abstract}
 
 \paragraph{Keywords.} Riemann zeta function; Herglotz/Schur functions; bounded-real methods; Hilbert--Schmidt determinants; harmonic analysis.
@@ -1267,7 +1267,7 @@ For the boundary function $u$ with Poisson extension $U$ on $\Omega$, set
  M_\psi:=\sup_{L>0,\ t_0\in\R}\ \frac{1}{L}\,\Big|\int_{\R} u(t)\,\phi_{L,t_0}(t)\,dt\Big|,\qquad
  C_{\rm box}^{(\mathrm{Whitney})}:=\sup_{I\,:\,|I|\asymp c/\log\langle T\rangle}\frac{1}{|I|}\iint_{Q(I)} |\nabla U|^2\,\sigma\,dt\,d\sigma,
 \]
-and let $C_\psi^{(H^1)}:=\tfrac12\int_{\R} S\phi(x)\,dx$, where $S$ is the Lusin area functional for the Poisson semiggroup with $45^\circ$ cones. Then
+and let $C_\psi^{(H^1)}:=\tfrac12\int_{\R} S\phi(x)\,dx$, where $S$ is the Lusin area functional for the Poisson semigroup with $45^\circ$ cones. Then
 \[
  M_\psi\ \le\ \frac{4}{\pi}\,C_\psi^{(H^1)}\,\sqrt{C_{\rm box}^{(\mathrm{Whitney})}}\,.
 \]
@@ -2354,7 +2354,7 @@ Then for every nonnegative \(\phi\in C_c^\infty(\R)\) one has
 \[
 \int_{\R}\!\phi(t)\,\Big(\Im\frac{\xi'}{\xi}-\Im\frac{\dettwo'}{\dettwo}+\mathsf H[u']\Big)\!\Big(\tfrac12+it\Big)\,dt
 \;=\;\sum_{\substack{\rho=\beta+i\gamma\\ \Re\rho>\tfrac12}}\! 2(\beta-\tfrac12)\,\big(P_{\beta-\tfrac12}\!\ast\phi\big)(\gamma)
-\; +\; \pi\!\!\sum_{\substack{\gamma\in\R\\ \xi(\tfrac12+i\gamma)=0}}\! m_\gamma\,\phi(\gamma),
+\;+\; \pi\!\!\sum_{\substack{\gamma\in\R\\ \xi(\tfrac12+i\gamma)=0}}\! m_\gamma\,\phi(\gamma),
 \]
 where \(P_a(x)=\frac{1}{\pi}\frac{a}{a^2+x^2}\) and \(m_\gamma\) is the multiplicity of the critical-line zero at \(t=\gamma\). In particular, the right-hand side is \(\ge 0\) for every \(\phi\ge 0\).
 \end{proposition}
@@ -2448,157 +2448,3 @@ Earlier drafts recorded a short-interval Poisson mass conjecture for context; it
 \begin{remark}[Pick-matrix discretization]\label{rem:pick-certificate}
 Equivalently, fix nodes $s_j=\tfrac12+\sigma+i t_j$ with $t_j\in I$ and $\sigma>0$. Positivity of the half-plane Pick matrix \(\big((1-\Theta(s_j)\overline{\Theta(s_k)})/(s_j+\overline{s_k}-1)\big)_{j,k}\) for arbitrarily fine grids and $\sigma\downarrow 0$ is equivalent to the phase-cone on $I$.
 \end{remark}
-
-\subsection{Cayley-difference control on compacts}\label{subsec:Cayley-difference}
-We record a simple inequality linking differences after the Cayley transform to differences before it.
-
-\begin{lemma}[Cayley-difference bound]\label{lem:Cayley-diff}
-Let \(K\subset\Omega\) be compact. Suppose \(H_1,H_2\) are holomorphic on a neighborhood of \(K\) and satisfy \(\inf_{s\in K}|H_j(s)+1|\ge \delta_K>0\) and \(\sup_{s\in K}|H_j(s)|\le M_K\) for \(j=1,2\). Define \(\Theta_j=(H_j-1)/(H_j+1)\). Then there exists \(C_K>0\) depending only on \((\delta_K,M_K)\) such that
-\[
- \sup_{s\in K}\,\big|\Theta_1(s)-\Theta_2(s)\big|\ \le\ C_K\,\sup_{s\in K}\,\big|H_1(s)-H_2(s)\big|.
-\]
-In particular, on any \(K\subset\Omega\) where \(H_N^{(\mathrm{Schur})}\) and \(H_N^{(\dettwo)}\) share uniform bounds away from \(-1\), the convergence \(H_N^{(\mathrm{Schur})}\to H_N^{(\dettwo)}\) implies \(\Theta_N^{(\mathrm{Schur})}\to \Theta_N^{(\dettwo)}\) uniformly on \(K\).
-\end{lemma}
-\begin{remark}
-Uniform bounds away from \(-1\) on a compact \(K\subset\Omega\) follow for large \(N\) from lower bounds on \(|\xi|\) off its zeros and continuity of \(\dettwo(I-A_N)\) in the HS topology; hence the lemma applies on each such \(K\).
-\end{remark}
-
-\begin{lemma}[Away from \(-1\) on zero-free compacts]\label{lem:away-minus-one}
-Let \(K\subset\Omega\) be compact with \(\inf_{K}|\xi|\ge \delta_K>0\). Then there exists \(c_K>0\) and \(N_0\) such that for all \(N\ge N_0\),
-\[
- \inf_{s\in K}\,\bigl| H_N^{(\dettwo)}(s)+1\bigr|\ \ge\ c_K,
-\]
-and likewise \(\inf_{s\in K}|H(s)+1|\ge c_K\). In particular, the denominators in Lemma~\ref{lem:Cayley-diff} are uniformly bounded away from zero on \(K\) for \(N\ge N_0\).
-\end{lemma}
-\begin{proof}
-Since \(\|A(s)\|<1\) on \(\Omega\), \(I-A(s)\) is invertible on \(\Omega\) and \(\dettwo(I-A(s))\ne 0\). Continuity of \(\dettwo(I-A(s))\) on \(K\) implies \(m_K:=\inf_{s\in K}|\dettwo(I-A(s))|>0\). HS continuity (the HS\(\to\)\(\dettwo\) convergence proposition) gives uniform convergence \(\dettwo(I-A_N)\to \dettwo(I-A)\) on \(K\), hence for \(N\ge N_0\), \(\inf_{s\in K}|\dettwo(I-A_N(s))|\ge m_K/2\). Therefore on \(K\),
-\[
- |H_N^{(\dettwo)}+1|\;=\;\frac{2\,|\dettwo(I-A_N)|}{|\xi|}\;\ge\;\frac{m_K}{\delta_K}\;=:\;c_K,
-\]
-and similarly for \(H\).
-\end{proof}
-\begin{proof}
-Compute
-\[
- \Theta_1-\Theta_2\;=\;\frac{H_1-1}{H_1+1}-\frac{H_2-1}{H_2+1}
- \;=\;\frac{2\,(H_1-H_2)}{(H_1+1)(H_2+1)}.
-\]
-Hence on \(K\),
-\[
- |\Theta_1-\Theta_2|\ \le\ \frac{2}{\delta_K^2}\,|H_1-H_2|.
-\]
-Choosing \(C_K=2/\delta_K^2\) suffices; if desired, one can refine \(C_K\) using \(M_K\) to control numerators/denominators uniformly.
-\end{proof}
-\begin{theorem}[Prime-grid BRF via alignment]\label{thm:prime-grid-BRF}
-Let \(\Omega=\{\Re s>\tfrac12\}\) and define the prime-diagonal block \(A(s)e_p:=p^{-s}e_p\). Let
-\[
- H(s)\;:=\;2\,\frac{\dettwo(I-A(s))}{\xi(s)}-1,\qquad \Theta\;:=\;\frac{H-1}{H+1}.
-\]
-For each \(N\in\N\), let \(\Phi_N(s)=D_N+C_N(sI-A_N)^{-1}B_N\) be the prime-grid lossless transfer of Proposition~\ref{prop:prime-grid-KYP}, and fix unit vectors \(u_N,v_N\in\C^N\). Define the scalar Schur function \(\widehat\Theta_N(s):=v_N^*\,\Phi_N(s)\,u_N\). Suppose there exists, for each compact \(K\subset\Omega\), a sequence of scalar lossless Schur functions \(\Psi_{N,K}\) such that
-\begin{equation}\label{eq:uniform-alignment}
- \sup_{s\in K}\ \big|\Psi_{N,K}(s)\,\widehat\Theta_N(s)\; -\; \Theta_N^{(\dettwo)}(s)\big|\xrightarrow[N\to\infty]{}0,
-\end{equation}
-where \(\Theta_N^{(\dettwo)}(s)=(H_N^{(\dettwo)}-1)/(H_N^{(\dettwo)}+1)\) with \(H_N^{(\dettwo)}:=2\,\dettwo(I-A_N)/\xi-1\). Then \(\Theta\) is Schur on \(\Omega\), and hence \(H\) is Herglotz on \(\Omega\) (the BRF conclusion).
-\end{theorem}
-\begin{proof}
-By the \(HS\to\dettwo\) convergence proposition and the division remark, \(H_N^{(\dettwo)}\to H\) locally uniformly on compact subsets avoiding zeros of \(\xi\). Continuity of the Cayley map on compacta away from \(\{-1\}\) implies that the Cayley transforms also converge locally uniformly on such compacts, i.e. \(\Theta_N^{(\dettwo)}\to\Theta\). For each compact \(K\), the hypothesis \eqref{eq:uniform-alignment} provides Schur functions \(\Theta_{N,K}:=\Psi_{N,K}\,\widehat\Theta_N\) such that \(\Theta_{N,K}\to\Theta\) uniformly on \(K\). Each \(\Theta_{N,K}\) is Schur as a product of Schur functions; by Theorem~\ref{thm:limit-rect}, the locally uniform limit \(\Theta\) is Schur on \(\Omega\). Applying Theorem~\ref{thm:SC-equivalences} completes the proof.
-\end{proof}
-\begin{remark}[Realizing the alignment]
-Condition \eqref{eq:uniform-alignment} can be arranged by the boundary matching strategy of Section~\ref{sec:practical-alignment}: choose, for an exhaustion by compacts \(K_m\nearrow\Omega\), NP interpolation nodes \(\{s_{j}^{(m,N)}\}\subset K_m\) and lossless interpolants \(\Psi_{N,K_m}\) such that the product \(\Psi_{N,K_m}\,\widehat\Theta_N\) agrees with \(\Theta_N^{(\dettwo)}\) on these nodes and shares the feedthrough normalization. Boundedness and normal-family arguments then promote pointwise agreement on dense sets to uniform convergence on \(K_m\), and a diagonal extraction yields local-uniform convergence on \(\Omega\).
-\end{remark}
-
-\section*{Appendix D\,' — Balanced Carleson bound (unconditional) and wedge via balanced certificate}
-
-\begin{lemma}[Balanced Carleson bound, unconditional]\label{lem:balanced-carleson}
-Assume on $\Omega=\{\Re s>\tfrac12\}$ that
-\[
-\xi(s) = e^{L(s)} \det\nolimits_2\!\bigl(I-\mathsf T(s)\bigr),
-\]
-where $L$ is holomorphic and $\mathsf T$ is a Hilbert--Schmidt valued analytic map. Set
-\[
-U_{\mathrm{bal}}(s) := \Re\log\det\nolimits_2\!\bigl(I-\mathsf T(s)\bigr)-\Re\xi(s) = -\Re L(s).
-\]
-Then for every Whitney box $Q(I)$ anchored on $\sigma=\tfrac12$ we have
-\[
-\iint_{Q(I)} |\nabla U_{\mathrm{bal}}(s)|^2 \,\sigma\, d\sigma\, dt \;\le\; K_{\mathrm{bal}}\, |I|,
-\]
-where
-\[
-K_{\mathrm{bal}} := \sup_{Q(I)} \frac{1}{|I|}\iint_{Q(I)} |L'(s)|^2 \,\sigma\, d\sigma\, dt < \infty.
-\]
-In particular, $K_{\mathrm{bal}}$ depends only on uniform bounds for $L'$ on fixed--aperture dilates of $Q(I)$.
-\end{lemma}
-
-\noindent\emph{Remark (Definition of $L$ and holomorphy; independence of $\xi$-zeros).}
-Throughout we fix the Hilbert--Schmidt prime-grid operator $T(s)e_p=p^{-s}e_p$ on $\ell^2(\mathbb P)$ and define
-\[
-L(s)\ :=\ \log\xi(s)\ -\ \log\det\nolimits_2\bigl(I-T(s)\bigr),\qquad (\Re s>\tfrac12),
-\]
-with the branch normalized at a single point (e.g. $L(2)\in\R$). Then $e^{L}$ is holomorphic and zero-free on $\Omega$ by Banach-holomorphicity of $\det_2$ in the HS topology; this construction depends only on the prime-grid operator and does not require any assumption on the zero set of $\xi$. Consequently $U_{\mathrm{bal}}=-\Re L$ is harmonic on $\Omega$ and the balanced bound above is unconditional.
-
-\begin{corollary}[Numerical policy for $K_{\mathrm{bal}}$]\label{cor:Kbal-policy}
-If $L$ admits a trace-locked representation on $\Omega$ such that $\sup_{Q^\star(I)}|L'(s)|\le \Lambda(\psi)$ on fixed-aperture dilates $Q^\star(I)$ of Whitney boxes, then
-\[
-K_{\mathrm{bal}}\ \le\ \Lambda(\psi)^2\qquad\text{and}\qquad \Upsilon_{\mathrm{new}}\ =\ c_0(\psi)\Big(K_{\mathrm{HS}}(\psi)+K_{\mathrm{bal}}(\psi)\Big)\ <\ \tfrac12
-\]
-whenever $c_0(\psi)\big(K_{\mathrm{HS}}(\psi)+\Lambda(\psi)\,\mathcal A(\psi)\big)<\tfrac12$. \emph{Note.} In the present proof, numerics use the conservative certificate (Cor.~\ref{cor:conservative-closure}); $K_{\mathrm{bal}}$ and $\Lambda(\psi)$ are not used to close the inequality.
-\end{corollary}
-
-\begin{proof}
-Since $U_{\mathrm{bal}}=-\Re L$ is harmonic on $\Omega$, Cauchy--Riemann gives
-$|\nabla U_{\mathrm{bal}}(s)|^2 = |\partial_\sigma U_{\mathrm{bal}}|^2 + |\partial_t U_{\mathrm{bal}}|^2 = |L'(s)|^2$.
-By Cauchy's estimate applied on a fixed--aperture dilation $Q^\star(I)$ of $Q(I)$,
-$\sup_{Q(I)} |L'| \le \sup_{Q^\star(I)} |L'| < \infty$, hence the area integral over $Q(I)$ is $\ll |I|$.
-\end{proof}
-
-\begin{proposition}[Boundary wedge via balanced certificate]\label{prop:wedge-balanced}
-Let $\psi$ be the fixed window and define
-\[
-\Upsilon_{\mathrm{new}} := c_0(\psi)\Big( K_{\mathrm{HS}}(\psi) + K_{\mathrm{bal}}(\psi) \Big),
-\]
-where $K_{\mathrm{HS}}(\psi)$ is the prime/HS term from Section~\ref{sec:prime-bounds} and
-$K_{\mathrm{bal}}(\psi)$ is the balanced term from Lemma~\ref{lem:balanced-carleson} with the same window functional.
-If $\Upsilon_{\mathrm{new}}<\tfrac12$, then $\Re\{2\mathcal J(\tfrac12+it)\}\ge 0$ for a.e.~$t$,
-so $2\mathcal J$ is Herglotz on $\Omega$ and $\Theta$ is Schur on $\Omega\setminus Z(\xi)$.
-Consequently, the globalization/pinch argument of Section~\ref{sec:globalization} yields the Riemann Hypothesis.
-\end{proposition}
-
-\section*{Appendix H — Analytic enclosure and locking of $C_\psi^{(H^1)}$ (outward rounding)}\label{app:CpsiH1}
-
-\paragraph{Setup.}
-Let $\psi\in C_c^\infty(\R)$ be even, with $\psi\equiv 1$ on $[-1,1]$ and $\operatorname{supp}\psi\subset[-2,2]$, and monotone ramps on $[1,2]$ and $[-2,-1]$. For $L>0$, define $\varphi_L(t)=L^{-1}\psi(t/L)$. We quantify the window constant $C_\psi^{(H^1)}$ in
-\[
-M_\psi\ \le\ \frac{4}{\pi}\,C_\psi^{(H^1)}\,\sqrt{C_{\rm box}}
-\]
-via the standard Lusin area/Poisson square function equivalence on the fixed $45^\circ$ cone (the same aperture used elsewhere).
-
-\paragraph{Analytic enclosure $C_\psi^{(H^1)}<0.245$.}
-Write $P_\sigma(t)=\tfrac{1}{\pi}\,\tfrac{\sigma}{\sigma^2+t^2}$ and $V_\psi(\sigma,t)=(P_\sigma*\psi)(t)$. Then the fixed-cone area functional obeys
-\[
-\mathcal S_\psi^2\ :=\ \iint_{\sigma\le \alpha}\bigl(|\nabla V_\psi|^2\bigr)\,\sigma\,dt\,d\sigma\ \le\ \mathcal I_{\rm core}+\mathcal I_{\rm ramps},\qquad \alpha=1,
-\]
-with the core contribution from $t\in[-1,1]$ (where $\psi\equiv 1$) and ramp contributions from $t\in[1,2]\cup[-2,-1]$. On the core, $\partial_t V_\psi\equiv 0$ by symmetry and $\partial_\sigma V_\psi(\sigma,t)=(\partial_\sigma P_\sigma)*\mathbf 1_{[-1,1]}(t)$, so
-\[
-\mathcal I_{\rm core}\ \le\ \int_0^1\!\!\int_{-1}^1\bigl|\partial_\sigma(P_\sigma*\mathbf 1_{[-1,1]})(t)\bigr|^2\,\sigma\,dt\,d\sigma\ \le\ 0.045\quad (\text{outward--rounded}).
-\]
-On the ramps, monotonicity gives $\|\psi'\|_{L^1([1,2])}=1$ and by evenness and support symmetry, the two ramps contribute equally. Using the representation $\partial_t V_\psi= P_\sigma*\psi'$ and Young's inequality on fixed aperture,
-\[
-\mathcal I_{\rm ramps}\ \le\ 2\int_0^1\!\!\int_{\R}\bigl|P_\sigma*\psi'\bigr|^2\,\sigma\,dt\,d\sigma\ \le\ 2\int_0^1\!\|P_\sigma\|_{L^2(\R)}^2\,\sigma\,d\sigma\,\|\psi'\|_{L^1}^2\ \le\ 0.050\quad (\text{outward--rounded}).
-\]
-Combining gives $\mathcal S_\psi\le 0.295$, hence $C_\psi^{(H^1)}<0.245$ (absorbing fixed absolute constants in the H¹–BMO/Carleson equivalence). All integrals above are elementary and each numerical bound is rounded up conservatively.
-
-\paragraph{Locked quadrature value $C_\psi^{(H^1)}=0.2400$ (optional).}
-Repeating the same area calculation with rigorously outward–rounded Gaussian quadrature on $(\sigma,t)\in([0,1]\times[-3,3])$ and splitting the tails explicitly yields
-\[
-C_\psi^{(H^1)}\ =\ 0.23973\pm 3\times 10^{-4}\ \Longrightarrow\ \boxed{\ C_\psi^{(H^1)}\ =\ 0.2400\ }\quad (\text{locked, outward--rounded}).
-\]
-We adopt the locked value in the constants table, with the analytic enclosure above as a fully in–paper backup.
-
-\paragraph{Second–order consistency.}
-Both the derivative envelope $C_H(\psi)\le 2/\pi$ and the plateau $c_0(\psi)\ge (2\pi)^{-1}\arctan 2$ are independent of this appendix. The balanced certificate and the conservative Carleson variant remain numerically closed under either the analytic enclosure or the locked quadrature.
-
-% \fi
-\end{document}
-\begin{proof}
-This is the distributional form of the phase--velocity identity (the phase--velocity identity) after outer normalization: the zero-side contribution is exactly the Poisson balayage of \(\mu\), critical-line atoms contribute a nonnegative discrete term (ruled out on \(I\) by hypothesis), while regular parts are absorbed by \(\mathcal O\). The pointwise bound \(\mathrm{Bal}_a\le\pi\) and localization to \(Q(I)\) give the inequality \(\int_I(-w')\le \pi\,\mu(Q(I))\). This is a \emph{density} bound and is not used to deduce a uniform wedge.
-\end{proof}
