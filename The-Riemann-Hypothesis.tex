@@ -2417,7 +2417,16 @@ Normalizing \(\phi\) to approximate the indicator of \(I\) and dividing by \(|I|
 Let \(I\subset\R\) be a bounded interval avoiding ordinates of critical-line zeros. If \(\mu(Q(I))\le \pi/2\), then \(\Re(2\mathcal J)\ge 0\) a.e. on \(I\). Consequently, if \(\mu\) has Carleson constant \(\le \pi/2\), then \emph{(P+)} holds a.e. on \(\R\).
 \end{lemma}
 \begin{proof}
-The intervals \(I_T\) (together with finitely many intervals covering the bounded range \([0,T_0]\)) form a countable cover of \(\R\) up to the measure-zero set of critical-line ordinates. By Lemma~\ref{lem:no-P}, on each \(I_T\) we have \(\Re(2\mathcal J)\ge 0\) a.e. Taking the union yields (P+) a.e. on \(\R\).
+Fix a nonnegative test function \(\phi\in C_c^\infty(I)\). By the phase--velocity identity,
+\[
+ \int\!\phi\,\Big(\Im\frac{\xi'}{\xi}-\Im\frac{\dettwo'}{\dettwo}+\mathsf H[u']\Big)\Big(\tfrac12+it\Big)dt
+ \ =\ \int_{\{\Re s>1/2\}} P_{s}[\phi] \ d\mu(s)\ \ge 0.
+\]
+The left side equals \(\int_I \phi(t)\,(-w'(t))\,dt\) with \(w\) the normalized phase mismatch. Since \(\|P_{s}[\phi]\|_{L^\infty}\le 1\) and the Poisson kernel has unit \(t\)–mass, the hypothesis yields
+\[
+ \int_I \phi(t)\,(-w'(t))\,dt\ \le\ \mu(Q(I))\ \le\ \pi/2.
+\]
+Approximating the indicator of \(I\) by such \(\phi\) gives \(\int_I (-w')\le \pi/2\). By the phase-cone criterion, \(w(t)\in[-\pi/2,\pi/2]\) a.e. on \(I\), hence \(\Re(2\mathcal J(\tfrac12+it))\ge 0\) a.e. on \(I\).
 \end{proof}
 \begin{lemma}[Littlewood bound \(\Rightarrow\) adaptive short-interval mass]\label{lem:littlewood-adaptive}
 Let \(S(T):=\sum_{0<\gamma\le T,\ \beta>1/2}(\beta-\tfrac12)\). Suppose there exists \(C_L>0\) with \(S(T)\le C_L\,\log(2+T)\) for all \(T\ge 0\) (classical Littlewood-type bound). Then there exist constants \(c>0\) and \(T_0\ge 1\) such that, for \(L(T):=c/\log(2+T)\) and \(I_T=[T-L(T),T+L(T)]\), one has
