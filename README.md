@@ -54,3 +54,4 @@ The compiled artifact here (`The-Riemann-Hypothesis.pdf`) matches the TeX in thi
 ## Repository
 
 This project is published to the empty GitHub repository `jonwashburn/riemann-hypothesis`.
+
