@@ -4,6 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.Gamma
 import Mathlib.Analysis.SpecialFunctions.Trigonometric
 import Mathlib.NumberTheory.ZetaFunction
 import rh.RS.SchurGlobalization
+import rh.Axioms
 
 namespace RH.Blockers
 
@@ -138,6 +139,6 @@ lemma zeta_eq_zero_of_neg_even {s : ℂ}
 -- Non-vanishing on the boundary line Re(s) = 1 (handled by Schur route)
 theorem zeta_nonvanishing_on_Re_eq_one
     (z : ℂ) (hz : z.re = 1) : riemannZeta z ≠ 0 := by
-  exact RH.RS.ZetaNoZerosOnRe1FromSchur z hz
+  exact RH.Axioms.zeta_nonvanishing_on_Re_eq_one z hz
 
 end RH.Blockers
