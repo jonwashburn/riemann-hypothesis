@@ -76,53 +76,45 @@ lemma schur_of_cayley_re_nonneg_on
   have hθ_nonneg : 0 ≤ Complex.abs ((w - 1) / (w + 1)) := Complex.abs.nonneg _
   exact (le_of_sq_le_sq hθ_nonneg (by norm_num) hθsq_le_one)
 
-lemma NoInteriorZeros
-    (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S)
-    (Θ : ℂ → ℂ)
-    (hΘ : AnalyticOn ℂ Θ S)
-    (hSchur : IsSchurOn Θ S)
-    (z0 : ℂ) (hz0 : z0 ∈ S) (hmod : Complex.abs (Θ z0) = 1) :
-    ∀ z ∈ S, Θ z = Θ z0 := by
-  classical
-  by_cases hconst : ∀ z ∈ S, Θ z = Θ z0
-  · intro z hz; exact hconst z hz
-  have hopenMap : IsOpenMap Θ := by exact (hΘ.isOpenMap hSopen)
-  have himg_open : IsOpen (Θ '' S) := hopenMap _ hSopen
-  have w0_mem : Θ z0 ∈ Θ '' S := ⟨z0, hz0, rfl⟩
-  have hnhds : (Θ '' S) ∈ nhds (Θ z0) := isOpen_iff_mem_nhds.mp himg_open w0_mem
-  obtain ⟨ε, εpos, hball⟩ := Metric.mem_nhds_iff.mp hnhds
-  have himg_subset_unit : Θ '' S ⊆ {w : ℂ | Complex.abs w ≤ 1} := by
-    intro w hw; rcases hw with ⟨z, hz, rfl⟩; exact hSchur z hz
-  let r : ℝ := ε / 2
-  have rpos : 0 < r := by simpa [r] using (half_pos εpos)
-  let w0 : ℂ := Θ z0
-  have hw0_norm : Complex.abs w0 = 1 := hmod
-  let w' : ℂ := ((1 + r : ℝ) : ℂ) * w0
-  have hw'dist : w' ∈ Metric.ball w0 ε := by
-    have : w' - w0 = ((r : ℝ) : ℂ) * w0 := by
-      simp [w', sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-    have : Complex.abs (w' - w0) = r * Complex.abs w0 := by
-      simpa [this, Complex.abs.map_mul, Complex.abs.ofReal] using this
-    have : Complex.abs (w' - w0) < ε := by
-      simpa [hw0_norm, r] using (half_lt_self εpos)
-    simpa [Metric.mem_ball] using this
-  have hw'abs : Complex.abs w' = 1 + r := by
-    simpa [w', Complex.abs.map_mul, Complex.abs.ofReal, hw0_norm, abs_ofReal, Real.abs_of_nonneg (by linarith : 0 ≤ 1 + r)]
-  have : w' ∈ Θ '' S := hball hw'dist
-  have : Complex.abs w' ≤ 1 := by exact himg_subset_unit this
-  have : 1 + r ≤ (1 : ℝ) := by simpa [hw'abs]
-  have : r ≤ 0 := by linarith
-  exact (lt_irrefl _ (lt_of_le_of_lt this rpos)).elim
-
 lemma PinchConstantOfOne
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S)
     (Θ : ℂ → ℂ) (hΘ : AnalyticOn ℂ Θ S) (hSchur : IsSchurOn Θ S)
     (z0 : ℂ) (hz0 : z0 ∈ S) (hval : Θ z0 = 1) :
     ∀ z ∈ S, Θ z = 1 := by
-  have hmod : Complex.abs (Θ z0) = 1 := by simpa [hval]
-  have hconst := NoInteriorZeros S hSopen hSconn Θ hΘ hSchur z0 hz0 hmod
-  intro z hz
-  simpa [hval] using hconst z hz
+  classical
+  -- If Θ is constant, we are done; otherwise use open mapping to contradict Schur.
+  by_cases hconst : ∀ z ∈ S, Θ z = Θ z0
+  · intro z hz; simpa [hval] using hconst z hz
+  -- Non-constant analytic maps are open; the image of S is an open nbhd of Θ z0.
+  have hopenMap : IsOpenMap Θ := (hΘ.isOpenMap hSopen)
+  have himg_open : IsOpen (Θ '' S) := hopenMap _ hSopen
+  have w0_mem : Θ z0 ∈ Θ '' S := ⟨z0, hz0, rfl⟩
+  have hnhds : (Θ '' S) ∈ nhds (Θ z0) := isOpen_iff_mem_nhds.mp himg_open w0_mem
+  obtain ⟨ε, εpos, hball⟩ := Metric.mem_nhds_iff.mp hnhds
+  -- Schur bound says image is in the closed unit disk
+  have himg_subset_unit : Θ '' S ⊆ {w : ℂ | Complex.abs w ≤ 1} := by
+    intro w hw; rcases hw with ⟨z, hz, rfl⟩; exact hSchur z hz
+  -- Move radially outward from w0=1 by r=ε/2 to get |w'|=1+r>1 still inside the image
+  let r : ℝ := ε / 2
+  have rpos : 0 < r := by simpa [r] using (half_pos εpos)
+  have hw0 : Θ z0 = 1 := hval
+  let w' : ℂ := ((1 + r : ℝ) : ℂ) * (Θ z0)
+  have hw'dist : w' ∈ Metric.ball (Θ z0) ε := by
+    have : w' - Θ z0 = ((r : ℝ) : ℂ) * (Θ z0) := by
+      simp [w', sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
+    have : Complex.abs (w' - Θ z0) = r * Complex.abs (Θ z0) := by
+      simpa [this, Complex.abs.map_mul, Complex.abs.ofReal]
+    have : Complex.abs (w' - Θ z0) < ε := by
+      simpa [hw0, r] using (half_lt_self εpos)
+    simpa [Metric.mem_ball] using this
+  have hw'abs : Complex.abs w' = 1 + r := by
+    simpa [w', Complex.abs.map_mul, Complex.abs.ofReal, hw0, abs_ofReal,
+          Real.abs_of_nonneg (by linarith : 0 ≤ 1 + r)]
+  have hw'in : w' ∈ Θ '' S := hball hw'dist
+  have hw'le : Complex.abs w' ≤ 1 := himg_subset_unit hw'in
+  have : 1 + r ≤ (1 : ℝ) := by simpa [hw'abs] using hw'le
+  have : r ≤ 0 := by linarith
+  exact (lt_irrefl _ (lt_of_le_of_lt this rpos)).elim
 
 lemma PinchFromExtension
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S) (ρ : ℂ) (hρ : ρ ∈ S)
