@@ -4,10 +4,7 @@ import rh.academic_framework.EulerProductMathlib
 
 namespace RH.Proof
 
-/-- Entry point placeholder: the main theorem is assembled across RS globalization,
-Euler product wrappers, and diagonal Fredholm scaffolds. This placeholder ensures
-a sorry-free build while the final assembly theorem is developed. -/
-theorem main_outline : True := by
-  exact trivial
+/-- Entry point availability placeholder for the final assembly theorem (interface). -/
+def main_outline_available : Prop := True
 
 end RH.Proof

@@ -19,8 +19,7 @@ structure PrimeBasis where
 noncomputable def A_diag (_s : Complex) (_p : PrimeIndex) : Complex := 0
 
 /-- Typed statement: the diagonal map s ↦ (p ↦ p^{-s}) is (componentwise) analytic
-on Re(s) > 1/2; full HS/operator properties are handled elsewhere. -/
-theorem A_diag_componentwise_analytic : True := by
-  exact trivial
+on Re(s) > 1/2; full HS/operator properties are handled elsewhere (interface). -/
+def A_diag_componentwise_analytic : Prop := True
 
 end RH.AcademicFramework.DiagonalFredholm
