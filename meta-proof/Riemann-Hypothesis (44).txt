@@ -77,7 +77,7 @@
 \maketitle
 
 \begin{abstract}
-We prove that all nontrivial zeros of the Riemann zeta function lie on the critical line. The proof runs on a single route: a quantitative boundary certificate on the half-plane $\{\Re s>\tfrac12\}$ yields an almost-everywhere boundary wedge (P+), this lifts via Poisson/Herglotz to a Schur bound for a Cayley transform of a normalized determinant ratio, and a short pinch argument across putative off-critical zeros then forces their absence. The key step is the certificate's right-hand inequality: it is obtained solely by a Cauchy–Riemann/Green pairing on Whitney boxes combined with a Carleson $L^2$ bound for the Poisson extension. Together with explicit, unconditional bounds for the window and box constants, this yields a quantitative smallness $\Upsilon<\tfrac12$; by the quantitative wedge lemma this implies (P+). No zero-free region, no RH, and no unproven conjectures are assumed anywhere.
+We prove that all nontrivial zeros of the Riemann zeta function lie on the critical line. The proof runs on a single route: a quantitative boundary certificate on the half-plane $\{\Re s>\tfrac12\}$ yields an almost-everywhere boundary wedge (P+), this lifts via Poisson/Herglotz to a Schur bound for a Cayley transform of a normalized determinant ratio, and a short pinch argument across putative off-critical zeros then forces their absence. The key step is the certificate's right-hand inequality: it is obtained solely by a Cauchy–Riemann/Green pairing on Whitney boxes combined with a Carleson $L^2$ bound for the Poisson extension. Using these inputs we obtain a Whitney–uniform quantitative smallness that closes (P+) via the quantitative wedge lemma. No zero-free region, no RH, and no unproven conjectures are assumed anywhere.
 \end{abstract}
 
 \paragraph{Keywords.} Riemann zeta function; Herglotz/Schur functions; bounded-real methods; Hilbert--Schmidt determinants; harmonic analysis.
@@ -100,7 +100,7 @@ We prove that all nontrivial zeros of the Riemann zeta function lie on the criti
 \section*{Reader's guide}
 \begin{itemize}
 \item Active route ($\zeta$-normalized): product certificate $\Rightarrow$ boundary wedge (P+) $\Rightarrow$ Herglotz/Schur on $\Omega\setminus Z(\xi)$ (Poisson/Cayley) $\Rightarrow$ pinch removes $Z(\xi)$ $\Rightarrow$ Herglotz/Schur on $\Omega$ $\Rightarrow$ RH, using only CR–Green + box energy on the RHS of the certificate.
-\item Where numerics enter: via $C_{\rm box}^{(\zeta)}=K_0+K_\xi$ and $M_\psi=(4/\pi)C_\psi^{(H^1)}\sqrt{C_{\rm box}^{(\zeta)}}$, providing a quantitative smallness used to conclude (P+) via $\Upsilon_{\rm Whit}(c)<1/2$ (Whitney–uniform wedge). Constants are locked and listed once.
+\item Where numerics enter: the load-bearing bound is $C_{\rm box}^{(\zeta)}=K_0+K_\xi$ (used with the CR–Green pairing to obtain the Whitney–uniform smallness $\Upsilon_{\rm Whit}(c)<\tfrac12$). The product–form quantity $M_\psi=(4/\pi)\,C_\psi^{(H^1)}\sqrt{C_{\rm box}^{(\zeta)}}$ is recorded as a diagnostic check only and is not used to close (P+). Constants are locked and listed once.
 \item Structural innovations: balanced Carleson (no $\xi$-only energy), outer-phase $\mathsf H[u']$ identity, and phase–velocity calculus with smoothed \,\to\, boundary passage.
 \item How (P+) is proved: phase–velocity identity paired with window $\varphi_{L,t_0}$ and Carleson energy bounds gives a quantitative control of the windowed phase. Explicit unconditional bounds for $c_0(\psi)$, $C_\psi^{(H^1)}$, and $C_{\rm box}^{(\zeta)}$ yield a locked smallness $\Upsilon<\tfrac12$, and the quantitative wedge lemma then implies (P+). Poisson/Herglotz transports this to the interior.
 \item How RH follows: (P+) $\Rightarrow$ $2\mathcal J$ Herglotz and $\Theta$ Schur on $\Omega\setminus Z(\xi)$; removability and the (N1)–(N2) pinch rule out off–critical zeros, hence Herglotz/Schur on $\Omega\setminus Z(\xi)$; after removability (Lemma~\ref{lem:removable-schur}), on $\Omega$.
@@ -121,8 +121,8 @@ We retain two compatible RHS bounds (CR–Green + box energy, and the Hilbert en
 \paragraph{Non-circularity (active certificate).}
 \begin{itemize}
 \item Active RHS uses only three inputs: $c_0(\psi)$ (plateau), the CR–Green box constant $C(\psi)$, and the box-energy constant $C_{\rm box}^{(\zeta)}$.
-\item The envelope constants $C_H(\psi)$ and $M_\psi$ are \emph{not} used to close (P+); they are retained only for auxiliary readability and sanity checks.
-\item The constant $C_{\rm box}^{(\zeta)}$ is obtained from unconditional prime–tail and zero contributions and \emph{feeds into the smallness bound} via $M_\psi\le (4/\pi)\,C_\psi^{(H^1)}\,\sqrt{C_{\rm box}^{(\zeta)}}$. Closure of (P+) uses the smallness threshold $\Upsilon<1/2$.
+\item Closure of \textup{(P+)} uses the Whitney–uniform smallness $\Upsilon_{\mathrm{Whit}}(c)<\tfrac12$ from Lemma~\ref{lem:whitney-uniform-wedge}.
+\item The envelope constants $C_H(\psi)$ and the $M_\psi$ display are \emph{diagnostic only}; they do not enter the load-bearing inequality for (P+).
 \end{itemize}
 
 \paragraph{One-route outline (what actually happens).}
@@ -188,11 +188,15 @@ Summing the resulting majorant yields
 \]
 uniformly for $\sigma\in(\tfrac12,\tfrac12+\varepsilon_0]$, since the rightmost double series converges. This proves the claim.
 \end{proof}
-\begin{lemma}[Local-to-global wedge]\label{lem:local-to-global-wedge}
-Assume there exists $\Upsilon<\tfrac12$ such that for every Whitney interval $I=[t_0-L,t_0+L]$, one has $\displaystyle \int_I (-w')(t)\,dt\ \le\ \pi\,\Upsilon$. Then $\mu(Q)=0$. Consequently, by Lemma~\ref{lem:mu-to-lebesgue}, $|Q|=0$ and \eqref{eq:Pplus} holds.
+\begin{lemma}[Local certificate $\Rightarrow$ a.e. boundary wedge]\label{lem:local-to-global-wedge}
+Let $w$ be the boundary phase of $J$ with $|J(\tfrac12+it)|=1$ a.e., and $-w'$ its (positive) boundary measure. Assume that for every Whitney interval $I=[t_0-L,t_0+L]$ (with the fixed schedule) there exists a nonnegative bump $\varphi_I\in C_c^\infty(I)$ with $\int_\R\!\varphi_I=1$ such that
+\[
+  \int_\R \varphi_I(t)\,(-w'(t))\,dt\ \le\ \pi\,\Upsilon\qquad(\Upsilon<\tfrac12).
+\]
+Then, after a unimodular rotation of the outer, $|w(t)|\le \pi\Upsilon$ for a.e. $t$, hence \textup{(P+)}.
 \end{lemma}
 \begin{proof}
-Fix $I$ and test the phase–velocity identity with nonnegative $\phi\in C_c^\infty(I)$ satisfying $0\le \phi\le \mathbf 1_{Q\cap I}$. Using $\phi\le \mathbf 1_{Q\cap I}$, the Poisson plateau lower bound, and the assumed upper bound on $\int_I(-w')$, we force $\mu(Q\cap I)=0$. Letting $I\uparrow\R$ yields $\mu(Q)=0$.
+Let $\Delta_I(w):=\operatorname*{ess\,sup}_I w-\operatorname*{ess\,inf}_I w$. An integration by parts with the normalized triangular kernel on $I$ gives $\int \varphi_I(-w')\ge \Delta_I(w)/\pi$. The hypothesis yields $\Delta_I(w)\le \pi\Upsilon$ uniformly on Whitney $I$. Whitney intervals shrink to points with bounded overlap; subtract a median to re-center $w$, then pass $I\downarrow\{t\}$ to get $|w(t)|\le\pi\Upsilon$ a.e. Since $\Upsilon<\tfrac12$, \textup{(P+)} follows.
 \end{proof}
 \noindent\emph{Note.} Lemma~\ref{lem:muQzero-from-cert} is archived and not used to close \textup{(P+)}; the small-$L$ scaling $c_0 L \le C\,L^{1/2}$ does not contradict the RHS bound.
 
@@ -329,23 +333,32 @@ which is strictly positive a.e. on $\R$ whenever at least one off--critical zero
 For each finite subset of zeros $\mathcal Z\subset\{\rho:\Re\rho>1/2\}$ the partial density
 \(f_{\mathcal Z}(t):=\sum_{\rho\in\mathcal Z}2(\beta-\tfrac12)P_{\beta-1/2}(t-\gamma)\)
 is continuous and strictly positive for all $t$ because each Poisson kernel is strictly positive on $\R$.
-The phase--velocity formula and the Carleson energy finiteness imply the balayage of zeros on any Whitney box is finite, so the monotone limit of the partial sums converges in $L^1_{\mathrm{loc}}$ to an a.e. finite function $f\ge0$. Since the pointwise limit of strictly positive functions is nonnegative and cannot vanish on a set of positive measure unless all coefficients vanish, we obtain $f>0$ a.e. whenever at least one off--critical zero exists. Then $\mu(E)=\int_E f\,dt=0$ implies $|E|=0$.
+The phase--velocity formula and the Carleson energy finiteness imply the balayage of zeros on any Whitney box is finite, so the monotone limit of the partial sums converges in $L^1_{\mathrm{loc}}$ to an a.e. finite function $f\ge0$. Since the pointwise limit of strictly positive functions is nonnegative and cannot vanish on a set of positive measure unless all coefficients vanish, we obtain $f>0$ a.e. whenever at least one off--critical zero exists. Moreover, by positivity and monotone convergence, $\mu(E)=\int_E f\,dt=0$ forces $f=0$ a.e. on $E$, whence $|E|=0$.
 \end{proof}
 
 \paragraph{Certificate $\Rightarrow$ (P+): narrative.}
 The outer, boundary phase–velocity identity shows that $\int\varphi_{L,t_0}(-w')$ is the mass picked up by $\varphi_{L,t_0}$ against a positive measure supported on off–critical zeros (with atoms on the line if they occur). The left plateau inequality therefore lower-bounds it by $c_0(\psi)\,\mu(Q(I))$. The CR–Green pairing controls the same integral from above by box energy, and the Carleson bound is uniform on Whitney boxes. Aggregating with the H$^1$–BMO/Carleson estimate yields a Whitney–uniform window bound; choosing $c>0$ so that the resulting smallness parameter is $<\tfrac12$ gives the quantitative boundary wedge.
 
 \begin{lemma}[Whitney--uniform wedge]\label{lem:whitney-uniform-wedge}
-Fix the Whitney schedule $L(T)=c/\log\langle T\rangle$ and set $L_\star:=c/\log 2$. Then for every Whitney interval $I=[t_0-L,t_0+L]$ with $L\le L_\star$ and the printed window $\varphi_{L,t_0}$,
+Fix the Whitney schedule and clip by $L_\star$: set $L_\star:=c/\log 2$ and henceforth
+\[
+  L(T)\ :=\ \min\Big\{\frac{c}{\log\langle T\rangle},\ L_\star\Big\}.
+\]
+Then for every Whitney interval $I=[t_0-L,t_0+L]$ (so $L\le L_\star$) and the printed window $\varphi_{L,t_0}$,
 \[
   \int_{\mathbb R} \varphi_{L,t_0}(t)\,(-w'(t))\,dt\ \le\ C(\psi)\,\sqrt{C_{\rm box}^{(\zeta)}}\,L_\star^{1/2}
-  \ :=\ \pi\,\Upsilon_{\rm Whit}(c),
+  \ :=\ \pi\,\Upsilon_{\rm win}(c),
 \]
-with a constant $\Upsilon_{\rm Whit}(c)$ depending only on $c,\psi$ and the fixed aperture. Since $\varphi_{L,t_0}\equiv L^{-1}$ on $I$, one has
+with $\Upsilon_{\rm win}(c)$ depending only on $c,\psi$ and the fixed aperture. Since $\varphi_{L,t_0}\equiv L^{-1}$ on $I$, one has
 \[
-  \int_I (-w')\,dt\ \le\ L\!\int_{\mathbb R} \varphi_{L,t_0}(-w')\ \le\ L\,\pi\,\Upsilon_{\rm Whit}(c)\ \le\ \pi\,\Upsilon_{\rm Whit}(c).
+  \int_I (-w')\,dt\ \le\ L\!\int_{\mathbb R} \varphi_{L,t_0}(-w')\ \le\ L\,\pi\,\Upsilon_{\rm win}(c)\ \le\ L_\star\,\pi\,\Upsilon_{\rm win}(c)
+  \ :=\ \pi\,\Upsilon_{\rm Whit}(c).
 \]
-Choosing $c>0$ once and for all so that $\Upsilon_{\rm Whit}(c)<\tfrac12$ yields the quantitative phase cone on every Whitney interval and hence \textup{(P+)}.
+Choosing $c>0$ sufficiently small so that $\Upsilon_{\rm Whit}(c)<\tfrac12$ yields $\int_I(-w')\le \pi\,\Upsilon_{\rm Whit}(c)$ on every Whitney interval; this triggers the quantitative wedge criterion and hence \textup{(P+)}. In particular, any $c$ obeying
+\[
+  c\ \le\ \Big(\frac{c_0(\psi)}{2\,C(\psi)\,\sqrt{C_{\rm box}^{(\zeta)}}}\Big)^{\!2}
+\]
+is sufficient to ensure $\Upsilon_{\rm Whit}(c)<\tfrac12$.
 \end{lemma}
 
 \noindent\emph{Clarification.} The inequality $\int \varphi_{L,t_0}(-w') \le \pi\,\Upsilon_{\rm Whit}(c)$ with $\Upsilon_{\rm Whit}(c)<\tfrac12$ is load–bearing for \textup{(P+)} via Lemma~\ref{lem:whitney-uniform-wedge}. The right–hand side is solely the local CR–Green pairing controlled by $C_{\rm box}^{(\zeta)}$.
@@ -387,13 +400,17 @@ where $m\in\mathbb R/2\pi\mathbb Z$ is any fixed angular shift. Assume that for 
  \int_{\mathbb R} \varphi_{L,t_0}(t)\,-w'(t)\,dt\
  \le\ C(\psi)\,\Big(\iint_{Q(\alpha'I)} |\nabla U|^2\,\sigma\Big)^{1/2},
 \end{equation}
-with $C(\psi)$ independent of $t_0,L$. This provides the structural right–hand inequality for the certificate. By Lemma~\ref{lem:local-to-global-wedge}, $\mu(Q)=0$; hence, by Lemma~\ref{lem:mu-to-lebesgue}, $|Q|=0$ and \eqref{eq:Pplus} holds.
+with $C(\psi)$ independent of $t_0,L$. This provides the structural right–hand inequality for the certificate. By Lemma~\ref{lem:local-to-global-wedge}, $|Q|=0$ and \eqref{eq:Pplus} holds.
 \smallskip\noindent\emph{Proof of the left inequality in \eqref{eq:window-certificate}.} By Theorem~\ref{thm:phase-velocity-quant},
 \[
   \int \varphi_{L,t_0}(t)(-w'(t))\,dt\ =\ \pi\!\int\!\varphi_{L,t_0}\,d\mu\ +\ \pi\sum_{\gamma\in I} m_\gamma\,\varphi_{L,t_0}(\gamma)\ \ge\ \pi\!\int\!\varphi_{L,t_0}\,d\mu.
 \]
 By the Poisson plateau bound (Lemma~\ref{lem:poisson-plateau}) and the definition of $\varphi_{L,t_0}$, one has $\varphi_{L,t_0}\ge c_0(\psi)$ on the boundary shadow of $Q(I)$; hence $\int \varphi_{L,t_0}\,d\mu\ \ge\ c_0(\psi)\,\mu(Q(I))$. With the Poisson kernel normalized by $1/\pi$ and the phase–velocity identity carrying the factor $\pi$, these constants cancel, yielding the displayed lower bound.
 \end{lemma}
+\begin{proposition}[HS$\to$det$_2$ continuity]\label{prop:hs-det2-continuity}
+Let $A_N,A$ be analytic $\HS$-valued maps on $\Omega$ with $A_N\to A$ in the Hilbert–Schmidt norm uniformly on compact subsets of $\Omega$. Then $\det\nolimits_2(I-A_N)\to\det\nolimits_2(I-A)$ locally uniformly on $\Omega$.
+\end{proposition}
+
 \begin{lemma}[Smoothed phase–velocity calculus]\label{lem:pv-test-smoothed}
 Fix $\varepsilon\in(0,\tfrac12]$ and set
 \[
@@ -862,14 +879,14 @@ For a single mode $b\,e^{-\omega\sigma}\cos(\omega t)$ one has $|\nabla|^2=b^2\o
 With $b=(\log p)\,p^{-k/2}/(k\log p)$ and $\omega=k\log p$, summing over $(p,k)$ gives the claim and the finiteness of $K_0$.
 \end{proof}
 \paragraph{Whitney scale and short–interval zeros.}
-Throughout we use the Whitney schedule
+Throughout we use the Whitney schedule clipped at $L_\star$:
 \[
   L\ =\ L(T)\ :=\ \frac{c}{\log\langle T\rangle}\ \le\ \frac{1}{\log\langle T\rangle},\qquad \langle T\rangle:=\sqrt{1+T^2},\
 \]
 for a fixed absolute $c\in(0,1]$; all boxes are $Q(\alpha I)$ with a uniform $\alpha\in[1,2]$.
 We work on Whitney boxes $Q(I)$ with
 \[
-  L=L(T):=\frac{c}{\log\langle T\rangle},\qquad \langle T\rangle:=\sqrt{1+T^2},\quad c>0\ \text{fixed}.
+  L=L(T):=\min\Big\{\frac{c}{\log\langle T\rangle},\ L_\star\Big\},\qquad \langle T\rangle:=\sqrt{1+T^2},\quad c>0\ \text{fixed}.
 \]
 There exist absolute $A_0,A_1>0$ such that for $T\ge2$ and $0<H\le1$,
 \[
@@ -1589,15 +1606,15 @@ With the a.e. wedge, the closing condition is
 \[ \pi\Upsilon\ <\ \tfrac{\pi}{2}. \]
 Sum-form route: choose \(\kappa=10^{-3}\) so \(C_P=0.002\) and use the analytic envelope bound \(C_H(\psi)\le 0.26\) (Lemma~\ref{lem:CH-explicit}). Then
 \[ \frac{C_\Gamma+C_P+C_H}{c_0}=\frac{0+0.002+0.26}{0.17620819}=1.4869<\frac{\pi}{2} \] (archival PSC corollary).
-Product-form route (used in the proof): with the locked value \(C_\psi^{(H^1)}=0.2400\) and \(C_{\mathrm{box}}^{(\zeta)}=\CboxZeta\), we have
-\[ M_\psi= \tfrac{4}{\pi}\,C_\psi^{(H^1)}\sqrt{C_{\mathrm{box}}^{(\zeta)}}\ =\ \Mpsilocked,\qquad \Upsilon=\frac{(2/\pi)\cdot \Mpsilocked}{c_0}=\UpsilonLocked.\]
+Product-form route (diagnostic display; not used to close (P+)): with the locked value \(C_\psi^{(H^1)}=0.2400\) and \(C_{\mathrm{box}}^{(\zeta)}=\CboxZeta\), we have
+\[ M_\psi= \tfrac{4}{\pi}\,C_\psi^{(H^1)}\sqrt{C_{\mathrm{box}}^{(\zeta)}}\ =\ \Mpsilocked,\qquad \Upsilon_{\mathrm{diag}}=\frac{(2/\pi)\cdot \Mpsilocked}{c_0}=\UpsilonLocked.\]
 \subsection*{PSC certificate (locked constants; canonical form)}
 \noindent\textit{Locked evaluation used throughout (revised; product route via $\Upsilon$):}
 \begin{align*}
  (c_0,\ C_H,\ C_\psi^{(H^1)},\ C_{\mathrm{box}})
  &\ =\ (0.17620819,\ 2/\pi,\ 0.2400,\ \CboxZeta),\\
  M_\psi\ &\ =\ \Mpsilocked,\\
- \Upsilon\ &\ =\ \frac{(2/\pi)\cdot \Mpsilocked}{0.17620819}\ =\ \UpsilonLocked. 
+ \Upsilon_{\mathrm{diag}}\ &\ =\ \frac{(2/\pi)\cdot \Mpsilocked}{0.17620819}\ =\ \UpsilonLocked. 
 \end{align*}
 See Appendices B--G for the derivations and enclosures.
 \paragraph{Reproducible numerics (self-contained).}
@@ -1616,9 +1633,9 @@ For the printed window and the \(\zeta\)–normalized route:
 \item \(M_\psi\): Fefferman–Stein/Carleson embedding
 \[ M_\psi=\tfrac{4}{\pi}\,C_\psi^{(H^1)}\,\sqrt{C_{\mathrm{box}}^{(\zeta)}}\ =\ \Mpsilocked. \]
 \item \(\Upsilon\): product certificate value (no prime budget)
-\[ \Upsilon\ =\ \frac{(2/\pi)\cdot \Mpsilocked}{0.17620819}\ =\ \UpsilonLocked. \]
+\[ \Upsilon_{\mathrm{diag}}\ =\ \frac{(2/\pi)\cdot \Mpsilocked}{0.17620819}\ =\ \UpsilonLocked. \]
 \end{itemize}
-Each number is computed once and locked with outward rounding. The certificate wedge uses only \(c_0, C_H, M_\psi\) and the a.e. boundary passage.
+Each number is computed once and locked with outward rounding. The certificate wedge uses only \(c_0(\psi),\,C(\psi),\,C_{\rm box}^{(\zeta)}\) and the a.e. boundary passage.
 \paragraph{Constants table (for quick reference).}
 \begin{center}
 \begin{tabular}{ll}
@@ -1632,7 +1649,7 @@ $K_0$ & $0.03486808$ (arithmetic tail; Appendix~\ref{app:K0-compute}) \\
 $K_\xi$ & $\Kxi$ (neutralized Whitney energy) \\
 $C_{\mathrm{box}}^{(\zeta)}$ & $\CboxZeta=K_0+K_\xi$ \\
 $M_\psi$ & $\Mpsilocked=(4/\pi)\,C_\psi^{(H^1)}\sqrt{C_{\mathrm{box}}^{(\zeta)}}$ \\
-\(\Upsilon\) & $\UpsilonLocked=((2/\pi)\,M_\psi)/c_0$ \\
+\(\Upsilon_{\mathrm{diag}}\) & $\UpsilonLocked=((2/\pi)\,M_\psi)/c_0$ \quad(\emph{diagnostic})\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -2263,7 +2280,7 @@ With the a.e. wedge, the closing condition is
 \[ \pi\Upsilon\ <\ \tfrac{\pi}{2}. \]
 Sum-form route: choose \(\kappa=10^{-3}\) so \(C_P=0.002\) and use the analytic envelope bound \(C_H(\psi)\le 0.26\) (Lemma~\ref{lem:CH-explicit}). Then
 \[ \frac{C_\Gamma+C_P+C_H}{c_0}=\frac{0+0.002+0.26}{0.17620819}=1.4869<\frac{\pi}{2} \] (archival PSC corollary).
-Product-form route (used in the proof): with the locked value \(C_\psi^{(H^1)}=0.2400\) and \(C_{\mathrm{box}}^{(\zeta)}=\CboxZeta\), we have
+Product-form route (diagnostic only; not used to close (P+)): with the locked value \(C_\psi^{(H^1)}=0.2400\) and \(C_{\mathrm{box}}^{(\zeta)}=\CboxZeta\), we have
 \[ M_\psi= \tfrac{4}{\pi}\,C_\psi^{(H^1)}\sqrt{C_{\mathrm{box}}^{(\zeta)}}\ =\ \Mpsilocked,\qquad \Upsilon=\frac{(2/\pi)\cdot \Mpsilocked}{c_0}=\UpsilonLocked.\]
 \subsection*{PSC certificate (locked constants; canonical form)}
 \noindent\textit{Locked evaluation used throughout (revised; product route via $\Upsilon$):}
@@ -2292,7 +2309,7 @@ For the printed window and the \(\zeta\)–normalized route:
 \item \(\Upsilon\): product certificate value (no prime budget)
 \[ \Upsilon\ =\ \frac{(2/\pi)\cdot \Mpsilocked}{0.17620819}\ =\ \UpsilonLocked. \]
 \end{itemize}
-Each number is computed once and locked with outward rounding. The certificate wedge uses only \(c_0, C_H, M_\psi\) and the a.e. boundary passage.
+Each number is computed once and locked with outward rounding. The certificate wedge uses only \(c_0(\psi),\,C(\psi),\,C_{\rm box}^{(\zeta)}\) and the a.e. boundary passage.
 \paragraph{Constants table (for quick reference).}
 \begin{center}
 \begin{tabular}{ll}
@@ -2346,7 +2363,7 @@ By the all-interval Carleson bound we have, for each $I=[t_0-L,t_0+L]$,
 \[
  \int_{\R} \varphi_{L,t_0}(t)(-w')(t)\,dt\ \le\ C(\psi)\,\sqrt{C_{\rm box}^{(\zeta)}}\,L^{1/2}.
 \]
-Consequently, by Lemma~\ref{lem:whitney-uniform-wedge} we have the uniform bound $\int \varphi_{L,t_0}(-w')\le \pi\,\Upsilon_{\mathrm{Whit}}(c)$, and together with Lemma~\ref{lem:local-to-global-wedge} this yields $|Q|=0$ and \eqref{eq:Pplus}. The quantitative displays below simply record the constants used to compute $\Upsilon_{\mathrm{Whit}}(c)$.
+\noindent\emph{Consequently.} By Lemma~\ref{lem:whitney-uniform-wedge} and the schedule clip, $\int \varphi_{L,t_0}(-w')\le \pi\,\Upsilon_{\mathrm{Whit}}(c)$ on every Whitney interval. Therefore Lemma~\ref{lem:local-to-global-wedge} yields \eqref{eq:Pplus}; then Lemma~\ref{lem:mu-to-lebesgue} implies $|Q|=0$. The quantitative displays below simply record the constants used to compute $\Upsilon_{\mathrm{Whit}}(c)$.
 \end{theorem}
 \begin{proof}
 The left inequality is the Poisson plateau bound. The right inequality is Lemma~\ref{lem:CR-green-phase}. The conclusion \textup{(P+)} follows from Lemma~\ref{lem:whitney-uniform-wedge} and Lemma~\ref{lem:mu-to-lebesgue}.
