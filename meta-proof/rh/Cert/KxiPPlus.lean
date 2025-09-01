@@ -445,11 +445,11 @@ theorem exists_KxiBound_of_factors
     ∃ Kξ : ℝ, KxiBound Kξ :=
   ⟨fac.B, Kxi_bound_on_strip_default fac⟩
 
-/-- Existence form from an existential factors witness. -/
+/-- Existence form from a nonempty factors witness. -/
 theorem exists_KxiBound_if_factors
-    (h : ∃ fac : FunctionalEquationStripFactors, True) :
+    (h : Nonempty FunctionalEquationStripFactors) :
     ∃ Kξ : ℝ, KxiBound Kξ := by
-  rcases h with ⟨fac, _⟩
+  rcases h with ⟨fac⟩
   exact exists_KxiBound_of_factors fac
 
 /-- Convenience: from an aligned annular reduction and `K0 ≥ 0`, produce the

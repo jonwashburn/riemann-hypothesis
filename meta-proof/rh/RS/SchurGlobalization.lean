@@ -170,7 +170,8 @@ theorem GlobalizeAcrossRemovable
     exact PinchFromExtension U hUopen hUconn ρ hρU Θ hΘU hSchur_U g hg hExt hval
   exact this.1
 
-/-- Non-vanishing of ζ on Re(s)=1 via Schur/global methods or direct nonvanishing. -/
+/-- Non-vanishing of ζ on Re(s)=1 via the Schur–Herglotz pinch route.
+This is the RS delegate used by other tracks. -/
 theorem ZetaNoZerosOnRe1FromSchur :
     ∀ z : ℂ, z.re = 1 → riemannZeta z ≠ 0 := by
   intro z hz
