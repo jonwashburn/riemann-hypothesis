@@ -1,0 +1,1 @@
+{"version":3,"references":{"{\"c\":{\"n\":\"True\",\"m\":\"Init.Prelude\"}}":{"usages":[[6,23,6,27,"RH.Proof.main_outline",6,0,7,7,6,8,6,20]],"definition":null},"{\"c\":{\"n\":\"RH.Proof.main_outline\",\"m\":\"rh.Proof.Main\"}}":{"usages":[],"definition":[6,8,6,20]}},"module":"rh.Proof.Main"}
