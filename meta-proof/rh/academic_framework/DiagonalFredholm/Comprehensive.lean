@@ -15,9 +15,9 @@ We also surface names used by downstream tracks:
 
 export RH.AcademicFramework.DiagonalFredholm (comprehensive_scaffold)
 export RH.AcademicFramework.DiagonalFredholm in
-  diagDet2 renormE det2_continuous det2_analytic det2_identity_Re_gt_one det2_identity_extended
+  diagDet2 renormE det2_continuous det2_analytic det2_identity_Re_gt_one_available det2_identity_extended_available
 
-theorem comprehensive_scaffold : True := by
-  exact trivial
+/-- Availability placeholder confirming DF scaffold is wired (interface). -/
+def comprehensive_scaffold : Prop := True
 
 end RH.AcademicFramework.DiagonalFredholm

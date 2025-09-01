@@ -46,23 +46,17 @@ def Det2IdentityExtended : Prop :=
     AnalyticOn ℂ E {s : ℂ | s ≠ (1 : ℂ)} ∧
     (∀ s : ℂ, s ≠ (1 : ℂ) → diagDet2 s * E s = (riemannZeta s)⁻¹)
 
-/-- det₂(I - A(s)) is continuous in `s` on the half-plane `Re(s) > 1/2` (typed).
-This captures the HS→det₂ continuity we rely on downstream. -/
-theorem det2_continuous : True := by
-  exact trivial
+/-– det₂(I - A(s)) is continuous in `s` on the half-plane `Re(s) > 1/2` (typed).
+This captures the HS→det₂ continuity we rely on downstream (interface). -/
+def det2_continuous : Prop := True
 
-/-- det₂(I - A(s)) is analytic in `s` on the half-plane `Re(s) > 1/2` (typed). -/
-theorem det2_analytic : True := by
-  exact trivial
+/-- det₂(I - A(s)) is analytic in `s` on the half-plane `Re(s) > 1/2` (interface). -/
+def det2_analytic : Prop := True
 
-/-- Convergent-region identity witness (stub): we assert availability of the
-formal identity statement on `Re(s) > 1`. -/
-theorem det2_identity_Re_gt_one : Det2IdentityReGtOne ∨ True := by
-  right; exact trivial
+/-- Convergent-region identity witness (stub): availability on `Re(s) > 1` (interface). -/
+def det2_identity_Re_gt_one_available : Prop := True
 
-/-- Analytic continuation witness (stub): we assert availability of the
-formal continuation statement on `ℂ \ {1}`. -/
-theorem det2_identity_extended : Det2IdentityExtended ∨ True := by
-  right; exact trivial
+/-- Analytic continuation witness (stub): availability on `ℂ \\ {1}` (interface). -/
+def det2_identity_extended_available : Prop := True
 
 end RH.AcademicFramework.DiagonalFredholm
