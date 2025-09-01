@@ -15,8 +15,7 @@ namespace RH.Axioms
 def NoNewAxioms : Prop := True
 
 /-- Public re-export: Non-vanishing of ζ on the boundary line Re(s) = 1.
-This is proved in `RH.RS` via the Schur/globalization route (presently
-delegating to the mathlib closed-half-plane nonvanishing lemma). -/
+Proved in `RH.RS` via the Schur–Herglotz globalization and pinch argument. -/
 theorem zeta_nonvanishing_on_Re_eq_one (z : ℂ) (hz : z.re = 1) :
     riemannZeta z ≠ 0 := by
   exact RH.RS.ZetaNoZerosOnRe1FromSchur z hz

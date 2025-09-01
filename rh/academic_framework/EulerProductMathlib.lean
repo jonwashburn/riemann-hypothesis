@@ -24,8 +24,7 @@ theorem zeta_nonzero_re_gt_one
   simpa using riemannZeta_ne_zero_of_one_lt_re hs
 
 /-- Nonvanishing on the boundary line: for Re(s) = 1, ζ(s) ≠ 0.
-Delegates to `RS.ZetaNoZerosOnRe1FromSchur` (which currently uses the mathlib
-closed-half-plane nonvanishing). -/
+Delegates to `RS.ZetaNoZerosOnRe1FromSchur` proved via the Schur–pinch route. -/
 theorem zeta_nonzero_re_eq_one
     (z : ℂ) (hz : z.re = 1) : riemannZeta z ≠ 0 := by
   exact RH.RS.ZetaNoZerosOnRe1FromSchur z hz

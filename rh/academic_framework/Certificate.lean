@@ -23,7 +23,7 @@ def Ready : Prop :=
 /-- From a functional-equation closed-strip factors witness, we get
 `KxiAvailable` via the existential `∃ Kξ, KxiBound Kξ`. -/
 theorem KxiAvailable_of_factors
-    (h : ∃ fac : RH.Cert.FunctionalEquationStripFactors, True) :
+    (h : Nonempty RH.Cert.FunctionalEquationStripFactors) :
     KxiAvailable := by
   exact RH.Cert.exists_KxiBound_if_factors h
 
@@ -31,7 +31,7 @@ theorem KxiAvailable_of_factors
 track is ready (modulo the `CertificateReady` flag exposed by `rh/Cert`). -/
 theorem Ready_of_factors
     (hK0 : K0Available)
-    (hfac : ∃ fac : RH.Cert.FunctionalEquationStripFactors, True)
+    (hfac : Nonempty RH.Cert.FunctionalEquationStripFactors)
     (hCert : RH.Cert.CertificateReady) : Ready := by
   refine And.intro ?hKxi (And.intro hK0 hCert)
   exact KxiAvailable_of_factors hfac
