@@ -24,6 +24,7 @@
 - **Agent EPM (Euler product and ζ wrappers)**
   - File: `rh/academic_framework/EulerProductMathlib.lean`
   - Actions: Keep mathlib-backed facts: `riemannZeta_eulerProduct_tprod`, trivial zeros, `riemannZeta_ne_zero_of_one_lt_re`. For `Re=1`, delegate to `RS.ZetaNoZerosOnRe1FromSchur` or existing RS stub.
+  - Actions: Keep mathlib-backed facts: `riemannZeta_eulerProduct_tprod`, trivial zeros, `riemannZeta_ne_zero_of_one_lt_re`. For `Re=1`, delegate to `RS.ZetaNoZerosOnRe1FromSchur` (implemented; no axioms).
 
 ### Global Rules
 - No new axioms. No deletions or mass renames. Edit only your track files.

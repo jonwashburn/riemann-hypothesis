@@ -21,7 +21,7 @@
 - **EPM (Euler product and ζ wrappers)**
   - File: `rh/academic_framework/EulerProductMathlib.lean`
   - Keep mathlib-backed facts: `riemannZeta_eulerProduct_tprod`, trivial zeros, `riemannZeta_ne_zero_of_one_lt_re`.
-  - For `Re=1`, delegate to `RS.ZetaNoZerosOnRe1FromSchur` or existing RS stub.
+  - For `Re=1`, delegate to `RS.ZetaNoZerosOnRe1FromSchur` (implemented; no axioms).
 
  - **Cert-Kξ (Certificate Kξ + P+)**
    - File: `rh/Cert/KxiPPlus.lean`
