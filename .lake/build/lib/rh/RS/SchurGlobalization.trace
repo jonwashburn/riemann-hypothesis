@@ -1,0 +1,14 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=././.lake/packages/batteries/.lake/build/lib:././.lake/packages/Qq/.lake/build/lib:././.lake/packages/aesop/.lake/build/lib:././.lake/packages/proofwidgets/.lake/build/lib:././.lake/packages/Cli/.lake/build/lib:././.lake/packages/importGraph/.lake/build/lib:././.lake/packages/LeanSearchClient/.lake/build/lib:././.lake/packages/mathlib/.lake/build/lib:././.lake/build/lib DYLD_LIBRARY_PATH= /Users/jonathanwashburn/.elan/toolchains/leanprover--lean4---v4.12.0/bin/lean -Dpp.unicode.fun=true -Dpp.proofs.withType=false -DautoImplicit=false -DrelaxedAutoImplicit=false ././././rh/RS/SchurGlobalization.lean -R ./././. -o ././.lake/build/lib/rh/RS/SchurGlobalization.olean -i ././.lake/build/lib/rh/RS/SchurGlobalization.ilean -c ././.lake/build/ir/rh/RS/SchurGlobalization.c --json",
+   "level": "trace"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:25:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:33:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:41:8: declaration uses 'sorry'",
+   "level": "warning"}],
+ "depHash": "12218088520706558127"}
