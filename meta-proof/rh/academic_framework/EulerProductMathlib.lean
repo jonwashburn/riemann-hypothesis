@@ -1,6 +1,6 @@
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.EulerProduct.Basic
-import Mathlib.NumberTheory.LSeries.Nonvanishing
+-- removed: Nonvanishing import no longer present in this mathlib snapshot
 import rh.RS.SchurGlobalization
 
 namespace RH.AcademicFramework.EPM

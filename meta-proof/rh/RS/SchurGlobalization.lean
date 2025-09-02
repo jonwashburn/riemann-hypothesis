@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Analytic.Basic
 import Mathlib.Topology.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
-import Mathlib.NumberTheory.LSeries.Nonvanishing
+-- removed: Nonvanishing import no longer present in this mathlib snapshot
 import Mathlib.Tactic
 import Mathlib.Topology.Instances.Complex
 import Mathlib.Topology.MetricSpace.Basic
