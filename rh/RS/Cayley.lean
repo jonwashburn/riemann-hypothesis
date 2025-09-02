@@ -14,16 +14,31 @@ lemma herglotz_of_schur_pointwise {θ : ℂ}
     0 ≤ ((1 + θ) / (1 - θ)).re := by
   -- Re((1+θ)/(1-θ)) = (1 - |θ|^2)/|1-θ|^2 ≥ 0 when |θ| ≤ 1
   have hden' : (1 - θ) ≠ 0 := sub_ne_zero.mpr (by simpa using hden.symm)
-  have hden_abs_sq_pos : 0 < Complex.abs (1 - θ) ^ 2 := pow_two_pos_of_ne_zero _ (by
-    simpa [Complex.abs.eq_zero] using hden')
+  have hden_abs_sq_pos : 0 < Complex.abs (1 - θ) ^ 2 := by
+    have hpos : 0 < Complex.abs (1 - θ) := by
+      simp [Complex.abs.pos, hden']
+    have : (Complex.abs (1 - θ)) ≠ 0 := by exact ne_of_gt hpos
+    simpa [pow_two, sq] using sq_pos_of_ne_zero (Complex.abs (1 - θ)) this
   -- compute real part via multiplying numerator and denominator by conjugate
   have hrepr : ((1 + θ) / (1 - θ)).re
       = ((1 - Complex.abs θ ^ 2) / (Complex.abs (1 - θ) ^ 2)) := by
-    -- Known identity: Re((1+θ)/(1-θ)) = (1 - |θ|^2)/|1-θ|^2
-    -- We keep a short placeholder to avoid a long algebraic derivation here.
-    -- This can be filled using standard complex algebra in mathlib.
-    have : True := trivial
-    simpa using rfl
+    -- Standard identity by multiplying by the conjugate
+    have h1 : (1 + θ) / (1 - θ) = ((1 + θ) * conj (1 - θ)) / ((1 - θ) * conj (1 - θ)) := by
+      field_simp [hden']
+    have hdenabs : (Complex.abs (1 - θ) ^ 2 : ℝ)
+        = ((1 - θ) * conj (1 - θ)).re := by
+      -- |z|^2 = z * conj z with real part equal to |z|^2
+      simp [Complex.mul_conj, Complex.sq_abs]
+    have hnum : ((1 + θ) * conj (1 - θ)).re = 1 - Complex.abs θ ^ 2 := by
+      -- Re((1+θ)(1-conj θ)) = Re(1 - conj θ + θ - θ conj θ) = 1 - |θ|^2
+      -- use algebraic identities
+      have : ((1 + θ) * (1 - conj θ)).re = 1 - Complex.abs θ ^ 2 := by
+        simp [mul_add, add_mul, sub_eq_add_neg, Complex.mul_conj, Complex.sq_abs,
+              Complex.conj_ofReal]
+      simpa [Complex.conj_sub, sub_eq_add_neg, Complex.conj_ofReal] using this
+    have : ((1 + θ) / (1 - θ)).re
+        = (((1 + θ) * conj (1 - θ)) / ((1 - θ) * conj (1 - θ))).re := by simpa [h1]
+    simpa [Complex.realPart_div, hnum, hdenabs]
   -- Conclude nonnegativity
   have : 0 ≤ (1 - Complex.abs θ ^ 2) / (Complex.abs (1 - θ) ^ 2) := by
     have hnum : 0 ≤ (1 - Complex.abs θ ^ 2) := by

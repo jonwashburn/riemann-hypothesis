@@ -1,6 +1,4 @@
-import rh.RS.SchurGlobalization
-import rh.academic_framework.DiagonalFredholm
-import rh.academic_framework.EulerProductMathlib
+-- Minimal proof-layer placeholder; avoid heavy imports while other layers are cleaned.
 
 namespace RH.Proof
 

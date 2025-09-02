@@ -1,7 +1,6 @@
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.EulerProduct.Basic
-import Mathlib.NumberTheory.LSeries.Nonvanishing
-import Mathlib.Analysis.Complex.Cpow
+import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import rh.RS.SchurGlobalization
 
 namespace RH.AcademicFramework.EPM
@@ -41,12 +40,9 @@ This is a light wrapper around `Complex.abs_cpow_eq_rpow_re_of_pos` specialized 
 It is useful for vertical-strip bounds where only `s.re` matters. -/
 lemma abs_pi_cpow_neg_half_eq (s : ℂ) :
     Complex.abs ((Real.pi : ℂ) ^ (-(s / 2))) = Real.pi ^ (-(s.re) / 2) := by
-  -- First reduce to the generic positive-base formula
-  have h := Complex.abs_cpow_eq_rpow_re_of_pos (Real.pi_pos) (-(s / 2))
-  -- Simplify the real part of the exponent `-(s/2)`
-  simpa [Complex.neg_re, div_eq_mul_inv, Complex.mul_re, Complex.mul_im,
-        Complex.ofReal_inv, Complex.ofReal_re, Complex.ofReal_im, sub_eq_add_neg,
-        mul_zero] using h
+  -- Use the generic positive-base formula and simplify the real part
+  simpa [Complex.neg_re, Complex.re_div, Complex.re_ofReal] using
+    (Complex.abs_cpow_eq_rpow_re_of_pos Real.pi_pos (-(s / 2)))
 
 /-- Uniform linear-growth bound for `‖s‖` on a closed vertical strip `a ≤ Re(s) ≤ b`.
 It yields `‖s‖ ≤ (|a| + |b| + 1) · (1 + |Im(s)|)`.
