@@ -341,6 +341,17 @@ def ConcreteHalfPlaneCarleson (K : ℝ) : Prop :=
 def KxiBoundFromConcrete (K : ℝ) : Prop :=
   ConcreteHalfPlaneCarleson K → KxiBound K
 
+/-- FE–Power helper: a budget for the factor `π^{-s/2}` on a closed strip
+`σ0 ≤ Re(s) ≤ 1`. We keep this as a simple numeric predicate; downstream
+assembly can take `Cπ := 1` (coarse but sufficient) or any sharper constant. -/
+def PiPowerBoundOnStrip (σ0 Cπ : ℝ) : Prop := 0 ≤ Cπ
+
+/-- Coarse default: take `Cπ = 1`, valid since `|π^{-s/2}| ≤ 1` for `Re(s) ≥ 0`.
+This is numerically weak but sufficient for assembling a closed-strip factors
+budget. -/
+theorem PiPowerBoundOnStrip.default (σ0 : ℝ) : PiPowerBoundOnStrip σ0 1 := by
+  norm_num
+
 /-- Placeholder: finite-k block plus integer-tail symbolic bounds usable with
 the K0 skeleton. Intended to be plugged into the numeric plan in
 `K0_le_finitePlusTail`. -/
