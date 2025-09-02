@@ -1,5 +1,6 @@
 import rh.Cert.KxiPPlus
 import rh.Cert.K0PPlus
+import rh.academic_framework.EulerProduct.K0Bound
 
 noncomputable section
 
@@ -14,7 +15,11 @@ need the existence form. -/
 def KxiAvailable : Prop := ∃ Kξ : ℝ, RH.Cert.KxiBound Kξ
 
 /-- Availability of the arithmetic tail nonnegativity `K0 ≥ 0` from the proved lemma. -/
-def K0Available : Prop := RH.Cert.K0Available
+def K0Available : Prop := RH.AcademicFramework.EulerProduct.K0.K0_bound_on_strip
+
+/-- Proven availability: delegates to the arithmetic-tail lemma. -/
+theorem K0Available_proved : K0Available :=
+  RH.AcademicFramework.EulerProduct.K0.K0_bound_on_strip_proved
 
 /-- Readiness flag for certificate chain hooks: depends on availability of
 both Kξ and K0 tracks. -/
