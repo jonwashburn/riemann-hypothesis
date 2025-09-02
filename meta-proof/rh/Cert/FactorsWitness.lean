@@ -16,7 +16,7 @@ open Complex Set Filter Topology
 namespace RH.Cert
 
 /‑‑ Uniform strip bound for the digamma function ψ(z) = polyGamma 0 z on the half‑argument.
-Any effective constant `Cψ` suffices. ‑/ 
+Any effective constant `Cψ` suffices. ‑/
 theorem exists_uniform_bound_digamma_half_on_strip
     (σ0 : ℝ) (hσ : (1 / 2 : ℝ) < σ0 ∧ σ0 ≤ 1) :
     ∃ Cψ : ℝ, 0 ≤ Cψ ∧
@@ -45,6 +45,31 @@ lemma deriv_pi_pow_neg_half_mul_gamma_half
   ‑/
   sorry
 
+/‑‑ Uniform bound on ‖Γ'(s/2)‖ on the closed strip, via a fixed‑radius Cauchy estimate. ‑/
+theorem exists_uniform_bound_gamma_deriv_half_on_strip
+  (σ0 : ℝ) (hσ : (1/2 : ℝ) < σ0 ∧ σ0 ≤ 1) :
+  ∃ CΓ' : ℝ, 0 ≤ CΓ' ∧
+    ∀ s : ℂ, (σ0 ≤ s.re ∧ s.re ≤ 1) → ‖(deriv Complex.Gamma) (s/2)‖ ≤ CΓ' := by
+  /‑ Agent task:
+     - Fix radius r = σ0/4; apply Cauchy’s estimate on the circle ‖w − s/2‖ = r
+       staying in Re w ≥ σ0/4 to bound ‖Γ'(s/2)‖ by sup_{circle} ‖Γ‖ / r.
+     - Use ‖Γ(w)‖ ≤ Γ(Re w) and compactness on the real interval to get a uniform sup.
+  ‑/
+  sorry
+
+/‑‑ Using the bound on Γ' and the trivial uniform bound on Γ and π‑power, we get a
+uniform bound on ‖H'(s)‖ on the same closed strip. ‑/
+theorem exists_uniform_bound_H_deriv_on_strip
+  (σ0 : ℝ) (hσ : (1/2 : ℝ) < σ0 ∧ σ0 ≤ 1) :
+  ∃ CH : ℝ, 0 ≤ CH ∧
+    ∀ s : ℂ, (σ0 ≤ s.re ∧ s.re ≤ 1) → ‖(deriv (fun z => (Real.pi : ℂ) ^ (-(z/2)) * Complex.Gamma (z/2))) s‖ ≤ CH := by
+  /‑ Agent task:
+     - From the product rule / derivative identity, derive the crude bound
+       ‖H'‖ ≤ (1/2) |π^{-s/2}| ‖Γ'(s/2)‖ + (|log π|/2) |π^{-s/2}| ‖Γ(s/2)‖.
+     - Supply strip‑uniform constants Cπ, CΓ', CΓ to get a uniform CH.
+  ‑/
+  sorry
+
 /‑‑ On an axis‑aligned box of half‑side `L` around `s₀`, the variation of an analytic
 function is bounded by `√2·L` times the sup of `‖f′‖` on the box. ‑/
 lemma box_variation_bound_from_deriv_sup
@@ -63,5 +88,3 @@ lemma box_variation_bound_from_deriv_sup
   sorry
 
 end RH.Cert
-
-
