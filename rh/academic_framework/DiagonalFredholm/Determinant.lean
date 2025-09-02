@@ -53,10 +53,10 @@ def det2_continuous : Prop := True
 /-- det₂(I - A(s)) is analytic in `s` on the half-plane `Re(s) > 1/2` (interface). -/
 def det2_analytic : Prop := True
 
-/-- Convergent-region identity witness (stub): availability on `Re(s) > 1` (interface). -/
-def det2_identity_Re_gt_one_available : Prop := True
+/-- Convergent-region identity witness (availability alias). -/
+def det2_identity_Re_gt_one_available : Prop := Det2IdentityReGtOne
 
-/-- Analytic continuation witness (stub): availability on `ℂ \\ {1}` (interface). -/
-def det2_identity_extended_available : Prop := True
+/-- Analytic continuation witness (availability alias). -/
+def det2_identity_extended_available : Prop := Det2IdentityExtended
 
 end RH.AcademicFramework.DiagonalFredholm

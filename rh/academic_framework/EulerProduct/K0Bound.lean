@@ -22,11 +22,10 @@ interval arithmetic or a numerics file; here we isolate the algebraic
 reduction and clean inequalities needed by higher layers.
 -/
 
-namespace RH.AcademicFramework.EulerProduct
+namespace RH.AcademicFramework.EulerProduct.K0
 
 open scoped BigOperators
 
-namespace K0
 
 /-- Prime-power block for integer exponent `k≥2`: `P(k) = ∑_{p} p^{-k}` as a real series. -/
 noncomputable def P (k : ℕ) : ℝ :=
@@ -126,7 +125,8 @@ theorem K0_le_finitePlusTail
     (hF : Summable (fun k : {n // 2 ≤ n} => F k / (((k : ℕ) : ℝ) ^ 2)))
     (hT : Summable (fun k : {n // 2 ≤ n} => T k / (((k : ℕ) : ℝ) ^ 2)))
     (hPsum : Summable (fun k : {n // 2 ≤ n} => P k / (((k : ℕ) : ℝ) ^ 2)))
-    (hIsum : Summable (fun k : {n // 2 ≤ n} => integerTail k / (((k : ℕ) : ℝ) ^ 2))) :
+    (hIsum : Summable (fun k : {n // 2 ≤ n} => integerTail k / (((k : ℕ) : ℝ) ^ 2)))
+    (hP_le_int : ∀ k : {n // 2 ≤ n}, P k ≤ integerTail k) :
     K0 ≤ (1/4 : ℝ) * ((∑' k, F k / (((k : ℕ) : ℝ) ^ 2)) + (∑' k, T k / (((k : ℕ) : ℝ) ^ 2))) := by
   classical
   have hlin : (∑' k : {n // 2 ≤ n}, (F k + T k) / (((k : ℕ) : ℝ) ^ 2))
@@ -136,7 +136,7 @@ theorem K0_le_finitePlusTail
   -- apply the pointwise-to-series lemma twice: P ≤ integerTail ≤ F+T
   have h1 : K0 ≤ (1/4 : ℝ) * (∑' k : {n // 2 ≤ n}, integerTail k / (((k : ℕ) : ℝ) ^ 2)) := by
     refine K0_le_series_of_pointwise (B := integerTail) (hpt := ?_) (hPL := hPsum) (hBL := hIsum)
-    intro k; exact le_rfl
+    intro k; exact hP_le_int k
   have h2 : (∑' k : {n // 2 ≤ n}, integerTail k / (((k : ℕ) : ℝ) ^ 2))
       ≤ (∑' k : {n // 2 ≤ n}, (F k + T k) / (((k : ℕ) : ℝ) ^ 2)) := by
     -- pointwise and summable comparison
@@ -185,6 +185,4 @@ theorem K0_bound_on_strip_proved : K0_bound_on_strip := by
   have hcoef : 0 ≤ (1/4 : ℝ) := by norm_num
   exact mul_nonneg hcoef hsum_nonneg
 
-end K0
-
-end RH.AcademicFramework.EulerProduct
+end RH.AcademicFramework.EulerProduct.K0

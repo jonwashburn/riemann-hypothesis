@@ -14,10 +14,6 @@ theorem hasProd_of_multipliable {ι : Type*} [Countable ι]
     {f : ι → ℂ} (hf : Multipliable f) : HasProd f (∏' i, f i) := by
   simpa using hf.hasProd
 
-/-- Bridge: finite modification preserves multiplicability. -/
-theorem multipliable_of_fintype_support {ι : Type*} [Countable ι]
-    {f g : ι → ℂ} (hf : Multipliable f)
-    (hfin : {i | g i ≠ f i}.Finite) : Multipliable g := by
-  exact hf.multipliable_of_finite_mul_support (by simpa using hfin)
+-- (Second bridge lemma intentionally omitted for stability across mathlib API drift.)
 
 end RH.AcademicFramework.DiagonalFredholm

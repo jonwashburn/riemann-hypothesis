@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.academic_framework.DiagonalFredholm.Determinant
-// Imports: Init Mathlib.Topology.Algebra.InfiniteSum.Basic Mathlib.Data.Complex.Basic
+// Imports: Init Mathlib.Topology.Algebra.InfiniteSum.Basic Mathlib.Data.Complex.Basic Mathlib.NumberTheory.LSeries.RiemannZeta
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -16,6 +16,7 @@ extern "C" {
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Topology_Algebra_InfiniteSum_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Data_Complex_Basic(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_NumberTheory_LSeries_RiemannZeta(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_rh_academic__framework_DiagonalFredholm_Determinant(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -28,6 +29,9 @@ res = initialize_Mathlib_Topology_Algebra_InfiniteSum_Basic(builtin, lean_io_mk_
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_Data_Complex_Basic(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_Mathlib_NumberTheory_LSeries_RiemannZeta(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));
