@@ -1,4 +1,5 @@
 import rh.Cert.KxiPPlus
+import rh.Cert.FactorsWitness
 import rh.Cert.K0PPlus
 
 noncomputable section
@@ -28,12 +29,12 @@ theorem Ready_of_factors
   exact hfac
 
 /-- Unconditional readiness: combine arithmetic-tail availability with the
-concrete factors witness and the trivial certificate flag. -/
+analytic factors witness and the trivial certificate flag. -/
 theorem Ready_unconditional : Ready := by
   refine Ready_of_factors ?hK0 ?hFac ?hCert
   · -- arithmetic tail availability from proved lemma
     exact RH.Cert.K0Available_proved
-  · -- concrete factors witness from Kxi module
+  · -- analytic factors witness from FactorsWitness
     exact RH.Cert.factors_witness_nonempty
   · -- certificate flag is `True`
     exact (by trivial : RH.Cert.CertificateReady)
