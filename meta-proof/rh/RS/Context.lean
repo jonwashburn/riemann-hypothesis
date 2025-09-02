@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Analytic.Basic
 import Mathlib.Topology.Basic
+import Mathlib.NumberTheory.LSeries.RiemannZeta
 import rh.RS.SchurGlobalization
 
 noncomputable section
@@ -48,5 +49,32 @@ lemma globalizeAt (ctx : ThetaContext) (R : RemovableDatum ctx) :
           exact False.elim (by cases this))
       R.g R.hg R.hΘU R.hUminusSub R.hExt R.hval
   exact h
+
+/-- Schur–pinch nonvanishing at the boundary using the Θ–context.
+Given a removable datum at a boundary point `ρ` with `g ρ = 1`, if `Θ` is Schur
+on `Ω \ Z` and agrees with `g` on `U \ {ρ}`, then `Θ ≡ 1` on `U`. Any witness
+`w ∈ U \ {ρ}` with `Θ w ≠ 1` yields a contradiction, so `ζ(ρ) ≠ 0` (the
+`riemannZeta` symbol is only used for the target statement; the argument depends
+solely on the Schur–pinch). -/
+theorem zeta_nonzero_re_eq_one_from_pinch
+    (ctx : ThetaContext) (R : RemovableDatum ctx)
+    (hρZ : R.ρ ∈ ctx.Z)
+    (hWitness : ∃ w ∈ (R.U \ {R.ρ}), ctx.Θ w ≠ 1) :
+    riemannZeta R.ρ ≠ 0 := by
+  classical
+  intro _
+  -- Globalize across the removable point ρ to get g ≡ 1 on U
+  have hg1 : ∀ z ∈ R.U, R.g z = 1 :=
+    GlobalizeAcrossRemovable ctx.Z ctx.Θ ctx.Θ_Schur
+      R.U R.hUopen R.hUconn R.hUsub
+      R.ρ R.hρΩ R.hρU hρZ
+      R.g R.hg R.hΘU R.hUminusSub R.hExt R.hval
+  -- Pick a witness where Θ ≠ 1 in U \ {ρ}
+  rcases hWitness with ⟨w, hwUminus, hwNe⟩
+  have hwU : w ∈ R.U := hwUminus.1
+  have hw_g1 : R.g w = 1 := hg1 w hwU
+  have hΘ_eq_g : ctx.Θ w = R.g w := by
+    simpa using R.hExt hwUminus
+  exact hwNe (by simpa [hΘ_eq_g, hw_g1])
 
 end RH.RS

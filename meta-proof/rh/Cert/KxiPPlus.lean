@@ -252,10 +252,21 @@ the nonnegativity needed by `CarlesonEnergyBudget`. -/
 def K0NonnegInterface : Prop :=
   RH.AcademicFramework.EulerProduct.K0.K0_bound_on_strip
 
-/-- Certificate readiness flag for the Kξ/K0 product certificate track. When
-set to `True`, all interface-level lemmas required by downstream consumers are
-available in this module. -/
-def CertificateReady : Prop := True
+/-- Certificate readiness flag for the Kξ/K0 product certificate track:
+there exists a functional-equation closed-strip factors witness, from which
+we obtain an abstract `KxiBound` existence. Downstream consumers only require
+this existential form (paired with K0 nonnegativity from the K0 track). -/
+def CertificateReady : Prop :=
+  ∃ fac : FunctionalEquationStripFactors, ∃ Kξ : ℝ, KxiBound Kξ
+
+/-- Readiness is immediate from any factors witness using the default
+nonvanishing input (mathlib on Re>1 and RS on Re=1). -/
+theorem CertificateReady_of_factors
+    (h : Nonempty FunctionalEquationStripFactors) :
+    CertificateReady := by
+  rcases h with ⟨fac⟩
+  refine ⟨fac, fac.B, ?_⟩
+  exact Kxi_bound_on_strip_default fac
 
 /-- From `K0 ≥ 0` and an abstract `KxiBound`, build a combined Carleson energy
 budget used by downstream CR–Green consumers. -/

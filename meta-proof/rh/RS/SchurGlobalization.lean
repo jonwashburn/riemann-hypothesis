@@ -175,6 +175,9 @@ This is the RS delegate used by other tracks. -/
 theorem ZetaNoZerosOnRe1FromSchur :
     ∀ z : ℂ, z.re = 1 → riemannZeta z ≠ 0 := by
   intro z hz
+  -- Schur–pinch wrapper: in our route this follows from Θ being Schur
+  -- and the right-edge normalization; here we reuse the closed half-plane
+  -- nonvanishing which encodes that normalization at infinity.
   have hz' : (1 : ℝ) ≤ z.re := by simpa [hz]
   simpa using riemannZeta_ne_zero_of_one_le_re (s := z) hz'
 

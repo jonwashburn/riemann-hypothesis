@@ -13,11 +13,9 @@ We also surface names used by downstream tracks:
 - `Det2IdentityReGtOne`, `Det2IdentityExtended`
 -/
 
-export RH.AcademicFramework.DiagonalFredholm (comprehensive_scaffold)
 export RH.AcademicFramework.DiagonalFredholm in
-  diagDet2 renormE det2_continuous det2_analytic det2_identity_Re_gt_one_available det2_identity_extended_available
+  diagDet2 renormE det2_continuous det2_analytic det2_identity_Re_gt_one_available
 
-/-- Availability placeholder confirming DF scaffold is wired (interface). -/
-def comprehensive_scaffold : Prop := True
+-- Interface is provided by concrete theorems in `Determinant.lean`.
 
 end RH.AcademicFramework.DiagonalFredholm
