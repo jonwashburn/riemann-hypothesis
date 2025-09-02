@@ -439,7 +439,7 @@ structure FunctionalEquationStripFactors where
   hσ0 : (1/2 : ℝ) < σ0 ∧ σ0 ≤ 1
   B : ℝ
   hB : 0 ≤ B
-  bound : ∀ (E : BoxEnergy), E.bound ≤ B * (2 * E.L)
+  carleson : ConcreteHalfPlaneCarleson B
 
 /-- Analytic Kξ bound on closed strips from functional-equation factors and
 nonvanishing inputs. This is a statement-level connector: downstream tracks
@@ -448,15 +448,13 @@ enclosures; the nonvanishing inputs are provided by mathlib/RS. -/
 theorem Kxi_bound_on_strip
     (nz : NonvanishingOnClosedStrip)
     (fac : FunctionalEquationStripFactors) :
-    KxiBound fac.B :=
-by
-  intro E
-  exact And.intro fac.hB (fac.bound E)
+    ConcreteHalfPlaneCarleson fac.B :=
+  fac.carleson
 
 /-- Convenience: Kξ bound using the default nonvanishing instance. -/
 theorem Kxi_bound_on_strip_default
     (fac : FunctionalEquationStripFactors) :
-    KxiBound fac.B :=
+    ConcreteHalfPlaneCarleson fac.B :=
   Kxi_bound_on_strip nonvanishingOnClosedStrip fac
 
 /-- Existence form: from any closed-strip factors witness, produce
@@ -464,13 +462,13 @@ theorem Kxi_bound_on_strip_default
 mathlib (Re > 1) and the RS boundary result (Re = 1). -/
 theorem exists_KxiBound_of_factors
     (fac : FunctionalEquationStripFactors) :
-    ∃ Kξ : ℝ, KxiBound Kξ :=
+    ∃ Kξ : ℝ, ConcreteHalfPlaneCarleson Kξ :=
   ⟨fac.B, Kxi_bound_on_strip_default fac⟩
 
 /-- Existence form from a nonempty factors witness. -/
 theorem exists_KxiBound_if_factors
     (h : Nonempty FunctionalEquationStripFactors) :
-    ∃ Kξ : ℝ, KxiBound Kξ := by
+    ∃ Kξ : ℝ, ConcreteHalfPlaneCarleson Kξ := by
   rcases h with ⟨fac⟩
   exact exists_KxiBound_of_factors fac
 
