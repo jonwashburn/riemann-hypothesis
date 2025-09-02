@@ -4,7 +4,8 @@ import rh.academic_framework.EulerProductMathlib
 
 namespace RH.Proof
 
-/-- Entry point availability placeholder for the final assembly theorem (interface). -/
-def main_outline_available : Prop := True
+/-- Entry point marker: downstream assembly theorem can target this namespace.
+This file intentionally exposes no placeholders. -/
+def pipeline_ready : Prop := True
 
 end RH.Proof

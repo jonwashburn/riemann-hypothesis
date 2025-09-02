@@ -12,6 +12,7 @@ import Mathlib.NumberTheory.LSeries.RiemannZeta
 
 namespace RH.Axioms
 
+/-- Marker: this project introduces no new axioms beyond mathlib. -/
 def NoNewAxioms : Prop := True
 
 /-- Public re-export: Non-vanishing of ζ on the boundary line Re(s) = 1.
