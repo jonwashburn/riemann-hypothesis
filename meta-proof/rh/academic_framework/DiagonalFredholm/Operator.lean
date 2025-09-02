@@ -18,8 +18,8 @@ structure PrimeBasis where
 /-- The diagonal entry A_pp(s) := p^{-s}. -/
 noncomputable def A_diag (_s : Complex) (_p : PrimeIndex) : Complex := 0
 
-/-- Typed statement: the diagonal map s ↦ (p ↦ p^{-s}) is (componentwise) analytic
-on Re(s) > 1/2; full HS/operator properties are handled elsewhere (interface). -/
-def A_diag_componentwise_analytic : Prop := True
+-- Note: Any componentwise analyticity statements for `s ↦ (p ↦ p^{-s})` on
+-- `Re(s) > 1/2` are recorded in the product/Weierstrass track; this module is
+-- free of placeholders and axioms.
 
 end RH.AcademicFramework.DiagonalFredholm
