@@ -1,30 +1,5 @@
 import rh.Cert.KxiPPlus
 
-namespace RH.Cert
-
-noncomputable section
-
-/-- A minimal closed-strip factors witness built from the concrete
-Carleson constructor: take σ0=3/5 and budget B=1; the
-`mkWhitneyBoxEnergy` shape yields the linear bound. -/
-def factors_witness : FunctionalEquationStripFactors := by
-  classical
-  refine
-    { σ0 := (3 : ℝ) / 5
-    , hσ0 := by norm_num
-    , B := 1
-    , hB := by norm_num
-    , carleson := by
-        exact And.intro (by norm_num) (by intro W; simpa [mkWhitneyBoxEnergy]) }
-
-/-- Nonemptiness of the closed-strip factors witness. -/
-theorem factors_witness_nonempty : Nonempty FunctionalEquationStripFactors :=
-  ⟨factors_witness⟩
-
-end
-
-end RH.Cert
-
 import Mathlib.Analysis.SpecialFunctions.Gamma
 import Mathlib.Analysis.Complex.Cpow
 import Mathlib.Data.Complex.Basic

@@ -1,5 +1,4 @@
 import rh.Cert.KxiPPlus
-import rh.Cert.FactorsWitness
 import rh.Cert.K0PPlus
 
 noncomputable section
