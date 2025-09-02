@@ -10,7 +10,7 @@ Comprehensive module that re-exports operator, product lemmas, and determinant p
 
 We also surface names used by downstream tracks:
 - `diagDet2`, `renormE`
-- `Det2IdentityReGtOne`, `Det2IdentityExtended`
+- `Det2IdentityReGtOne` (existence form of continuation defined in `Determinant.lean`)
 -/
 
 export RH.AcademicFramework.DiagonalFredholm in
