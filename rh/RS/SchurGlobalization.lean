@@ -408,9 +408,9 @@ theorem zeta_nonzero_on_Re1_from_local_bridges_Z_off
     (assign : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ)
       (data : LocalPinchDataZOff Θ N U Z), z ∈ (U \ Z)) :
     ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
-  intro z hz
-  rcases assign z hz with ⟨U, Z, data, hzUdiff⟩
-  exact zeta_nonzero_from_local_pinch_Z_off Θ N hΘSchur data hzUdiff
+      intro z hz
+      rcases assign z hz with ⟨U, Z, data, hzUdiff⟩
+      exact zeta_nonzero_from_local_pinch_Z_off Θ N hΘSchur data hzUdiff
 
 /-- RS export wrapper: boundary nonvanishing from an off-zeros boundary assignment. -/
 structure OffZerosBoundaryAssignment where
@@ -424,6 +424,21 @@ theorem ZetaNoZerosOnRe1_from_offZerosAssignment
     ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
   zeta_nonzero_on_Re1_from_local_bridges_Z_off A.Θ A.N A.hΘSchur A.assign
 
+/-- Pure statement-level hypothesis for off-zeros boundary assignment: Θ is Schur
+on Ω and for each boundary point z there exist U, Z and local off-zeros data with
+z ∈ U \ Z (exactly the shape needed by `LocalPinchDataZOff`). -/
+def OffZerosBoundaryHypothesis (Θ N : ℂ → ℂ) : Prop :=
+  IsSchurOn Θ Ω ∧ (∀ z, z.re = 1 → ∃ (U Z : Set ℂ)
+    (data : LocalPinchDataZOff Θ N U Z), z ∈ (U \ Z))
+
+/-- From the off-zeros boundary hypothesis, conclude ζ ≠ 0 on Re = 1. -/
+theorem ZetaNoZerosOnRe1_from_offZerosAssignmentStatement
+    {Θ N : ℂ → ℂ}
+    (h : OffZerosBoundaryHypothesis Θ N) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
+  rcases h with ⟨hΘSchur, assign⟩
+  exact zeta_nonzero_on_Re1_from_local_bridges_Z_off Θ N hΘSchur assign
+
 /-- Local nonvanishing using generalized removable set data. -/
 theorem zeta_nonzero_from_local_pinch_Z
     (w : ZetaSchurDecomposition)
@@ -431,6 +446,7 @@ theorem zeta_nonzero_from_local_pinch_Z
     (hUopen : IsOpen U) (hUconn : IsPreconnected U) (hUsub : U ⊆ Ω)
     (hZsub : Z ⊆ Ω)
     (ρ : ℂ) (hρU : ρ ∈ U) (hρZ : ρ ∈ Z)
+    (hZcapU_singleton : (U ∩ Z) = {ρ})
     (z : ℂ) (hzUdiff : z ∈ (U \ Z))
     (hΘU : AnalyticOn ℂ w.Θ (U \ Z))
     (g : ℂ → ℂ) (hg : AnalyticOn ℂ g U)
@@ -453,8 +469,14 @@ theorem zeta_nonzero_from_local_pinch_Z
       have hΘle : Complex.abs (w.Θ ζ) ≤ 1 := w.hΘSchur ζ hΩ
       have hΘeqg : w.Θ ζ = g ζ := by simpa using hExt hζUZ
       simpa [hΘeqg] using hΘle
-    exact schur_pinches_to_one (U := U) (ρ := ρ) (g := g)
-      hUopen hUconn hg hle hρU hval
+    -- Build Schur bound for g on U and pinch
+    have hSchurU : IsSchurOn g U := by
+      intro ξ hξU
+      by_cases hξρ : ξ = ρ
+      · simpa [hξρ, hval]
+      · have hξ' : ξ ∈ (U \ {ρ}) := ⟨hξU, by simp [hξρ]⟩
+        exact hle ξ hξ'
+    exact PinchConstantOfOne U hUopen hUconn g hg hSchurU ρ hρU hval
   -- Hence Θ = 1 on U \ Z
   have hΘz1 : w.Θ z = 1 := by
     have hzU : z ∈ U := hzUdiff.1
@@ -485,8 +507,8 @@ theorem zeta_nonzero_on_Re1_from_local_bridges_Z
     ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
   intro z hz
   rcases assignZ z hz with ⟨U, Z, data, hzUdiff⟩
-  rcases data with ⟨hUopen, hUconn, hUsub, hZsub, hΘU, g, hg, hExt, ρ, hρU, hρZ, hval⟩
-  exact zeta_nonzero_from_local_pinch_Z w U Z hUopen hUconn hUsub hZsub ρ hρU hρZ z hzUdiff hΘU g hg hExt hval
+  rcases data with ⟨hUopen, hUconn, hUsub, hZsub, hΘU, g, hg, hExt, ρ, hρU, hρZ, hval, hZcapU_singleton⟩
+  exact zeta_nonzero_from_local_pinch_Z w U Z hUopen hUconn hUsub hZsub ρ hρU hρZ hZcapU_singleton z hzUdiff hΘU g hg hExt hval
 
 /-- Local-assignment packaging (Z-variant): for each boundary point, provide
 an open set `U ⊆ Ω`, a removable set `Z ⊆ Ω`, and local extension data. -/

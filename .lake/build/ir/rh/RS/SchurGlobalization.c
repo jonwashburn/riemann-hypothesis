@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.RS.SchurGlobalization
-// Imports: Init Mathlib.Analysis.Analytic.Basic Mathlib.Analysis.Complex.AbsMax Mathlib.Analysis.Complex.CauchyIntegral Mathlib.Topology.Basic Mathlib.NumberTheory.LSeries.RiemannZeta Mathlib.Tactic Mathlib.Topology.Instances.Complex Mathlib.Topology.MetricSpace.Basic
+// Imports: Init Mathlib.Analysis.Analytic.Basic Mathlib.Analysis.Complex.AbsMax Mathlib.Analysis.Complex.CauchyIntegral Mathlib.Analysis.Complex.RemovableSingularity Mathlib.Topology.Basic Mathlib.NumberTheory.LSeries.RiemannZeta rh.RS.OffZerosBridge Mathlib.Tactic Mathlib.Topology.Instances.Complex Mathlib.Topology.MetricSpace.Basic
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -54,8 +54,10 @@ lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_Analytic_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_Complex_AbsMax(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_Complex_CauchyIntegral(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_Analysis_Complex_RemovableSingularity(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Topology_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_NumberTheory_LSeries_RiemannZeta(uint8_t builtin, lean_object*);
+lean_object* initialize_rh_RS_OffZerosBridge(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Tactic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Topology_Instances_Complex(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Topology_MetricSpace_Basic(uint8_t builtin, lean_object*);
@@ -76,10 +78,16 @@ lean_dec_ref(res);
 res = initialize_Mathlib_Analysis_Complex_CauchyIntegral(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
+res = initialize_Mathlib_Analysis_Complex_RemovableSingularity(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
 res = initialize_Mathlib_Topology_Basic(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_NumberTheory_LSeries_RiemannZeta(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_rh_RS_OffZerosBridge(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_Tactic(builtin, lean_io_mk_world());

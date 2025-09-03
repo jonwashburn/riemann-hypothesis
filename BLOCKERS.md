@@ -5,6 +5,11 @@ RS: Explicit Θ,N via Cayley with F:=2J and J:=det₂/(outer·ξ), ζ = Θ/N off
   - Location: `rh/RS/SchurGlobalization.lean`
   - Lean goal / statement: For each z with z.re = 1, choose open U ⊆ Ω and Z := Z(ξ), pick ρ ∈ Z ∩ U, and construct analytic g on U with EqOn Θ g (U \ Z) and g(ρ)=1, using Tendsto Θ → 1 along Ω \ Z near ρ (pinned limit). Package as `LocalPinchDataZ`.
   - Proposed approach: Need a mathlib lemma: from Θ analytic on Ω \ Z and Schur on Ω, plus lim Θ = 1 along Ω \ Z at ρ, build a removable analytic extension g on a small disc U with g(ρ)=1 and EqOn off Z. This is a multi-point removable-singularity construction relying on Riemann's theorem and boundary pinning; encode or cite if exists; otherwise keep as blocker.
+  - Current RS interface provided for handoff: `OffZerosBoundaryHypothesis (Θ N)` requiring
+    `IsSchurOn Θ Ω` and `(∀ z, z.re = 1 → ∃ (U Z) (data : LocalPinchDataZOff Θ N U Z), z ∈ U \ Z)`, and
+    the RS corollary `ZetaNoZerosOnRe1_from_offZerosAssignmentStatement` which concludes
+    `∀ z, z.re = 1 → riemannZeta z ≠ 0`. A longer-reasoning agent should produce the local
+    data (U, Z = Z(ξ), ρ, g, agreement, g(ρ)=1, ζ=Θ/N, N≠0 on U \ Z) for each boundary point.
  - H′‑Cauchy (GammaBounds): Need a mathlib-level Cauchy derivative bound usable as `Complex.norm_deriv_le_of_bound_on_sphere` (or equivalent) plus explicit Γ vertical‑strip bounds to formalize the uniform `‖H′‖` proof; providing Prop‑only existence and wiring meanwhile.
 # BLOCKERS
 

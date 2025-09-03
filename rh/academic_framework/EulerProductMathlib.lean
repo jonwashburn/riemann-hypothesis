@@ -72,6 +72,14 @@ theorem zeta_nonzero_re_eq_one_statement_from_bridge
 -- Note: boundary-line nonvanishing is delegated to the RS layer when needed.
 -- We intentionally do not duplicate it here to keep this module mathlib-only.
 
+/-- If the RS off-zeros boundary hypothesis holds for Θ,N, then ζ has no zeros on Re = 1. -/
+theorem zeta_nonzero_re_eq_one_from_offZerosAssignmentStatement
+    {Θ N : ℂ → ℂ}
+    (h : RH.RS.OffZerosBoundaryHypothesis Θ N)
+    (z : ℂ) (hz : z.re = 1) :
+    riemannZeta z ≠ 0 :=
+  RH.RS.ZetaNoZerosOnRe1_from_offZerosAssignmentStatement h z hz
+
 /-- Trivial zeros: ζ vanishes at negative even integers. -/
 theorem zeta_trivial_zero_neg_two_mul_nat_add_one (n : ℕ) :
     riemannZeta (-2 * (n + 1)) = 0 := by
