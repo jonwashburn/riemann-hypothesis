@@ -15,6 +15,7 @@ open scoped Topology
 
 namespace RH
 namespace RS
+namespace OffZeros
 
 variable (riemannZeta riemannXi : ℂ → ℂ)
 
@@ -63,8 +64,7 @@ def ZetaSchurDecompositionOffZeros.ofEqOffZeros
       Tendsto (cayley (fun s => (2 : ℂ) * J s)) (nhdsWithin ρ (Ω \ Z riemannXi)) (nhds (1 : ℂ)))
   (hN_ne_off_assm : ∀ ⦃s⦄, s ∈ (Ω \ Z riemannZeta) →
       ((cayley (fun s => (2 : ℂ) * J s)) s * G s / riemannXi s) ≠ 0)
-  : ZetaSchurDecompositionOffZeros riemannZeta riemannXi :=
-by
+  : ZetaSchurDecompositionOffZeros riemannZeta riemannXi := by
   -- Definitions
   let F : ℂ → ℂ := fun s => (2 : ℂ) * J s
   let Θ : ℂ → ℂ := cayley F
@@ -88,35 +88,38 @@ by
     have hNne : N s ≠ 0 := by
       have := hN_ne_off_assm ⟨hsΩ, hsζ⟩
       simpa [N, Θ, F] using this
-    -- Compute Θ/N = ζ safely
-    have hcalc : Θ s / N s = riemannZeta s := by
+    -- Prove equality by multiplying both sides by N s and using associativity
+    have hmul : riemannZeta s * N s = Θ s := by
       have hNdef : N s = Θ s * G s / riemannXi s := rfl
-      -- Rearrange Θ/(Θ*G/ξ) = (Θ*ξ)/(Θ*G)
-      have hstep : Θ s / N s = (Θ s * riemannXi s) / (Θ s * G s) := by
-        simpa [hNdef, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
-      -- From nonvanishing assumption, Θ s ≠ 0 (since (Θ*G)/ξ ≠ 0 and ξ ≠ 0)
-      have hΘGne : Θ s * G s ≠ 0 := by
-        have hbase : Θ s * G s / riemannXi s ≠ 0 := hN_ne_off_assm ⟨hsΩ, hsζ⟩
-        -- multiply by ξ to obtain Θ*G ≠ 0
-        have hprod : (Θ s * G s / riemannXi s) * riemannXi s ≠ 0 := mul_ne_zero hbase hξne
-        simpa [div_eq_mul_inv, hξne] using hprod
-      have hΘne : Θ s ≠ 0 := by
-        intro h0; exact hΘGne (by simpa [h0])
-      -- Cancel Θ to get ξ/G
-      have hstep2 : (Θ s * riemannXi s) / (Θ s * G s) = riemannXi s / G s := by
-        -- rewrite to (ξ*Θ)/(G*Θ) and cancel Θ using mul_div_mul_left
-        have : (riemannXi s * Θ s) / (G s * Θ s) = riemannXi s / G s :=
-          mul_div_mul_left (riemannXi s) (G s) (Θ s) hΘne
-        simpa [mul_comm, mul_left_comm, mul_assoc] using this
-      -- Now replace ξ/G with ζ using ξ = G*ζ
-      have hstep3 : riemannXi s / G s = riemannZeta s := by
-        -- (G*ζ)/G = ζ using G s ≠ 0
-        have : (G s * riemannZeta s) / G s = riemannZeta s :=
-          mul_div_cancel_left₀ (riemannZeta s) (G s) hGne
-        simpa [mul_comm, hξ] using this
-      simpa [hstep2, hstep3] using hstep
+      calc
+        riemannZeta s * N s
+            = riemannZeta s * (Θ s * G s / riemannXi s) := by simp [hNdef]
+        _   = riemannZeta s * (Θ s * G s) * (riemannXi s)⁻¹ := by
+              simp [div_eq_mul_inv, mul_assoc]
+        _   = Θ s * (riemannZeta s * G s) * (riemannXi s)⁻¹ := by
+              simp [mul_comm, mul_left_comm, mul_assoc]
+        _   = Θ s * (G s * riemannZeta s) * (riemannXi s)⁻¹ := by
+              simp [mul_comm]
+        _   = Θ s * riemannXi s * (riemannXi s)⁻¹ := by
+              simpa [hξ, mul_comm, mul_left_comm, mul_assoc]
+        _   = Θ s := by
+              simp [hξne]
+    -- Convert back to a division equality using multiplicative inverses
+    have hcalc : riemannZeta s = Θ s / N s := by
+      have hNne' : N s ≠ 0 := hNne
+      calc
+        riemannZeta s
+            = riemannZeta s * 1 := by simp
+        _   = riemannZeta s * (N s * (N s)⁻¹) := by
+              simp [hNne']
+        _   = (riemannZeta s * N s) * (N s)⁻¹ := by
+              simp [mul_assoc]
+        _   = Θ s * (N s)⁻¹ := by
+              simpa [hmul]
+        _   = Θ s / N s := by
+              simp [div_eq_mul_inv]
     -- Conclude ζ = Θ/N by symmetry
-    simpa [hcalc] }
+    simpa [hcalc]
   -- N ≠ 0 on Ω \ Z(ζ)
   have hN_ne_off' : ∀ ⦃s⦄, s ∈ (Ω \ Z riemannZeta) → N s ≠ 0 := by
     intro s hs
@@ -124,8 +127,8 @@ by
     have := hN_ne_off_assm hs
     simpa [N, Θ, F] using this
   -- Assemble
-  refine
-    { Θ := Θ,
+  refine {
+      Θ := Θ,
       N := N,
       hΘSchur := by simpa [Θ, F] using hΘSchur,
       hNanalytic_offXi := hNanalytic_offXi,
@@ -150,5 +153,6 @@ def ZetaSchurDecompositionOffZeros.ofData
   hN_ne_off := by intro s hs; exact hN_ne_off hs,
   hΘ_lim1_at_ξzero := by intro ρ hΩρ hξρ; exact hΘ_lim1_at_ξzero hΩρ hξρ }
 
+end OffZeros
 end RS
 end RH

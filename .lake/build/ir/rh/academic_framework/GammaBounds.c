@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.academic_framework.GammaBounds
-// Imports: Init Mathlib.Data.Complex.Basic Mathlib.Analysis.Complex.Liouville Mathlib.Analysis.SpecialFunctions.Complex.Log Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+// Imports: Init Mathlib.Data.Complex.Basic Mathlib.Analysis.Complex.Liouville Mathlib.Analysis.SpecialFunctions.Complex.Log Mathlib.Analysis.SpecialFunctions.Gamma.Basic Mathlib.Analysis.Complex.CauchyIntegral
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -18,6 +18,7 @@ lean_object* initialize_Mathlib_Data_Complex_Basic(uint8_t builtin, lean_object*
 lean_object* initialize_Mathlib_Analysis_Complex_Liouville(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_SpecialFunctions_Complex_Log(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_SpecialFunctions_Gamma_Basic(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_Analysis_Complex_CauchyIntegral(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_rh_academic__framework_GammaBounds(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -36,6 +37,9 @@ res = initialize_Mathlib_Analysis_SpecialFunctions_Complex_Log(builtin, lean_io_
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_Analysis_SpecialFunctions_Gamma_Basic(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_Mathlib_Analysis_Complex_CauchyIntegral(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));

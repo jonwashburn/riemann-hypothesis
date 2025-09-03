@@ -2,10 +2,13 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.Complex.Liouville
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.Complex.CauchyIntegral
 
 namespace RH.AcademicFramework.GammaBounds
 
 noncomputable section
+
+open Complex Real
 
 /-- Prop-level interface: a uniform bound for the Archimedean factor derivative
 `FΓ′(s)` on the closed strip `σ ∈ [σ0, 1]`, exposing the numeric constant `C ≥ 0`.

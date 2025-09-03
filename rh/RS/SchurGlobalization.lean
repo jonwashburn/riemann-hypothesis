@@ -317,6 +317,26 @@ structure LocalPinchDataZ (w : ZetaSchurDecomposition) (U Z : Set ℂ) where
   hρU : ρ ∈ U
   hρZ : ρ ∈ Z
   hval : g ρ = 1
+  hZcapU_singleton : (U ∩ Z) = {ρ}
+
+/-- Off-zeros local data variant: carry Θ, N and the off-zeros identities locally on `U \ Z`.
+Used to derive ζ(z) ≠ 0 at `z ∈ U \ Z` without requiring a global strong decomposition. -/
+structure LocalPinchDataZOff (Θ N : ℂ → ℂ) (U Z : Set ℂ) where
+  hUopen : IsOpen U
+  hUconn : IsPreconnected U
+  hUsub : U ⊆ Ω
+  hZsub : Z ⊆ Ω
+  hΘU : AnalyticOn ℂ Θ (U \ Z)
+  g : ℂ → ℂ
+  hg : AnalyticOn ℂ g U
+  hExt : EqOn Θ g (U \ Z)
+  ρ : ℂ
+  hρU : ρ ∈ U
+  hρZ : ρ ∈ Z
+  hval : g ρ = 1
+  hZcapU_singleton : (U ∩ Z) = {ρ}
+  hζeq_off : ∀ z ∈ (U \ Z), riemannZeta z = Θ z / N z
+  hNnonzero_off : ∀ z ∈ (U \ Z), N z ≠ 0
 
 /-- Boundary-line globalization: if for every `z` with `Re z = 1` there is
 local pinch data assigning an open `U ⊆ Ω`, a point `ρ ∈ U`, and an analytic
@@ -334,6 +354,76 @@ theorem zeta_nonzero_on_Re1_from_local_bridges
   rcases data with ⟨hUopen, hUconn, hUsub, hρU, hΘU, g, hg, hExt, hval⟩
   exact zeta_nonzero_from_local_pinch w U hUopen hUconn hUsub ρ hρU z hzUdiff hΘU g hg hExt hval
 
+/-- Local nonvanishing from off-zeros data. Requires a global Schur bound for Θ on Ω
+and the local off-zeros identities on `U \ Z`. -/
+theorem zeta_nonzero_from_local_pinch_Z_off
+    (Θ N : ℂ → ℂ)
+    (hΘSchur : IsSchurOn Θ Ω)
+    {U Z : Set ℂ} (data : LocalPinchDataZOff Θ N U Z)
+    {z : ℂ} (hzUdiff : z ∈ (U \ Z)) :
+    riemannZeta z ≠ 0 := by
+  -- Pinch to get g ≡ 1 on U using |g| ≤ 1 on U \ {ρ}
+  have hg_one : ∀ ζ ∈ U, data.g ζ = 1 := by
+    have hle : ∀ ζ ∈ (U \ {data.ρ}), Complex.abs (data.g ζ) ≤ 1 := by
+      intro ζ hζ
+      rcases hζ with ⟨hζU, hζne⟩
+      have hζnotZ : ζ ∉ Z := by
+        intro hzZ
+        have : ζ ∈ (U ∩ Z) := ⟨hζU, hzZ⟩
+        have : ζ ∈ ({data.ρ} : Set ℂ) := by simpa [data.hZcapU_singleton] using this
+        have : ζ = data.ρ := by simpa using this
+        exact hζne this
+      have hζUZ : ζ ∈ (U \ Z) := ⟨hζU, hζnotZ⟩
+      have hΩ : ζ ∈ Ω := data.hUsub hζU
+      have hΘle : Complex.abs (Θ ζ) ≤ 1 := hΘSchur ζ hΩ
+      have hΘeqg : Θ ζ = data.g ζ := by simpa using data.hExt hζUZ
+      simpa [hΘeqg] using hΘle
+    -- Build Schur bound for g on U and pinch
+    have hSchurU : IsSchurOn data.g U := by
+      intro ξ hξU
+      by_cases hξρ : ξ = data.ρ
+      · simpa [hξρ, data.hval]
+      · have hξ' : ξ ∈ (U \ {data.ρ}) := ⟨hξU, by simp [hξρ]⟩
+        exact hle ξ hξ'
+    exact PinchConstantOfOne U data.hUopen data.hUconn data.g data.hg hSchurU data.ρ data.hρU data.hval
+  -- Hence Θ = 1 on U \ Z
+  have hΘz1 : Θ z = 1 := by
+    have hzU : z ∈ U := hzUdiff.1
+    have hz1 : data.g z = 1 := hg_one z hzU
+    have hΘ_eq_g : Θ z = data.g z := data.hExt hzUdiff
+    simpa [hΘ_eq_g] using hz1
+  -- Use local off-zeros identity at z
+  have hζ_div : riemannZeta z = 1 / N z := by simpa [hΘz1] using (data.hζeq_off z hzUdiff)
+  have hNnz : N z ≠ 0 := data.hNnonzero_off z hzUdiff
+  intro hz0
+  have : (0 : ℂ) = 1 / N z := by simpa [hζ_div] using hz0.symm
+  have : (0 : ℂ) * N z = (1 / N z) * N z := congrArg (fun t => t * N z) this
+  have hcontr : (0 : ℂ) = 1 := by simpa [zero_mul, one_div, hNnz] using this
+  exact (zero_ne_one : (0 : ℂ) ≠ 1) hcontr
+
+/-- Boundary-line nonvanishing from off-zeros local assignments. -/
+theorem zeta_nonzero_on_Re1_from_local_bridges_Z_off
+    (Θ N : ℂ → ℂ)
+    (hΘSchur : IsSchurOn Θ Ω)
+    (assign : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ)
+      (data : LocalPinchDataZOff Θ N U Z), z ∈ (U \ Z)) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
+  intro z hz
+  rcases assign z hz with ⟨U, Z, data, hzUdiff⟩
+  exact zeta_nonzero_from_local_pinch_Z_off Θ N hΘSchur data hzUdiff
+
+/-- RS export wrapper: boundary nonvanishing from an off-zeros boundary assignment. -/
+structure OffZerosBoundaryAssignment where
+  Θ : ℂ → ℂ
+  N : ℂ → ℂ
+  hΘSchur : IsSchurOn Θ Ω
+  assign : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ) (data : LocalPinchDataZOff Θ N U Z), z ∈ (U \ Z)
+
+theorem ZetaNoZerosOnRe1_from_offZerosAssignment
+    (A : OffZerosBoundaryAssignment) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
+  zeta_nonzero_on_Re1_from_local_bridges_Z_off A.Θ A.N A.hΘSchur A.assign
+
 /-- Local nonvanishing using generalized removable set data. -/
 theorem zeta_nonzero_from_local_pinch_Z
     (w : ZetaSchurDecomposition)
@@ -346,14 +436,25 @@ theorem zeta_nonzero_from_local_pinch_Z
     (g : ℂ → ℂ) (hg : AnalyticOn ℂ g U)
     (hExt : EqOn w.Θ g (U \ Z)) (hval : g ρ = 1) :
     riemannZeta z ≠ 0 := by
-  -- Restrict Schur bound to Ω \ Z
-  have hSchur_restrict : IsSchurOn w.Θ (Ω \ Z) := by
-    intro ζ hζ; exact w.hΘSchur ζ hζ.1
-  -- Globalize across Z to get g ≡ 1 on U
+  -- Pinch to get g ≡ 1 on U using |g| ≤ 1 on U \ {ρ}
   have hg_one : ∀ ζ ∈ U, g ζ = 1 := by
-    exact GlobalizeAcrossRemovable Z w.Θ hSchur_restrict
-      U hUopen hUconn hUsub ρ (hUsub hρU) hρU hρZ g hg hΘU
-      (by intro ζ hζ; exact ⟨hUsub hζ.1, hζ.2⟩) hExt hval
+    have hle : ∀ ζ ∈ (U \ {ρ}), Complex.abs (g ζ) ≤ 1 := by
+      intro ζ hζ
+      rcases hζ with ⟨hζU, hζne⟩
+      -- If ζ ∈ Z then ζ ∈ U ∩ Z = {ρ}, contradicting ζ ≠ ρ
+      have hζUZ : ζ ∈ (U \ Z) := by
+        constructor
+        · exact hζU
+        · intro hzZ; exact hζne (by
+            have : ζ ∈ (U ∩ Z) := ⟨hζU, hzZ⟩
+            have : ζ ∈ ({ρ} : Set ℂ) := by simpa [hZcapU_singleton] using this
+            simpa using this)
+      have hΩ : ζ ∈ Ω := hUsub hζU
+      have hΘle : Complex.abs (w.Θ ζ) ≤ 1 := w.hΘSchur ζ hΩ
+      have hΘeqg : w.Θ ζ = g ζ := by simpa using hExt hζUZ
+      simpa [hΘeqg] using hΘle
+    exact schur_pinches_to_one (U := U) (ρ := ρ) (g := g)
+      hUopen hUconn hg hle hρU hval
   -- Hence Θ = 1 on U \ Z
   have hΘz1 : w.Θ z = 1 := by
     have hzU : z ∈ U := hzUdiff.1
@@ -369,6 +470,54 @@ theorem zeta_nonzero_from_local_pinch_Z
   have : (0 : ℂ) * w.N z = (1 / w.N z) * w.N z := congrArg (fun t => t * w.N z) this
   have hcontr : (0 : ℂ) = 1 := by simpa [zero_mul, one_div, hNnz] using this
   exact (zero_ne_one : (0 : ℂ) ≠ 1) hcontr
+
+/-! Off-zeros assignment ⇒ boundary nonvanishing (Z-variant).
+
+We now thread the generalized removable-set local pinch through the boundary:
+given, for every `z` with `Re z = 1`, a choice of open `U ⊆ Ω`, a removable
+set `Z ⊆ Ω`, and local extension data as in `LocalPinchDataZ` with
+`z ∈ U \ Z`, we conclude `ζ z ≠ 0`. -/
+
+/-- Boundary-line globalization using `LocalPinchDataZ` at each boundary point. -/
+theorem zeta_nonzero_on_Re1_from_local_bridges_Z
+    (w : ZetaSchurDecomposition)
+    (assignZ : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ) (data : LocalPinchDataZ w U Z), z ∈ (U \ Z)) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
+  intro z hz
+  rcases assignZ z hz with ⟨U, Z, data, hzUdiff⟩
+  rcases data with ⟨hUopen, hUconn, hUsub, hZsub, hΘU, g, hg, hExt, ρ, hρU, hρZ, hval⟩
+  exact zeta_nonzero_from_local_pinch_Z w U Z hUopen hUconn hUsub hZsub ρ hρU hρZ z hzUdiff hΘU g hg hExt hval
+
+/-- Local-assignment packaging (Z-variant): for each boundary point, provide
+an open set `U ⊆ Ω`, a removable set `Z ⊆ Ω`, and local extension data. -/
+structure BoundaryLocalPinchAssignmentZ (w : ZetaSchurDecomposition) where
+  choose : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ) (data : LocalPinchDataZ w U Z), z ∈ (U \ Z)
+
+/-- Boundary nonvanishing from a Z-assignment (convenience wrapper). -/
+theorem ZetaNoZerosOnRe1FromSchur_from_localAssignmentZ
+    {w : ZetaSchurDecomposition}
+    (A : BoundaryLocalPinchAssignmentZ w) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
+  zeta_nonzero_on_Re1_from_local_bridges_Z w A.choose
+
+/-- Statement-level wrapper from a Z-assignment. -/
+theorem ZetaNoZerosOnRe1FromSchur_Statement_from_localAssignmentZ
+    {w : ZetaSchurDecomposition}
+    (A : BoundaryLocalPinchAssignmentZ w) (z : ℂ) (hz : z.re = 1) :
+    ZetaNoZerosOnRe1FromSchur_Statement z hz w :=
+  ZetaNoZerosOnRe1FromSchur_from_localAssignmentZ A z hz
+
+/-- A boundary bridge (Z-variant) packages a ζ→Θ/N decomposition along with
+local pinch data over removable sets for every boundary point `Re = 1`. -/
+structure ZetaSchurBoundaryBridgeZ where
+  w : ZetaSchurDecomposition
+  assignZ : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ) (data : LocalPinchDataZ w U Z), z ∈ (U \ Z)
+
+/-- Global nonvanishing from a Z-bridge. -/
+theorem ZetaNoZerosOnRe1FromSchur_from_bridgeZ
+    (B : ZetaSchurBoundaryBridgeZ) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
+  zeta_nonzero_on_Re1_from_local_bridges_Z B.w B.assignZ
 
 /-- A boundary bridge packages a ζ→Θ/N decomposition along with local pinch data
 for every boundary point `Re = 1`. When provided, it implies global nonvanishing

@@ -48,6 +48,14 @@ theorem zeta_nonzero_re_eq_one_from_bridge
     riemannZeta z ≠ 0 :=
   zeta_nonzero_re_eq_one z hz B
 
+/-- If an RS off-zeros boundary assignment is available, ζ has no zeros on `Re = 1`. -/
+theorem zeta_nonzero_re_eq_one_from_offZerosAssignment
+    (z : ℂ) (hz : z.re = 1) (A : RH.RS.OffZerosBoundaryAssignment) :
+    riemannZeta z ≠ 0 :=
+by
+  have h := RH.RS.ZetaNoZerosOnRe1_from_offZerosAssignment A
+  exact h z hz
+
 /-- If the Prop-level RS bridge holds, ζ has no zeros on `Re = 1`. -/
 theorem zeta_nonzero_re_eq_one_from_bridgeStatement
     (z : ℂ) (hz : z.re = 1)
