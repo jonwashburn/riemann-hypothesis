@@ -29,9 +29,42 @@ lemma schur_of_cayley_re_nonneg_on
     (hRe : ∀ z ∈ S, 0 ≤ (F z).re)
     (hDen : ∀ z ∈ S, F z + 1 ≠ 0) :
     IsSchurOn (fun z => (F z - 1) / (F z + 1)) S := by
-  -- Very lightweight placeholder: use the classical inequality Re F ≥ 0 ⇒ |(F-1)/(F+1)| ≤ 1
-  -- This is standard but we do not reprove it here; accept a stub to keep the file compiling.
-  intro z hz; admit
+  -- Use the standard inequality `|(w-1)/(w+1)| ≤ 1` when `0 ≤ Re w`.
+  -- We give a short proof via normSq.
+  intro z hz
+  have hRez : 0 ≤ (F z).re := hRe z hz
+  have hden : F z + 1 ≠ 0 := hDen z hz
+  -- Consider the nonnegative real numbers `A=‖F z + 1‖^2` and `B=‖F z - 1‖^2`.
+  -- One checks `A - B = 4 * Re (F z) ≥ 0`, hence `B ≤ A` and the claim follows.
+  have hAB : Complex.normSq (F z + 1) - Complex.normSq (F z - 1) = 4 * (F z).re := by
+    -- expand normSq (x±1)
+    simp [Complex.normSq_apply, add_comm, add_left_comm, add_assoc, sub_eq_add_neg, two_mul, sq,
+      mul_comm, mul_left_comm, mul_assoc]
+  have hAgeB : Complex.normSq (F z - 1) ≤ Complex.normSq (F z + 1) := by
+    have : 0 ≤ Complex.normSq (F z + 1) - Complex.normSq (F z - 1) := by
+      simpa [hAB, mul_comm, mul_left_comm, mul_assoc] using mul_nonneg (by norm_num) hRez
+    exact sub_nonneg.mp this
+  -- Now |(w-1)/(w+1)|^2 = |w-1|^2 / |w+1|^2 ≤ 1
+  have hAnz : Complex.normSq (F z + 1) ≠ 0 := by
+    have : (F z + 1) ≠ 0 := by
+      exact hden
+    simpa [Complex.normSq_eq_zero] using this
+  have hdiv : Complex.normSq ((F z - 1) / (F z + 1)) ≤ 1 := by
+    have : Complex.normSq ((F z - 1) / (F z + 1))
+         = Complex.normSq (F z - 1) / Complex.normSq (F z + 1) := by
+      simp [Complex.normSq, map_div]
+    have hpos : 0 < Complex.normSq (F z + 1) := (lt_of_le_of_ne (by exact Complex.normSq_nonneg _) hAnz.symm)
+    have := (div_le_iff_of_pos hpos).mpr hAgeB
+    simpa [this] using this
+  -- `Complex.abs` is the square root of `normSq`, hence the desired bound.
+  have : Complex.abs ((F z - 1) / (F z + 1)) ≤ 1 := by
+    have hnn := Complex.normSq_nonneg ((F z - 1) / (F z + 1))
+    have := Real.sqrt_le_sqrt (by simpa [Real.sqrt_sq_eq_abs, Complex.abs, Complex.normSq] using hdiv)
+    -- simply use that `abs^2 ≤ 1` implies `abs ≤ 1` for nonnegative abs
+    have : Complex.abs ((F z - 1) / (F z + 1)) ^ 2 ≤ 1 := by
+      simpa [Complex.abs, Complex.normSq] using hdiv
+    exact (sq_le_one_iff_abs_le_one.mp this)
+  simpa using this
 
 /-! A convenient wrapper: under `0 ≤ Re F` the denominator `F+1` never
 vanishes, so the Cayley transform is Schur on the same set. -/
