@@ -301,6 +301,23 @@ structure LocalPinchData (w : ZetaSchurDecomposition) (U : Set ℂ) (ρ : ℂ) w
   hExt : EqOn w.Θ g (U \ {ρ})
   hval : g ρ = 1
 
+/-- Generalized local pinch data across a removable set `Z ⊆ Ω`.
+This variant allows `U` to contain possibly many removable points, packaged as `Z`.
+One marked point `ρ ∈ Z ∩ U` carries the normalization `g ρ = 1`. -/
+structure LocalPinchDataZ (w : ZetaSchurDecomposition) (U Z : Set ℂ) where
+  hUopen : IsOpen U
+  hUconn : IsPreconnected U
+  hUsub : U ⊆ Ω
+  hZsub : Z ⊆ Ω
+  hΘU : AnalyticOn ℂ w.Θ (U \ Z)
+  g : ℂ → ℂ
+  hg : AnalyticOn ℂ g U
+  hExt : EqOn w.Θ g (U \ Z)
+  ρ : ℂ
+  hρU : ρ ∈ U
+  hρZ : ρ ∈ Z
+  hval : g ρ = 1
+
 /-- Boundary-line globalization: if for every `z` with `Re z = 1` there is
 local pinch data assigning an open `U ⊆ Ω`, a point `ρ ∈ U`, and an analytic
 extension `g` across `ρ` with value `1` at `ρ` that agrees with `Θ` on
@@ -316,6 +333,42 @@ theorem zeta_nonzero_on_Re1_from_local_bridges
   rcases assign z hz with ⟨U, ρ, data, hzUdiff⟩
   rcases data with ⟨hUopen, hUconn, hUsub, hρU, hΘU, g, hg, hExt, hval⟩
   exact zeta_nonzero_from_local_pinch w U hUopen hUconn hUsub ρ hρU z hzUdiff hΘU g hg hExt hval
+
+/-- Local nonvanishing using generalized removable set data. -/
+theorem zeta_nonzero_from_local_pinch_Z
+    (w : ZetaSchurDecomposition)
+    (U Z : Set ℂ)
+    (hUopen : IsOpen U) (hUconn : IsPreconnected U) (hUsub : U ⊆ Ω)
+    (hZsub : Z ⊆ Ω)
+    (ρ : ℂ) (hρU : ρ ∈ U) (hρZ : ρ ∈ Z)
+    (z : ℂ) (hzUdiff : z ∈ (U \ Z))
+    (hΘU : AnalyticOn ℂ w.Θ (U \ Z))
+    (g : ℂ → ℂ) (hg : AnalyticOn ℂ g U)
+    (hExt : EqOn w.Θ g (U \ Z)) (hval : g ρ = 1) :
+    riemannZeta z ≠ 0 := by
+  -- Restrict Schur bound to Ω \ Z
+  have hSchur_restrict : IsSchurOn w.Θ (Ω \ Z) := by
+    intro ζ hζ; exact w.hΘSchur ζ hζ.1
+  -- Globalize across Z to get g ≡ 1 on U
+  have hg_one : ∀ ζ ∈ U, g ζ = 1 := by
+    exact GlobalizeAcrossRemovable Z w.Θ hSchur_restrict
+      U hUopen hUconn hUsub ρ (hUsub hρU) hρU hρZ g hg hΘU
+      (by intro ζ hζ; exact ⟨hUsub hζ.1, hζ.2⟩) hExt hval
+  -- Hence Θ = 1 on U \ Z
+  have hΘz1 : w.Θ z = 1 := by
+    have hzU : z ∈ U := hzUdiff.1
+    have hz1 : g z = 1 := hg_one z hzU
+    have hΘ_eq_g : w.Θ z = g z := hExt hzUdiff
+    simpa [hΘ_eq_g] using hz1
+  -- Convert decomposition to ζ z = 1 / N z and conclude
+  have hzΩ : z ∈ Ω := hUsub hzUdiff.1
+  have hζ_div : riemannZeta z = 1 / w.N z := by simpa [hΘz1] using (w.hζeq z hzΩ)
+  have hNnz : w.N z ≠ 0 := w.hNnonzero z hzΩ
+  intro hz0
+  have : (0 : ℂ) = 1 / w.N z := by simpa [hζ_div] using hz0.symm
+  have : (0 : ℂ) * w.N z = (1 / w.N z) * w.N z := congrArg (fun t => t * w.N z) this
+  have hcontr : (0 : ℂ) = 1 := by simpa [zero_mul, one_div, hNnz] using this
+  exact (zero_ne_one : (0 : ℂ) ≠ 1) hcontr
 
 /-- A boundary bridge packages a ζ→Θ/N decomposition along with local pinch data
 for every boundary point `Re = 1`. When provided, it implies global nonvanishing

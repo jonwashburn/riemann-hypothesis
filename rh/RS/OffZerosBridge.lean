@@ -91,33 +91,30 @@ by
     -- Compute Θ/N = ζ safely
     have hcalc : Θ s / N s = riemannZeta s := by
       have hNdef : N s = Θ s * G s / riemannXi s := rfl
-      -- Rearrange using multiplicative inverses and cancel ξ
-      -- Θ / (Θ*G/ξ) = (Θ * ξ) / (Θ*G) = ξ / G
-      -- and ξ/G = ζ by the completed identity
-      have : Θ s / (Θ s * G s / riemannXi s)
-              = (Θ s * riemannXi s) / (Θ s * G s) := by
-        -- a/(b/c) = (a*c)/b in a field
-        simp [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
-      have : Θ s / N s = (Θ s * riemannXi s) / (Θ s * G s) := by simpa [hNdef] using this
-      -- cancel Θ and reduce ξ/G to ζ
-      have : Θ s / N s = riemannXi s / G s := by
-        -- Starting from Θ/(Θ*G/ξ)
-        have hNdef' : N s = Θ s * G s / riemannXi s := rfl
-        calc
-          Θ s / N s
-              = Θ s / (Θ s * G s / riemannXi s) := by simp [hNdef']
-          _   = (Θ s * riemannXi s) / (Θ s * G s) := by
-                -- a/(b/c) = (a*c)/b
-                simp [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
-          _   = riemannXi s / G s := by
-                -- cancel Θ s from numerator and denominator
-                by_cases hΘzero : Θ s = 0
-                · simp [hΘzero]
-                · field_simp [hΘzero, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
-      -- Now replace ξ/G with ζ using hξ
-      have : Θ s / N s = riemannZeta s := by
-        simpa [hξ, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc, hGne] using this
-      simpa [this.symm]
+      -- Rearrange Θ/(Θ*G/ξ) = (Θ*ξ)/(Θ*G)
+      have hstep : Θ s / N s = (Θ s * riemannXi s) / (Θ s * G s) := by
+        simpa [hNdef, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
+      -- From nonvanishing assumption, Θ s ≠ 0 (since (Θ*G)/ξ ≠ 0 and ξ ≠ 0)
+      have hΘGne : Θ s * G s ≠ 0 := by
+        have hbase : Θ s * G s / riemannXi s ≠ 0 := hN_ne_off_assm ⟨hsΩ, hsζ⟩
+        -- multiply by ξ to obtain Θ*G ≠ 0
+        have hprod : (Θ s * G s / riemannXi s) * riemannXi s ≠ 0 := mul_ne_zero hbase hξne
+        simpa [div_eq_mul_inv, hξne] using hprod
+      have hΘne : Θ s ≠ 0 := by
+        intro h0; exact hΘGne (by simpa [h0])
+      -- Cancel Θ to get ξ/G
+      have hstep2 : (Θ s * riemannXi s) / (Θ s * G s) = riemannXi s / G s := by
+        -- rewrite to (ξ*Θ)/(G*Θ) and cancel Θ using mul_div_mul_left
+        have : (riemannXi s * Θ s) / (G s * Θ s) = riemannXi s / G s :=
+          mul_div_mul_left (riemannXi s) (G s) (Θ s) hΘne
+        simpa [mul_comm, mul_left_comm, mul_assoc] using this
+      -- Now replace ξ/G with ζ using ξ = G*ζ
+      have hstep3 : riemannXi s / G s = riemannZeta s := by
+        -- (G*ζ)/G = ζ using G s ≠ 0
+        have : (G s * riemannZeta s) / G s = riemannZeta s :=
+          mul_div_cancel_left₀ (riemannZeta s) (G s) hGne
+        simpa [mul_comm, hξ] using this
+      simpa [hstep2, hstep3] using hstep
     -- Conclude ζ = Θ/N by symmetry
     simpa [hcalc] }
   -- N ≠ 0 on Ω \ Z(ζ)
