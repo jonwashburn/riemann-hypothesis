@@ -250,6 +250,35 @@ theorem zeta_nonzero_from_local_pinch
     simpa [zero_mul, one_div, hNnz] using this
   exact (zero_ne_one : (0 : ℂ) ≠ 1) hcontr
 
+/-- Local bridge data at a point `ρ` inside an open set `U ⊆ Ω` sufficient to
+drive the Schur–pinch nonvanishing argument. -/
+structure LocalPinchData (w : ZetaSchurDecomposition) (U : Set ℂ) (ρ : ℂ) where
+  hUopen : IsOpen U
+  hUconn : IsPreconnected U
+  hUsub : U ⊆ Ω
+  hρU : ρ ∈ U
+  hΘU : AnalyticOn ℂ w.Θ (U \ {ρ})
+  g : ℂ → ℂ
+  hg : AnalyticOn ℂ g U
+  hExt : EqOn w.Θ g (U \ {ρ})
+  hval : g ρ = 1
+
+/-- Boundary-line globalization: if for every `z` with `Re z = 1` there is
+local pinch data assigning an open `U ⊆ Ω`, a point `ρ ∈ U`, and an analytic
+extension `g` across `ρ` with value `1` at `ρ` that agrees with `Θ` on
+`U \\ {ρ}`, then `ζ z ≠ 0` on the entire boundary line `Re = 1`.
+
+This uses `zeta_nonzero_from_local_pinch` pointwise with the supplied local
+data; the existence of such data is the (future) ζ→Θ/N bridge responsibility. -/
+theorem zeta_nonzero_on_Re1_from_local_bridges
+    (w : ZetaSchurDecomposition)
+    (assign : ∀ z, z.re = 1 → ∃ U ρ (data : LocalPinchData w U ρ), z ∈ (U \ {ρ})) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
+  intro z hz
+  rcases assign z hz with ⟨U, ρ, data, hzUdiff⟩
+  rcases data with ⟨hUopen, hUconn, hUsub, hρU, hΘU, g, hg, hExt, hval⟩
+  exact zeta_nonzero_from_local_pinch w U hUopen hUconn hUsub ρ hρU z hzUdiff hΘU g hg hExt hval
+
 end RH.RS
 
 /-! Simple rectangle namespace aliases expected by other tracks. -/
