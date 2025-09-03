@@ -119,6 +119,32 @@ def kxiWitness_nonempty : Nonempty FunctionalEquationStripFactors :=
           refine And.intro (by norm_num) ?ineq
           intro W; simp [mkWhitneyBoxEnergy] }⟩
 
+/-!
+Statement-only wedge from Carleson (no axioms).
+
+We expose the precise logical shape used by the certificate route: a nonnegative
+Carleson budget `Kξ` on Whitney boxes implies the boundary wedge (P+) for a
+boundary-tested function `F`. This file records only the statement as a `Prop`;
+no proof is provided here (and none is assumed).
+-/
+
+/-- Statement-only: given a nonnegative concrete half–plane Carleson budget
+`Kξ` on Whitney boxes, the boundary wedge (P+) holds for `F`.
+
+This is the exact implication shape used downstream; it is recorded here as a
+`Prop` (no proof provided in this module).
+-/
+def PPlusFromCarleson (F : ℂ → ℂ) (Kξ : ℝ) : Prop :=
+  CertificateReady → 0 ≤ Kξ → ConcreteHalfPlaneCarleson Kξ → PPlus F
+
+/-- Existential-budget variant of `PPlusFromCarleson` (statement only).
+
+If there exists a nonnegative `Kξ` with the concrete Carleson property on
+Whitney boxes, then (P+) holds for `F`.
+-/
+def PPlusFromCarleson_exists (F : ℂ → ℂ) : Prop :=
+  (∃ Kξ : ℝ, 0 ≤ Kξ ∧ ConcreteHalfPlaneCarleson Kξ) → PPlus F
+
 end
 
 end RH.Cert

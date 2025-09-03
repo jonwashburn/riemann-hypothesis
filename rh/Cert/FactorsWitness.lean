@@ -93,16 +93,11 @@ available, replace `C := 1` by that bound and keep this constructor.
 -/
 def factors_witness : FunctionalEquationStripFactors := by
   classical
-  -- Prefer the Prop-level FΓ′ bound at σ0 = 3/5 if available
-  by_cases hprop : RH.AcademicFramework.GammaBounds.BoundedFGammaPrimeOnStrip ((3 : ℝ) / 5)
-  · exact FEFactors_from_Hderiv (UniformHDerivBound.of_FGammaPrime (σ0 := (3 : ℝ) / 5) hprop)
-  · -- Fallback: coarse interface witness using C = 1 to keep builds green.
-    let h : UniformHDerivBound :=
-      { σ0 := (3 : ℝ) / 5
-      , hσ0 := by norm_num
-      , C := 1
-      , hC := by norm_num }
-    exact FEFactors_from_Hderiv h
+  -- Use the Prop-level FΓ′ bound at σ0 = 3/5 through the abstract bridge.
+  have hprop : RH.AcademicFramework.GammaBounds.BoundedFGammaPrimeOnStrip ((3 : ℝ) / 5) := by
+    -- Build from the constructive Prop helper (bundles the standard argument).
+    exact RH.AcademicFramework.GammaBounds.boundedFGammaPrimeOnStrip_of (by norm_num) (by norm_num)
+  exact FEFactors_from_Hderiv (UniformHDerivBound.of_FGammaPrime (σ0 := (3 : ℝ) / 5) hprop)
 
 /-- Nonemptiness of the closed-strip factors witness. -/
 theorem factors_witness_nonempty : Nonempty FunctionalEquationStripFactors :=

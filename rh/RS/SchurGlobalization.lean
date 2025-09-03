@@ -1,4 +1,6 @@
 import Mathlib.Analysis.Analytic.Basic
+import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Topology.Basic
 -- import Mathlib.NumberTheory.LSeries.RiemannZeta -- avoided here to keep dependencies light
 import Mathlib.Tactic
@@ -29,42 +31,56 @@ lemma schur_of_cayley_re_nonneg_on
     (hRe : ∀ z ∈ S, 0 ≤ (F z).re)
     (hDen : ∀ z ∈ S, F z + 1 ≠ 0) :
     IsSchurOn (fun z => (F z - 1) / (F z + 1)) S := by
-  -- Use the standard inequality `|(w-1)/(w+1)| ≤ 1` when `0 ≤ Re w`.
-  -- We give a short proof via normSq.
   intro z hz
-  have hRez : 0 ≤ (F z).re := hRe z hz
   have hden : F z + 1 ≠ 0 := hDen z hz
-  -- Consider the nonnegative real numbers `A=‖F z + 1‖^2` and `B=‖F z - 1‖^2`.
-  -- One checks `A - B = 4 * Re (F z) ≥ 0`, hence `B ≤ A` and the claim follows.
-  have hAB : Complex.normSq (F z + 1) - Complex.normSq (F z - 1) = 4 * (F z).re := by
-    -- expand normSq (x±1)
-    simp [Complex.normSq_apply, add_comm, add_left_comm, add_assoc, sub_eq_add_neg, two_mul, sq,
-      mul_comm, mul_left_comm, mul_assoc]
-  have hAgeB : Complex.normSq (F z - 1) ≤ Complex.normSq (F z + 1) := by
-    have : 0 ≤ Complex.normSq (F z + 1) - Complex.normSq (F z - 1) := by
-      simpa [hAB, mul_comm, mul_left_comm, mul_assoc] using mul_nonneg (by norm_num) hRez
-    exact sub_nonneg.mp this
-  -- Now |(w-1)/(w+1)|^2 = |w-1|^2 / |w+1|^2 ≤ 1
-  have hAnz : Complex.normSq (F z + 1) ≠ 0 := by
-    have : (F z + 1) ≠ 0 := by
-      exact hden
-    simpa [Complex.normSq_eq_zero] using this
-  have hdiv : Complex.normSq ((F z - 1) / (F z + 1)) ≤ 1 := by
-    have : Complex.normSq ((F z - 1) / (F z + 1))
-         = Complex.normSq (F z - 1) / Complex.normSq (F z + 1) := by
-      simp [Complex.normSq, map_div]
-    have hpos : 0 < Complex.normSq (F z + 1) := (lt_of_le_of_ne (by exact Complex.normSq_nonneg _) hAnz.symm)
-    have := (div_le_iff_of_pos hpos).mpr hAgeB
-    simpa [this] using this
-  -- `Complex.abs` is the square root of `normSq`, hence the desired bound.
-  have : Complex.abs ((F z - 1) / (F z + 1)) ≤ 1 := by
-    have hnn := Complex.normSq_nonneg ((F z - 1) / (F z + 1))
-    have := Real.sqrt_le_sqrt (by simpa [Real.sqrt_sq_eq_abs, Complex.abs, Complex.normSq] using hdiv)
-    -- simply use that `abs^2 ≤ 1` implies `abs ≤ 1` for nonnegative abs
-    have : Complex.abs ((F z - 1) / (F z + 1)) ^ 2 ≤ 1 := by
-      simpa [Complex.abs, Complex.normSq] using hdiv
-    exact (sq_le_one_iff_abs_le_one.mp this)
-  simpa using this
+  have hRez : 0 ≤ (F z).re := hRe z hz
+  -- Goal: |(w-1)/(w+1)| ≤ 1 when Re w ≥ 0 and w ≠ -1
+  -- Reduce to |w-1| ≤ |w+1|
+  -- Work with real coordinates x = Re(F z), y = Im(F z)
+  set x : ℝ := (F z).re with hx
+  set y : ℝ := (F z).im with hy
+  have hxplus : (F z + 1).re = x + 1 := by simpa [hx, Complex.add_re]
+  have hyplus : (F z + 1).im = y := by simpa [hy, Complex.add_im]
+  have hxminus : (F z - 1).re = x - 1 := by simpa [hx, Complex.sub_re]
+  have hyminus : (F z - 1).im = y := by simpa [hy, Complex.sub_im]
+  have hdiff : (Complex.abs (F z + 1)) ^ 2 - (Complex.abs (F z - 1)) ^ 2 = 4 * x := by
+    calc
+      (Complex.abs (F z + 1)) ^ 2 - (Complex.abs (F z - 1)) ^ 2
+          = Complex.normSq (F z + 1) - Complex.normSq (F z - 1) := by
+            simp [Complex.sq_abs]
+      _ = (((F z + 1).re) ^ 2 + ((F z + 1).im) ^ 2)
+            - (((F z - 1).re) ^ 2 + ((F z - 1).im) ^ 2) := by
+            simp [Complex.normSq_apply]
+      _ = ((x + 1) ^ 2 + y ^ 2) - ((x - 1) ^ 2 + y ^ 2) := by
+            simp [hxplus, hyplus, hxminus, hyminus]
+      _ = (x + 1) ^ 2 - (x - 1) ^ 2 := by
+            have hstep : ((x + 1) ^ 2 + y ^ 2) - ((x - 1) ^ 2 + y ^ 2) = (x + 1) ^ 2 - (x - 1) ^ 2 := by
+              ring
+            simpa using hstep
+      _ = 4 * x := by ring
+  have hnonneg : 0 ≤ (Complex.abs (F z + 1)) ^ 2 - (Complex.abs (F z - 1)) ^ 2 := by
+    have hxnonneg : 0 ≤ x := by simpa [hx] using hRez
+    have : 0 ≤ 4 * x := by exact mul_nonneg (by norm_num) hxnonneg
+    simpa [hdiff] using this
+  have hle_sq : (Complex.abs (F z - 1)) ^ 2 ≤ (Complex.abs (F z + 1)) ^ 2 :=
+    (sub_nonneg.mp hnonneg)
+  -- Monotonicity of sqrt gives |w-1| ≤ |w+1|
+  have hle : Complex.abs (F z - 1) ≤ Complex.abs (F z + 1) := by
+    have : Real.sqrt ((Complex.abs (F z - 1)) ^ 2)
+           ≤ Real.sqrt ((Complex.abs (F z + 1)) ^ 2) :=
+      Real.sqrt_le_sqrt hle_sq
+    simpa [Real.sqrt_sq_eq_abs] using this
+  -- Conclude |(w-1)/(w+1)| ≤ 1
+  have hden_pos : 0 < Complex.abs (F z + 1) := by
+    simpa using (Complex.abs.pos_iff.mpr hden)
+  -- Divide the inequality by the positive denominator
+  have hmul : Complex.abs (F z - 1) / Complex.abs (F z + 1)
+      ≤ Complex.abs (F z + 1) / Complex.abs (F z + 1) := by
+    exact div_le_div_of_nonneg_right hle (by exact Complex.abs.nonneg _)
+  have hdiv_le_one : Complex.abs (F z - 1) / Complex.abs (F z + 1) ≤ 1 := by
+    simpa [div_self (ne_of_gt hden_pos)] using hmul
+  -- Conclude using `abs_div`
+  simpa [abs_div, div_eq_mul_inv] using hdiv_le_one
 
 /-! A convenient wrapper: under `0 ≤ Re F` the denominator `F+1` never
 vanishes, so the Cayley transform is Schur on the same set. -/
@@ -94,11 +110,19 @@ lemma PinchConstantOfOne
     (z0 : ℂ) (hz0 : z0 ∈ S) (hval : Θ z0 = 1) :
     ∀ z ∈ S, Θ z = 1 := by
   classical
-  -- If Θ is constant, we are done; otherwise use open mapping to contradict Schur.
-  by_cases hconst : ∀ z ∈ S, Θ z = Θ z0
-  · intro z hz; simpa [hval] using hconst z hz
-  -- Nontrivial branch admitted for now (not on active path).
-  · intro z hz; admit
+  -- Use the maximum modulus principle in the strictly convex codomain ℂ.
+  have hdiff : DifferentiableOn ℂ Θ S :=
+    (analyticOn_iff_differentiableOn hSopen).1 hΘ
+  have hmax : IsMaxOn (fun x => Complex.abs (Θ x)) S z0 := by
+    intro z hz
+    have : Complex.abs (Θ z) ≤ 1 := hSchur z hz
+    simpa [hval, Complex.abs.map_one] using this
+  have hconst :=
+    Complex.eqOn_of_isPreconnected_of_isMaxOn_norm (E := ℂ) (F := ℂ)
+      hSconn hSopen hdiff hz0 hmax
+  intro z hz
+  have : Θ z = Θ z0 := hconst hz
+  simpa [hval] using this
 
 lemma PinchFromExtension
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S) (ρ : ℂ) (hρ : ρ ∈ S)
@@ -160,8 +184,13 @@ lemma NoInteriorZeros
     (Θ : ℂ → ℂ) (hΘ : AnalyticOn ℂ Θ S) (hSchur : IsSchurOn Θ S) :
     (∀ z ∈ S, Θ z ≠ 1) ∨ (∀ z ∈ S, Θ z = 1) := by
   classical
-  -- Admitted placeholder to keep RS compiling; not used on active path.
-  admit
+  by_cases h∃ : ∃ z0 ∈ S, Θ z0 = 1
+  · rcases h∃ with ⟨z0, hz0, hval⟩
+    right
+    exact PinchConstantOfOne S hSopen hSconn Θ hΘ hSchur z0 hz0 hval
+  · left
+    intro z hz
+    exact fun h => h∃ ⟨z, hz, h⟩
 
 /- Non-vanishing of ζ on Re(s)=1 via the Schur–Herglotz pinch route.
 This is the RS delegate used by other tracks. -/

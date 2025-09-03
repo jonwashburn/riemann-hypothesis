@@ -22,7 +22,7 @@ Prefer this to deprecated `tprod_mul` forms. -/
 theorem tprod_mul {ι : Type*} [Countable ι]
     (f g : ι → ℂ) (hf : Multipliable f) (hg : Multipliable g) :
     (∏' i, f i * g i) = (∏' i, f i) * (∏' i, g i) := by
-  -- Use HasProd.mul and then read off the tprod equality
+  -- Modern proof via `HasProd.mul` → equality of `tprod`.
   have hfg : HasProd (fun i => f i * g i) ((∏' i, f i) * (∏' i, g i)) :=
     (hf.hasProd.mul hg.hasProd)
   simpa using hfg.tprod_eq
