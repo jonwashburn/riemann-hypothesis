@@ -39,25 +39,18 @@ lemma schur_of_cayley_re_nonneg_on
   -- Work with real coordinates x = Re(F z), y = Im(F z)
   set x : ℝ := (F z).re with hx
   set y : ℝ := (F z).im with hy
-  have hxplus : (F z + 1).re = x + 1 := by simpa [hx, Complex.add_re]
-  have hyplus : (F z + 1).im = y := by simpa [hy, Complex.add_im]
-  have hxminus : (F z - 1).re = x - 1 := by simpa [hx, Complex.sub_re]
-  have hyminus : (F z - 1).im = y := by simpa [hy, Complex.sub_im]
+  have hxplus : (F z + 1).re = x + 1 := by simpa [hx] using (by simp : (F z + 1).re = (F z).re + 1)
+  have hyplus : (F z + 1).im = y := by simpa [hy] using (by simp : (F z + 1).im = (F z).im)
+  have hxminus : (F z - 1).re = x - 1 := by simpa [hx] using (by simp : (F z - 1).re = (F z).re - 1)
+  have hyminus : (F z - 1).im = y := by simpa [hy] using (by simp : (F z - 1).im = (F z).im)
   have hdiff : (Complex.abs (F z + 1)) ^ 2 - (Complex.abs (F z - 1)) ^ 2 = 4 * x := by
-    calc
-      (Complex.abs (F z + 1)) ^ 2 - (Complex.abs (F z - 1)) ^ 2
-          = Complex.normSq (F z + 1) - Complex.normSq (F z - 1) := by
-            simp [Complex.sq_abs]
-      _ = (((F z + 1).re) ^ 2 + ((F z + 1).im) ^ 2)
-            - (((F z - 1).re) ^ 2 + ((F z - 1).im) ^ 2) := by
-            simp [Complex.normSq_apply]
-      _ = ((x + 1) ^ 2 + y ^ 2) - ((x - 1) ^ 2 + y ^ 2) := by
-            simp [hxplus, hyplus, hxminus, hyminus]
-      _ = (x + 1) ^ 2 - (x - 1) ^ 2 := by
-            have hstep : ((x + 1) ^ 2 + y ^ 2) - ((x - 1) ^ 2 + y ^ 2) = (x + 1) ^ 2 - (x - 1) ^ 2 := by
-              ring
-            simpa using hstep
-      _ = 4 * x := by ring
+    have h1s : (Complex.abs (F z + 1)) ^ 2 = (x + 1) * (x + 1) + y * y := by
+      simpa [Complex.normSq_apply, hxplus, hyplus, pow_two] using (Complex.sq_abs (F z + 1))
+    have h2s : (Complex.abs (F z - 1)) ^ 2 = (x - 1) * (x - 1) + y * y := by
+      simpa [Complex.normSq_apply, hxminus, hyminus, pow_two] using (Complex.sq_abs (F z - 1))
+    have : ((x + 1) * (x + 1) + y * y) - ((x - 1) * (x - 1) + y * y) = 4 * x := by
+      ring
+    simpa [h1s, h2s]
   have hnonneg : 0 ≤ (Complex.abs (F z + 1)) ^ 2 - (Complex.abs (F z - 1)) ^ 2 := by
     have hxnonneg : 0 ≤ x := by simpa [hx] using hRez
     have : 0 ≤ 4 * x := by exact mul_nonneg (by norm_num) hxnonneg
@@ -184,13 +177,13 @@ lemma NoInteriorZeros
     (Θ : ℂ → ℂ) (hΘ : AnalyticOn ℂ Θ S) (hSchur : IsSchurOn Θ S) :
     (∀ z ∈ S, Θ z ≠ 1) ∨ (∀ z ∈ S, Θ z = 1) := by
   classical
-  by_cases h∃ : ∃ z0 ∈ S, Θ z0 = 1
-  · rcases h∃ with ⟨z0, hz0, hval⟩
+  by_cases hExists : ∃ z0 ∈ S, Θ z0 = 1
+  · rcases hExists with ⟨z0, hz0, hval⟩
     right
     exact PinchConstantOfOne S hSopen hSconn Θ hΘ hSchur z0 hz0 hval
   · left
     intro z hz
-    exact fun h => h∃ ⟨z, hz, h⟩
+    exact fun h => hExists ⟨z, hz, h⟩
 
 /- Non-vanishing of ζ on Re(s)=1 via the Schur–Herglotz pinch route.
 This is the RS delegate used by other tracks. -/
