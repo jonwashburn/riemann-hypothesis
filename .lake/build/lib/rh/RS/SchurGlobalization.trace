@@ -61,5 +61,11 @@
    "level": "warning"},
   {"message":
    "././././rh/RS/SchurGlobalization.lean:250:4: try 'simp at this' instead of 'simpa using this'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:275:53: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:287:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "12323546600285275749"}
+ "depHash": "7229906760372328540"}

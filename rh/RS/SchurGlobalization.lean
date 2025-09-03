@@ -272,12 +272,32 @@ This uses `zeta_nonzero_from_local_pinch` pointwise with the supplied local
 data; the existence of such data is the (future) ζ→Θ/N bridge responsibility. -/
 theorem zeta_nonzero_on_Re1_from_local_bridges
     (w : ZetaSchurDecomposition)
-    (assign : ∀ z, z.re = 1 → ∃ U ρ (data : LocalPinchData w U ρ), z ∈ (U \ {ρ})) :
+    (assign : ∀ z, z.re = 1 → ∃ (U : Set ℂ) (ρ : ℂ) (data : LocalPinchData w U ρ), z ∈ (U \ {ρ})) :
     ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
   intro z hz
   rcases assign z hz with ⟨U, ρ, data, hzUdiff⟩
   rcases data with ⟨hUopen, hUconn, hUsub, hρU, hΘU, g, hg, hExt, hval⟩
   exact zeta_nonzero_from_local_pinch w U hUopen hUconn hUsub ρ hρU z hzUdiff hΘU g hg hExt hval
+
+/-- A boundary bridge packages a ζ→Θ/N decomposition along with local pinch data
+for every boundary point `Re = 1`. When provided, it implies global nonvanishing
+on the boundary via the local pinch lemma. -/
+structure ZetaSchurBoundaryBridge where
+  w : ZetaSchurDecomposition
+  assign : ∀ z, z.re = 1 → ∃ (U : Set ℂ) (ρ : ℂ) (data : LocalPinchData w U ρ), z ∈ (U \ {ρ})
+
+/-- Global nonvanishing from a boundary bridge. -/
+theorem ZetaNoZerosOnRe1FromSchur_from_bridge
+    (B : ZetaSchurBoundaryBridge) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
+  zeta_nonzero_on_Re1_from_local_bridges B.w B.assign
+
+/-- Pointwise RS export shape from a boundary bridge, matching the existing
+statement-level API surface. -/
+theorem ZetaNoZerosOnRe1FromSchur_Statement_from_bridge
+    (B : ZetaSchurBoundaryBridge) (z : ℂ) (hz : z.re = 1) :
+    ZetaNoZerosOnRe1FromSchur_Statement z hz B.w :=
+  (ZetaNoZerosOnRe1FromSchur_from_bridge B z hz)
 
 end RH.RS
 
