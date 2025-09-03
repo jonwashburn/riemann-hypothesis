@@ -2,6 +2,7 @@ import Mathlib.Analysis.Analytic.Basic
 import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Topology.Basic
+import Mathlib.NumberTheory.LSeries.RiemannZeta
 -- import Mathlib.NumberTheory.LSeries.RiemannZeta -- avoided here to keep dependencies light
 import Mathlib.Tactic
 import Mathlib.Topology.Instances.Complex
@@ -171,7 +172,7 @@ theorem GlobalizeAcrossRemovable
     exact PinchFromExtension U hUopen hUconn ρ hρU Θ hΘU hSchur_U g hg hExt hval
   exact this.1
 
-/-- Maximum-modulus corollary for Schur maps (admitted placeholder). -/
+/-- Maximum-modulus corollary for Schur maps. -/
 lemma NoInteriorZeros
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S)
     (Θ : ℂ → ℂ) (hΘ : AnalyticOn ℂ Θ S) (hSchur : IsSchurOn Θ S) :
@@ -185,9 +186,21 @@ lemma NoInteriorZeros
     intro z hz
     exact fun h => hExists ⟨z, hz, h⟩
 
-/- Non-vanishing of ζ on Re(s)=1 via the Schur–Herglotz pinch route.
-This is the RS delegate used by other tracks. -/
--- Number-theoretic delegate removed here; provided in EPM layer.
+/-- Prototype interface for the ζ→Θ/N bridge and RS export shape (statement-only).
+We do not construct Θ or N here. This provides the target interface used by
+the EPM delegate once the bridge is available. -/
+structure ZetaSchurDecomposition where
+  Θ : ℂ → ℂ
+  N : ℂ → ℂ
+  hΘSchur : IsSchurOn Θ Ω
+  hNanalytic : AnalyticOn ℂ N Ω
+  hNnonzero : ∀ z ∈ Ω, N z ≠ 0
+  hζeq : ∀ z ∈ Ω, riemannZeta z = Θ z / N z
+
+/-- Statement-only alias for the boundary-line nonvanishing target. -/
+def ZetaNoZerosOnRe1FromSchur_Statement (z : ℂ) (hz : z.re = 1)
+    (w : ZetaSchurDecomposition) : Prop :=
+  riemannZeta z ≠ 0
 
 end RH.RS
 
