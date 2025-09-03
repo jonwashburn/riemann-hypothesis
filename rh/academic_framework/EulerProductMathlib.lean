@@ -48,6 +48,13 @@ theorem zeta_nonzero_re_eq_one_from_bridge
     riemannZeta z ≠ 0 :=
   zeta_nonzero_re_eq_one z hz B
 
+/-- If the Prop-level RS bridge holds, ζ has no zeros on `Re = 1`. -/
+theorem zeta_nonzero_re_eq_one_from_bridgeStatement
+    (z : ℂ) (hz : z.re = 1)
+    (h : RH.RS.ZetaSchurBridgeStatement) :
+    riemannZeta z ≠ 0 :=
+  RH.RS.ZetaNoZerosOnRe1FromSchur_from_bridgeStatement h z hz
+
 /-- Statement-level wrapper mirroring the RS export, from a boundary bridge. -/
 theorem zeta_nonzero_re_eq_one_statement_from_bridge
     (z : ℂ) (hz : z.re = 1) (B : RH.RS.ZetaSchurBoundaryBridge) :

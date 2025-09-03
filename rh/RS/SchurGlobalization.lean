@@ -1,8 +1,10 @@
 import Mathlib.Analysis.Analytic.Basic
 import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Topology.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import rh.RS.OffZerosBridge
 -- import Mathlib.NumberTheory.LSeries.RiemannZeta -- avoided here to keep dependencies light
 import Mathlib.Tactic
 import Mathlib.Topology.Instances.Complex
@@ -26,6 +28,37 @@ lemma isOpen_Ω : IsOpen Ω := by
 /-- Schur predicate on a set. -/
 def IsSchurOn (Θ : ℂ → ℂ) (S : Set ℂ) : Prop :=
   ∀ z ∈ S, Complex.abs (Θ z) ≤ 1
+
+/-- Monotonicity of the Schur predicate under set inclusion. -/
+lemma IsSchurOn.mono {Θ : ℂ → ℂ} {S T : Set ℂ}
+    (h : IsSchurOn Θ S) (hTS : T ⊆ S) : IsSchurOn Θ T := by
+  intro z hz; exact h z (hTS hz)
+
+/-- Non-circular, off-zeros ζ→Schur bridge on Ω.
+
+`hζeq_off` only asserts the ζ = Θ / N identity off the zero set of ζ (so division is legal),
+and `hN_nonzero_off` only requires nonvanishing of `N` off the zeros of ζ. This avoids
+encoding the target theorem (nonvanishing of ζ on Ω) in the interface. -/
+structure ZetaSchurDecompositionOffZeros where
+  Θ : ℂ → ℂ
+  N : ℂ → ℂ
+  hΘSchur : IsSchurOn Θ Ω
+  hNanalytic : AnalyticOn ℂ N Ω
+  hζeq_off : ∀ z ∈ (Ω \ {z | riemannZeta z = 0}), riemannZeta z = Θ z / N z
+  hN_nonzero_off : ∀ z ∈ (Ω \ {z | riemannZeta z = 0}), N z ≠ 0
+
+/-- Helper constructor for the off-zeros bridge. -/
+def ZetaSchurDecompositionOffZeros.ofEqOffZeros
+    {Θ N : ℂ → ℂ}
+    (hΘSchur : IsSchurOn Θ Ω)
+    (hNanalytic : AnalyticOn ℂ N Ω)
+    (hζeq_off : ∀ z ∈ (Ω \ {z | riemannZeta z = 0}), riemannZeta z = Θ z / N z)
+    (hN_nonzero_off : ∀ z ∈ (Ω \ {z | riemannZeta z = 0}), N z ≠ 0)
+    : ZetaSchurDecompositionOffZeros :=
+  { Θ := Θ, N := N, hΘSchur := hΘSchur, hNanalytic := hNanalytic
+    , hζeq_off := hζeq_off, hN_nonzero_off := hN_nonzero_off }
+
+
 
 lemma schur_of_cayley_re_nonneg_on
     (F : ℂ → ℂ) (S : Set ℂ)
@@ -75,6 +108,11 @@ lemma schur_of_cayley_re_nonneg_on
     simpa [div_self (ne_of_gt hden_pos)] using hmul
   -- Conclude using `abs_div`
   simpa [abs_div, div_eq_mul_inv] using hdiv_le_one
+
+/-! A small convenience: the Cayley transform. -/
+
+/-- Cayley transform sending the right half-plane to the unit disc. -/
+def cayley (F : ℂ → ℂ) : ℂ → ℂ := fun z => (F z - 1) / (F z + 1)
 
 /-! A convenient wrapper: under `0 ≤ Re F` the denominator `F+1` never
 vanishes, so the Cayley transform is Schur on the same set. -/
@@ -305,6 +343,20 @@ theorem ZetaNoZerosOnRe1FromSchur_Statement_from_bridge
     ZetaNoZerosOnRe1FromSchur_Statement z hz B.w :=
   (ZetaNoZerosOnRe1FromSchur_from_bridge B z hz)
 
+/-- Prop-level bridge statement: existence of a ζ→Θ/N decomposition together with
+local pinch data for each boundary point. This avoids constructing a concrete
+bridge object while enabling global nonvanishing conclusions. -/
+def ZetaSchurBridgeStatement : Prop :=
+  ∃ (w : ZetaSchurDecomposition),
+    ∀ z, z.re = 1 → ∃ (U : Set ℂ) (ρ : ℂ) (data : LocalPinchData w U ρ), z ∈ (U \ {ρ})
+
+/-- Global boundary nonvanishing from the Prop-level bridge statement. -/
+theorem ZetaNoZerosOnRe1FromSchur_from_bridgeStatement
+    (h : ZetaSchurBridgeStatement) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
+  rcases h with ⟨w, assign⟩
+  exact zeta_nonzero_on_Re1_from_local_bridges w assign
+
 /-- Local-assignment packaging: for each boundary point, provide the open set,
 pinch point, and removable extension data. This is exactly the data required
 to build a `ZetaSchurBoundaryBridge`. -/
@@ -331,18 +383,38 @@ theorem ZetaNoZerosOnRe1FromSchur_Statement_from_localAssignment
     ZetaNoZerosOnRe1FromSchur_Statement z hz w :=
   ZetaNoZerosOnRe1FromSchur_from_localAssignment A z hz
 
-end RH.RS
+-- Removable-singularity pinch: if `g` is analytic on open connected `U`, satisfies
+-- `‖g z‖ ≤ 1` on `U \ {ρ}`, and `g ρ = 1`, then `g ≡ 1` on `U`.
+lemma schur_pinches_to_one
+    {U : Set ℂ} (hUopen : IsOpen U) (hUconn : IsPreconnected U)
+    {ρ : ℂ} {g : ℂ → ℂ}
+    (hg : AnalyticOn ℂ g U)
+    (hle : ∀ z ∈ (U \ {ρ}), Complex.abs (g z) ≤ 1)
+    (hρU : ρ ∈ U) (hval : g ρ = 1) : ∀ z ∈ U, g z = 1 := by
+  -- Build a Schur bound for g on U from the off-point bound and the pinned value.
+  have hSchurU : IsSchurOn g U := by
+    intro z hz
+    by_cases hzρ : z = ρ
+    · simpa [hzρ, hval]
+    · have hz' : z ∈ (U \ {ρ}) := ⟨hz, by simp [hzρ]⟩
+      exact hle z hz'
+  exact PinchConstantOfOne U hUopen hUconn g hg hSchurU ρ hρU hval
 
-/-! Simple rectangle namespace aliases expected by other tracks. -/
-namespace Rect
-
-open RH.RS
-
-/-- Right half-plane domain Ω (alias into `Rect`). -/
-def Ω : Set ℂ := RH.RS.Ω
-
-/-- Ω is open (alias). -/
-lemma isOpen_Ω : IsOpen Ω := by
-  simpa [Rect.Ω] using RH.RS.isOpen_Ω
-
-end Rect
+-- Wrapper specialized to a single removable point `{ρ}` using the global Schur bound on Ω.
+lemma GlobalizeAcrossRemovable_atPoint
+    (Θ g : ℂ → ℂ) {U : Set ℂ} {ρ : ℂ}
+    (hUopen : IsOpen U) (hUconn : IsPreconnected U) (hUsub : U ⊆ Ω)
+    (hρU : ρ ∈ U)
+    (hΘSchur : IsSchurOn Θ Ω)
+    (hΘU : AnalyticOn ℂ Θ (U \ {ρ}))
+    (hg : AnalyticOn ℂ g U)
+    (hExt : EqOn Θ g (U \ {ρ}))
+    (hval : g ρ = 1) : ∀ z ∈ U, g z = 1 := by
+  -- Transfer Schur bound from Θ to g on U \ {ρ} via equality, then pinch.
+  have hle : ∀ z ∈ (U \ {ρ}), Complex.abs (g z) ≤ 1 := by
+    intro z hz
+    have hzΩ : z ∈ Ω := hUsub hz.1
+    have : Θ z = g z := by simpa using hExt hz
+    simpa [this] using hΘSchur z hzΩ
+  exact schur_pinches_to_one (U := U) (ρ := ρ) (g := g)
+    hUopen hUconn hg hle hρU hval
