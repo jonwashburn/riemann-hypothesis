@@ -31,6 +31,12 @@ theorem zeta_nonzero_re_gt_one
 --     (z : ℂ) (hz : z.re = 1) : riemannZeta z ≠ 0 :=
 --   RH.RS.ZetaNoZerosOnRe1FromSchur z hz
 
+/-- Prop-level hook mirroring the intended RS export; callers can depend on this
+statement-shaped wrapper until the RS proof is provided. -/
+def zeta_nonzero_re_eq_one_statement
+    (z : ℂ) (hz : z.re = 1) (w : RH.RS.ZetaSchurDecomposition) : Prop :=
+  RH.RS.ZetaNoZerosOnRe1FromSchur_Statement z hz w
+
 -- Note: boundary-line nonvanishing is delegated to the RS layer when needed.
 -- We intentionally do not duplicate it here to keep this module mathlib-only.
 

@@ -202,6 +202,54 @@ def ZetaNoZerosOnRe1FromSchur_Statement (z : ℂ) (hz : z.re = 1)
     (w : ZetaSchurDecomposition) : Prop :=
   riemannZeta z ≠ 0
 
+/-- Local pinch-to-nonvanishing: given a ζ→Θ/N decomposition `w` on `Ω`,
+an open, preconnected `U ⊆ Ω`, a point `ρ ∈ U`, and an analytic extension
+`g` on `U` that agrees with `Θ` on `U \ {ρ}` and takes the value `1` at `ρ`,
+then ζ has no zeros at any `z ∈ U \ {ρ}`. This packages the removable-pinching
+argument in a form usable by the eventual bridge. -/
+theorem zeta_nonzero_from_local_pinch
+    (w : ZetaSchurDecomposition)
+    (U : Set ℂ) (hUopen : IsOpen U) (hUconn : IsPreconnected U) (hUsub : U ⊆ Ω)
+    (ρ : ℂ) (hρU : ρ ∈ U)
+    (z : ℂ) (hzUdiff : z ∈ (U \ {ρ}))
+    (hΘU : AnalyticOn ℂ w.Θ (U \ {ρ}))
+    (g : ℂ → ℂ) (hg : AnalyticOn ℂ g U)
+    (hExt : EqOn w.Θ g (U \ {ρ})) (hval : g ρ = 1) :
+    riemannZeta z ≠ 0 := by
+  -- Restrict Schur bound to `Ω \ {ρ}`
+  have hSchur_restrict : IsSchurOn w.Θ (Ω \ {ρ}) := by
+    intro ζ hζ
+    exact w.hΘSchur ζ hζ.1
+  -- `z ∈ Ω` since `z ∈ U` and `U ⊆ Ω`
+  have hzΩ : z ∈ Ω := hUsub hzUdiff.1
+  -- Globalize across the removable point to get `g ≡ 1` on `U`
+  have hg_one : ∀ ζ ∈ U, g ζ = 1 := by
+    have hUminusSub : (U \ {ρ}) ⊆ (Ω \ {ρ}) := by
+      intro ζ hζ
+      exact ⟨hUsub hζ.1, hζ.2⟩
+    have hρΩ : ρ ∈ Ω := hUsub hρU
+    have hρZ : ρ ∈ ({ρ} : Set ℂ) := by simp
+    exact GlobalizeAcrossRemovable ({ρ} : Set ℂ) w.Θ hSchur_restrict
+      U hUopen hUconn hUsub ρ hρΩ hρU hρZ g hg hΘU hUminusSub hExt hval
+  -- On `U \ {ρ}`, `Θ = g = 1`
+  have hΘ_eq_g : w.Θ z = g z := by
+    have hz_in : z ∈ (U \ {ρ}) := hzUdiff
+    exact (hExt hz_in)
+  have hgz1 : g z = 1 := hg_one z hzUdiff.1
+  have hΘz1 : w.Θ z = 1 := by simpa [hΘ_eq_g] using hgz1
+  -- Convert decomposition to `ζ z = 1 / N z`
+  have hζ_div : riemannZeta z = 1 / w.N z := by
+    simpa [hΘz1] using (w.hζeq z hzΩ)
+  -- Use `N z ≠ 0` to conclude nonvanishing of ζ
+  have hNnz : w.N z ≠ 0 := w.hNnonzero z hzΩ
+  intro hz0
+  -- Multiply `0 = 1 / N z` by `N z` (nonzero) to get a contradiction
+  have : (0 : ℂ) = 1 / w.N z := by simpa [hζ_div] using hz0.symm
+  have : (0 : ℂ) * w.N z = (1 / w.N z) * w.N z := congrArg (fun t => t * w.N z) this
+  have hcontr : (0 : ℂ) = 1 := by
+    simpa [zero_mul, one_div, hNnz] using this
+  exact (zero_ne_one : (0 : ℂ) ≠ 1) hcontr
+
 end RH.RS
 
 /-! Simple rectangle namespace aliases expected by other tracks. -/
