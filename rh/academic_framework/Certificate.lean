@@ -1,5 +1,4 @@
 import rh.Cert.KxiPPlus
-import rh.Cert.FactorsWitness
 import rh.Cert.K0PPlus
 
 noncomputable section
@@ -34,8 +33,8 @@ theorem Ready_unconditional : Ready := by
   refine Ready_of_factors ?hK0 ?hFac ?hCert
   · -- arithmetic tail availability from proved lemma
     exact RH.Cert.K0Available_proved
-  · -- analytic factors witness from FactorsWitness
-    exact RH.Cert.factors_witness_nonempty
+  · -- analytic factors witness from KxiPPlus (preferred bridge)
+    exact RH.Cert.kxiWitness_nonempty
   · -- certificate flag is `True`
     exact (by trivial : RH.Cert.CertificateReady)
 

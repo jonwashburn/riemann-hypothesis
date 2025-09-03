@@ -25,6 +25,7 @@ structure RemovableDatum (ctx : ThetaContext) where
   hUopen : IsOpen U
   hUconn : IsPreconnected U
   hUsub : U ⊆ Ω
+  hρZ : ρ ∈ ctx.Z
   g : ℂ → ℂ
   hg : AnalyticOn ℂ g U
   hΘU : AnalyticOn ℂ ctx.Θ (U \ {ρ})
@@ -35,17 +36,10 @@ structure RemovableDatum (ctx : ThetaContext) where
 /-- Globalize at a single removable point using the Schur pinch. -/
 lemma globalizeAt (ctx : ThetaContext) (R : RemovableDatum ctx) :
     ∀ z ∈ R.U, R.g z = 1 := by
+  -- In RS usage, the removable point lies in Z; we reflect this in the record now.
   have h : ∀ z ∈ R.U, R.g z = 1 :=
     GlobalizeAcrossRemovable ctx.Z ctx.Θ ctx.Θ_Schur R.U R.hUopen R.hUconn R.hUsub
-      R.ρ R.hρΩ R.hρU
-      (by
-        -- This lemma should be used only when ρ ∈ Z in concrete applications.
-        -- If needed, one can strengthen `RemovableDatum` to record ρ∈Z.
-        -- We keep a harmless placeholder here to avoid blocking other agents.
-        exact by
-          -- placeholder: assume ρ ∈ Z in use sites
-          have : True := trivial
-          exact False.elim (by cases this))
+      R.ρ R.hρΩ R.hρU R.hρZ
       R.g R.hg R.hΘU R.hUminusSub R.hExt R.hval
   exact h
 

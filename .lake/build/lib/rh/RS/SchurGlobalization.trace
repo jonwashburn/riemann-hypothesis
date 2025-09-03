@@ -3,12 +3,27 @@
    ".> LEAN_PATH=././.lake/packages/batteries/.lake/build/lib:././.lake/packages/Qq/.lake/build/lib:././.lake/packages/aesop/.lake/build/lib:././.lake/packages/proofwidgets/.lake/build/lib:././.lake/packages/Cli/.lake/build/lib:././.lake/packages/importGraph/.lake/build/lib:././.lake/packages/LeanSearchClient/.lake/build/lib:././.lake/packages/mathlib/.lake/build/lib:././.lake/build/lib DYLD_LIBRARY_PATH= /Users/jonathanwashburn/.elan/toolchains/leanprover--lean4---v4.12.0/bin/lean -Dpp.unicode.fun=true -Dpp.proofs.withType=false -DautoImplicit=false -DrelaxedAutoImplicit=false ././././rh/RS/SchurGlobalization.lean -R ./././. -o ././.lake/build/lib/rh/RS/SchurGlobalization.olean -i ././.lake/build/lib/rh/RS/SchurGlobalization.ilean -c ././.lake/build/ir/rh/RS/SchurGlobalization.c --json",
    "level": "trace"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:25:8: declaration uses 'sorry'",
+   "././././rh/RS/SchurGlobalization.lean:27:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:33:8: declaration uses 'sorry'",
+   "././././rh/RS/SchurGlobalization.lean:58:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:41:8: declaration uses 'sorry'",
+   "././././rh/RS/SchurGlobalization.lean:82:6: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:72:17: unused variable `hΘ`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:106:5: unused variable `hUsub`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:107:13: unused variable `hρΩ`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:107:41: unused variable `hρZ`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:125:6: declaration uses 'sorry'",
    "level": "warning"}],
- "depHash": "12218088520706558127"}
+ "depHash": "13288674459331923955"}

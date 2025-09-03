@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.Cert.KxiPPlus
-// Imports: Init Mathlib.Data.Real.Basic Mathlib.Tactic
+// Imports: Init Mathlib.Data.Real.Basic Mathlib.Data.Complex.Basic Mathlib.Tactic rh.academic_framework.GammaBounds
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -65,7 +65,9 @@ return x_8;
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Data_Real_Basic(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_Data_Complex_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Tactic(uint8_t builtin, lean_object*);
+lean_object* initialize_rh_academic__framework_GammaBounds(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_rh_Cert_KxiPPlus(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -77,7 +79,13 @@ lean_dec_ref(res);
 res = initialize_Mathlib_Data_Real_Basic(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
+res = initialize_Mathlib_Data_Complex_Basic(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
 res = initialize_Mathlib_Tactic(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_rh_academic__framework_GammaBounds(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 l_RH_Cert__u03a9 = _init_l_RH_Cert__u03a9();

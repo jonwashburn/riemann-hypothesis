@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.academic_framework.DiagonalFredholm.Comprehensive
-// Imports: Init rh.academic_framework.DiagonalFredholm.Operator rh.academic_framework.DiagonalFredholm.ProductLemmas rh.academic_framework.DiagonalFredholm.Determinant
+// Imports: Init rh.academic_framework.DiagonalFredholm.Operator rh.academic_framework.DiagonalFredholm.ProductLemmas rh.academic_framework.DiagonalFredholm.Determinant rh.academic_framework.EulerProduct.K0Bound
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -17,6 +17,7 @@ lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_rh_academic__framework_DiagonalFredholm_Operator(uint8_t builtin, lean_object*);
 lean_object* initialize_rh_academic__framework_DiagonalFredholm_ProductLemmas(uint8_t builtin, lean_object*);
 lean_object* initialize_rh_academic__framework_DiagonalFredholm_Determinant(uint8_t builtin, lean_object*);
+lean_object* initialize_rh_academic__framework_EulerProduct_K0Bound(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_rh_academic__framework_DiagonalFredholm_Comprehensive(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -32,6 +33,9 @@ res = initialize_rh_academic__framework_DiagonalFredholm_ProductLemmas(builtin, 
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_rh_academic__framework_DiagonalFredholm_Determinant(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_rh_academic__framework_EulerProduct_K0Bound(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));

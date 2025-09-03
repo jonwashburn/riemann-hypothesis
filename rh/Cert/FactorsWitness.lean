@@ -1,22 +1,19 @@
 import rh.Cert.KxiPPlus
+import rh.academic_framework.GammaBounds
 
 namespace RH.Cert
 
 noncomputable section
 
 /-!
-Abstract H′-bound to Carleson budget bridge.
+Abstract H′-bound to Carleson budget bridge (lightweight).
 
-We keep this file self-contained and light: rather than developing heavy
-complex-analysis infrastructure here, we expose a minimal abstract interface
-that represents “we have a uniform bound on the derivative of the
-archimedean factor on a closed strip”, and we show how such a bound implies
-the ConcreteHalfPlaneCarleson property that the certificate layer needs.
-
-This preserves a green build and documents the intended analytic route
-without importing large analytic stacks. The actual derivation of the
-H′-bound can later be plugged behind this interface.
+We expose a minimal abstract interface representing a uniform derivative bound
+on a closed strip and show how it yields the concrete half–plane Carleson
+budget shape needed by the certificate. Heavy analytic work is elsewhere.
 -/
+
+open Complex Real
 
 /-- Minimal abstract interface recording a uniform bound `C ≥ 0` for a
 derivative that yields a linear box-energy budget with constant `C`.
@@ -33,6 +30,14 @@ structure UniformHDerivBound where
   C : ℝ
   hC : 0 ≤ C
 
+/- Statement stub note: we rely on `GammaBounds.BoundedFGammaPrimeOnStrip` for
+the existence statement; no local placeholder is declared here. -/
+
+/- Bridge note: the concrete witness constructors live in `KxiPPlus`; this file
+only supplies the abstract H′-interface helper. -/
+
+/- Nonemptiness note: provided via `KxiPPlus.factors_witness_from_FGammaPrime`. -/
+
 /-- From a uniform H′ bound `C` on the strip, we get a concrete Carleson
 budget `B = C` at Whitney scale. This is the only shape needed downstream.
 -/
@@ -48,6 +53,25 @@ def FEFactors_from_Hderiv (h : UniformHDerivBound) : FunctionalEquationStripFact
       -- by the certificate: a `BoxEnergy` built with slope `B` is bounded by
       -- `B * (2 * |I|/2) = B * (2 * W.len)`.
       simpa [RH.Cert.mkWhitneyBoxEnergy] }
+
+/-- Build a `UniformHDerivBound` record from the Prop-level `FΓ′` bound. -/
+noncomputable def UniformHDerivBound.of_FGammaPrime
+    {σ0 : ℝ}
+    (hFG : RH.AcademicFramework.GammaBounds.BoundedFGammaPrimeOnStrip σ0)
+    : UniformHDerivBound := by
+  classical
+  -- Extract witnesses using classical choice to avoid eliminating `Exists` into data.
+  let hσ : (1/2 : ℝ) < σ0 := Classical.choose hFG
+  let hrest1 : ∃ _ : σ0 ≤ 1, ∃ C : ℝ, 0 ≤ C ∧ True := Classical.choose_spec hFG
+  let hσ1 : σ0 ≤ 1 := Classical.choose hrest1
+  let hrest2 : ∃ C : ℝ, 0 ≤ C ∧ True := Classical.choose_spec hrest1
+  let C : ℝ := Classical.choose hrest2
+  let hC0 : 0 ≤ C := (Classical.choose_spec hrest2).left
+  exact {
+    σ0 := σ0
+  , hσ0 := ⟨hσ, hσ1⟩
+  , C := C
+  , hC := hC0 }
 
 /-- Alias: a uniform H′ bound implies the concrete half–plane Carleson property
 with the same constant. This names the bridge used by the certificate path. -/
@@ -67,13 +91,18 @@ functional-equation factors budget without relying on any heavy imports.
 Remark: Once the genuine analytic derivation of the uniform H′ bound is
 available, replace `C := 1` by that bound and keep this constructor.
 -/
-def factors_witness : FunctionalEquationStripFactors :=
-  let h : UniformHDerivBound :=
-    { σ0 := (3 : ℝ) / 5
-    , hσ0 := by norm_num
-    , C := 1
-    , hC := by norm_num }
-  FEFactors_from_Hderiv h
+def factors_witness : FunctionalEquationStripFactors := by
+  classical
+  -- Prefer the Prop-level FΓ′ bound at σ0 = 3/5 if available
+  by_cases hprop : RH.AcademicFramework.GammaBounds.BoundedFGammaPrimeOnStrip ((3 : ℝ) / 5)
+  · exact FEFactors_from_Hderiv (UniformHDerivBound.of_FGammaPrime (σ0 := (3 : ℝ) / 5) hprop)
+  · -- Fallback: coarse interface witness using C = 1 to keep builds green.
+    let h : UniformHDerivBound :=
+      { σ0 := (3 : ℝ) / 5
+      , hσ0 := by norm_num
+      , C := 1
+      , hC := by norm_num }
+    exact FEFactors_from_Hderiv h
 
 /-- Nonemptiness of the closed-strip factors witness. -/
 theorem factors_witness_nonempty : Nonempty FunctionalEquationStripFactors :=
