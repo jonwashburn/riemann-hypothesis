@@ -28,12 +28,13 @@ theorem exists_const_of_BoundedFGammaPrimeOnStrip
 closed strip using standard complex-analytic bounds (via Cauchy on a fixed
 radius and coarse Γ/cpow controls). This provides the Prop-level witness
 required by downstream wiring. -/
-/- Coarse explicit constant from the Cauchy-route outline. -/
-def cauchyHPrimeBoundConstant (_σ0 : ℝ) : ℝ := 16
+/- A more explicit σ₀-dependent constant from the Cauchy-route outline. -/
+def cauchyHPrimeBoundConstant (σ0 : ℝ) : ℝ := 16 / (σ0 ^ 2)
 
 lemma cauchyHPrimeBoundConstant_nonneg (σ0 : ℝ) : 0 ≤ cauchyHPrimeBoundConstant σ0 := by
-  -- 16 ≥ 0
-  simpa [cauchyHPrimeBoundConstant] using (by norm_num : (0 : ℝ) ≤ 16)
+  -- 16 / σ0^2 ≥ 0 for all real σ0
+  have hsq : 0 ≤ σ0 ^ 2 := sq_nonneg σ0
+  simpa [cauchyHPrimeBoundConstant] using (div_nonneg (by norm_num) hsq)
 
 theorem boundedFGammaPrimeOnStrip_of
     {σ0 : ℝ} (hσ0 : (1 / 2 : ℝ) < σ0) (hσ1 : σ0 ≤ 1) :
