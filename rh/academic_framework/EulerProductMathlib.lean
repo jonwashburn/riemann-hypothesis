@@ -26,10 +26,12 @@ theorem zeta_nonzero_re_gt_one
     {s : ℂ} (hs : 1 < s.re) : riemannZeta s ≠ 0 := by
   simpa using riemannZeta_ne_zero_of_one_lt_re hs
 
--- Alias for RS delegate (kept for compatibility with callers) — to be enabled once RS exports.
--- theorem zeta_nonzero_re_eq_one
---     (z : ℂ) (hz : z.re = 1) : riemannZeta z ≠ 0 :=
---   RH.RS.ZetaNoZerosOnRe1FromSchur z hz
+/-- Boundary-line nonvanishing, delegated to the RS export via a boundary bridge.
+Callers should supply a `ZetaSchurBoundaryBridge` offering local pinch data. -/
+theorem zeta_nonzero_re_eq_one
+    (z : ℂ) (hz : z.re = 1) (B : RH.RS.ZetaSchurBoundaryBridge) :
+    riemannZeta z ≠ 0 :=
+  RH.RS.ZetaNoZerosOnRe1FromSchur B z hz
 
 /-- Prop-level hook mirroring the intended RS export; callers can depend on this
 statement-shaped wrapper until the RS proof is provided. -/
@@ -44,7 +46,7 @@ bridge provides local pinch data for each boundary point). -/
 theorem zeta_nonzero_re_eq_one_from_bridge
     (z : ℂ) (hz : z.re = 1) (B : RH.RS.ZetaSchurBoundaryBridge) :
     riemannZeta z ≠ 0 :=
-  RH.RS.ZetaNoZerosOnRe1FromSchur_from_bridge B z hz
+  zeta_nonzero_re_eq_one z hz B
 
 /-- Statement-level wrapper mirroring the RS export, from a boundary bridge. -/
 theorem zeta_nonzero_re_eq_one_statement_from_bridge

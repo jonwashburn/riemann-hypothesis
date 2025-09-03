@@ -67,5 +67,8 @@
    "level": "warning"},
   {"message":
    "././././rh/RS/SchurGlobalization.lean:287:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:312:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "7229906760372328540"}
+ "depHash": "407487383118817362"}

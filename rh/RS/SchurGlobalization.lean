@@ -292,12 +292,44 @@ theorem ZetaNoZerosOnRe1FromSchur_from_bridge
     ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
   zeta_nonzero_on_Re1_from_local_bridges B.w B.assign
 
+/-- RS export: global nonvanishing on `Re = 1` from a provided boundary bridge. -/
+theorem ZetaNoZerosOnRe1FromSchur
+    (B : ZetaSchurBoundaryBridge) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
+  ZetaNoZerosOnRe1FromSchur_from_bridge B
+
 /-- Pointwise RS export shape from a boundary bridge, matching the existing
 statement-level API surface. -/
 theorem ZetaNoZerosOnRe1FromSchur_Statement_from_bridge
     (B : ZetaSchurBoundaryBridge) (z : ℂ) (hz : z.re = 1) :
     ZetaNoZerosOnRe1FromSchur_Statement z hz B.w :=
   (ZetaNoZerosOnRe1FromSchur_from_bridge B z hz)
+
+/-- Local-assignment packaging: for each boundary point, provide the open set,
+pinch point, and removable extension data. This is exactly the data required
+to build a `ZetaSchurBoundaryBridge`. -/
+structure BoundaryLocalPinchAssignment (w : ZetaSchurDecomposition) where
+  choose : ∀ z, z.re = 1 → ∃ (U : Set ℂ) (ρ : ℂ) (data : LocalPinchData w U ρ), z ∈ (U \ {ρ})
+
+/-- Build a boundary bridge from a local assignment. -/
+def bridge_of_localAssignment
+    {w : ZetaSchurDecomposition}
+    (A : BoundaryLocalPinchAssignment w) : ZetaSchurBoundaryBridge :=
+  { w := w, assign := A.choose }
+
+/-- Nonvanishing on the boundary from a local assignment (convenience wrapper). -/
+theorem ZetaNoZerosOnRe1FromSchur_from_localAssignment
+    {w : ZetaSchurDecomposition}
+    (A : BoundaryLocalPinchAssignment w) :
+    ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
+  ZetaNoZerosOnRe1FromSchur_from_bridge (bridge_of_localAssignment A)
+
+/-- Statement-level wrapper from a local assignment. -/
+theorem ZetaNoZerosOnRe1FromSchur_Statement_from_localAssignment
+    {w : ZetaSchurDecomposition}
+    (A : BoundaryLocalPinchAssignment w) (z : ℂ) (hz : z.re = 1) :
+    ZetaNoZerosOnRe1FromSchur_Statement z hz w :=
+  ZetaNoZerosOnRe1FromSchur_from_localAssignment A z hz
 
 end RH.RS
 

@@ -106,18 +106,10 @@ bound to keep the build green. -/
 def kxiWitness_nonempty : Nonempty FunctionalEquationStripFactors :=
   by
     classical
-    -- Use σ0 = 3/5 as a fixed closed-strip abscissa
-    by_cases hprop : RH.AcademicFramework.GammaBounds.BoundedFGammaPrimeOnStrip ((3 : ℝ) / 5)
-    · exact factors_witness_from_FGammaPrime (σ0 := (3 : ℝ) / 5) hprop
-    · -- Fallback: coarse abstract uniform-derivative bound
-      exact ⟨{
-        σ0 := (3 : ℝ) / 5
-      , hσ0 := by norm_num
-      , B := 1
-      , hB := by norm_num
-      , carleson := by
-          refine And.intro (by norm_num) ?ineq
-          intro W; simp [mkWhitneyBoxEnergy] }⟩
+    -- Use the constructive Prop-level bound at σ0 = 3/5, wired through the bridge.
+    have hprop : RH.AcademicFramework.GammaBounds.BoundedFGammaPrimeOnStrip ((3 : ℝ) / 5) :=
+      RH.AcademicFramework.GammaBounds.boundedFGammaPrimeOnStrip_of (by norm_num) (by norm_num)
+    exact factors_witness_from_FGammaPrime (σ0 := (3 : ℝ) / 5) hprop
 
 /-!
 Statement-only wedge from Carleson (no axioms).
