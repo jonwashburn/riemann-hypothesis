@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up elan (Lean toolchain)
+        run: |
+          curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-init.sh | sh -s -- -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Show toolchain
+        run: |
+          cat lean-toolchain
+          lean --version || true
+      - name: Lake update
+        run: |
+          lake update
+      - name: Lake build
+        run: |
+          lake build
+      - name: Verify (holes/axioms and theorems)
+        run: |
+          bash scripts/verify.sh
