@@ -1,5 +1,28 @@
 [![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
 
+## Start here (for reviewers and AIs)
+- Use the artifact repo, not the meta-proof scaffold.
+- Checkout the release tag below for a reproducible build.
+
+Commands:
+```bash
+git clone https://github.com/jonwashburn/riemann-hypothesis
+cd riemann-hypothesis
+git checkout v1.0.1-annals
+lake update && lake build
+bash scripts/verify.sh
+bash scripts/print-keys.sh
+```
+
+Key theorems:
+- rh/Proof/Main.lean: theorem RH
+- rh/RS/SchurGlobalization.lean: no_offcritical_zeros_from_schur, ZetaNoZerosOnRe1FromSchur
+- rh/academic_framework/EulerProductMathlib.lean: zeta_nonzero_re_eq_one
+
+Only the `rh/` tree participates in the Lean build.
+
+[![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
+
 See docs/PROOF_TRACK.md for the single proof track and module map.
 
 [![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
