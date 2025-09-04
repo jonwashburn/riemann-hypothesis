@@ -1,7 +1,7 @@
 # Riemann Hypothesis Meta-Proof - Component Analysis
 
 ## Summary
-This meta-proof synthesizes the strongest components from 11 different Riemann Hypothesis proof attempts, achieving only **2 sorries** across 22 files.
+This analysis synthesizes components from 11 different Riemann Hypothesis proof attempts, achieving only **2 sorries** across 22 files.
 
 ## Key Achievements
 1. **Restored Critical Infrastructure**: Fixed the missing FredholmDeterminantProofs.lean (168 lines, 2 sorries) that was lost in commit c9c9cd8
@@ -41,7 +41,7 @@ The proof uses operator theory and Fredholm determinants to establish the Rieman
 | riemann-lean | 6,466 | 63 | Good infrastructure |
 | riemann-final | 3,972 | 1 | Missing FredholmDeterminantProofs.lean |
 | riemann-unified | 3,960 | 1 | Missing FredholmDeterminantProofs.lean |
-| **meta-proof** | **~1,500** | **2** | **Complete infrastructure** |
+| **analysis build** | **~1,500** | **2** | **Complete infrastructure** |
 
 ## Next Steps
 1. Resolve remaining 2 sorries in FredholmDeterminantProofs.lean

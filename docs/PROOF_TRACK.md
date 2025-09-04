@@ -15,5 +15,5 @@ bash scripts/print-keys.sh
 ```
 
 ## Out of scope
-- `docs/archive/`: archived drafts, meta-proof scaffolding, or non-track experiments.
+- `docs/archive/`: archived drafts or non-track experiments.
 - Only `rh/` is imported by `lakefile.lean`.

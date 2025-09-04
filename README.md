@@ -5,7 +5,6 @@
 ![sorries 0](https://img.shields.io/badge/sorries-0-brightgreen)
 
 ## Start here
-- Use the artifact repo, not the meta-proof scaffold.
 - Checkout the release tag below for a reproducible build.
 
 Commands:
