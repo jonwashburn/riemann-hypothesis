@@ -54,3 +54,5 @@ See repository license. Contributions are welcome via PR with mathlib‑only dep
 
 
 **Build scope**: only the `rh/` tree participates in the Lean build.
+
+See docs/ARTIFACT.md for environment and verification steps.
