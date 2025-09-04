@@ -104,6 +104,11 @@ Format:
     EulerProduct namespace.
   - Stub: local helper lemma `tsum_subtype_le_total` (nonnegative)
 
+- MATH-BLOCKER: RvM short-interval zero-count bound (VK/annular counts) for ξ
+  - Location: `rh/Cert/KxiWhitney_RvM.lean`
+  - Lean goal / statement: Formalize `rvM_short_interval_bound` (|{ρ : Im ρ ∈ [T−L,T+L]}| ≤ A0 + A1·L·log⟨T⟩ for Whitney L ≍ c/log⟨T⟩, large T) and derive `kxi_whitney_carleson_of_rvm : KxiBound α c` via annular Poisson L^2 summation.
+  - Proposed approach: Needs mathlib-level zero-counting/density for ζ/ξ on short intervals (Riemann–von Mangoldt/Vinogradov–Korobov) and a half-plane Carleson box framework; add once available, then implement the neutralization + annular aggregation.
+
 - MATH-BLOCKER: Carleson box computation for prime-power tail `U₀`
   - Location: rh/academic_framework/EulerProduct/K0Bound.lean (conceptual origin)
   - Lean goal / statement:

@@ -210,6 +210,51 @@ theorem GlobalizeAcrossRemovable
     exact PinchFromExtension U hUopen hUconn ρ hρU Θ hΘU hSchur_U g hg hExt hval
   exact this.1
 
+/-- No off‑critical zeros from a Schur bound off the zero set together with
+local removable extensions that pin to `1` and are not identically `1`.
+
+If `Θ` is Schur on `Ω \ Z(ζ)` and, for every putative zero `ρ ∈ Ω`, there is an
+open, preconnected `U ⊆ Ω` with `(U ∩ Z(ζ)) = {ρ}` and an analytic extension
+`g` of `Θ` across `ρ` with `g ρ = 1` that is not identically `1` on `U`, then
+`ζ` has no zeros in `Ω`.
+-/
+theorem no_offcritical_zeros_from_schur
+    (Θ : ℂ → ℂ)
+    (hSchur : IsSchurOn Θ (Ω \ {z | riemannZeta z = 0}))
+    (assign : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+          EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
+    : ∀ ρ ∈ Ω, riemannZeta ρ ≠ 0 := by
+  intro ρ hρΩ hζρ
+  rcases assign ρ hρΩ hζρ with
+    ⟨U, hUopen, hUconn, hUsub, hρU, hUZeq, g, hg, hΘU, hExt, hval, z, hzU, hgzne⟩
+  -- Apply globalization across Z(ζ) to get g ≡ 1 on U
+  have hρZ : ρ ∈ ({z | riemannZeta z = 0} : Set ℂ) := by
+    simpa [Set.mem_setOf_eq] using hζρ
+  have hUminusSub : (U \ {ρ}) ⊆ (Ω \ ({z | riemannZeta z = 0})) := by
+    intro x hx
+    have hxU : x ∈ U := hx.1
+    have hxNe : x ≠ ρ := by
+      intro h; exact hx.2 (by simpa [h])
+    have hxNotZ : x ∉ ({z | riemannZeta z = 0} : Set ℂ) := by
+      intro hxZ
+      have hxInCap : x ∈ (U ∩ {z | riemannZeta z = 0}) := ⟨hxU, hxZ⟩
+      have hxSingleton : x ∈ ({ρ} : Set ℂ) := by
+        -- from x ∈ U ∩ Z and U ∩ Z = {ρ}
+        simpa [hUZeq] using hxInCap
+      have : x = ρ := by
+        simpa using hxSingleton
+      exact hxNe this
+    exact ⟨hUsub hxU, hxNotZ⟩
+  have hAllOne : ∀ w ∈ U, g w = 1 :=
+    GlobalizeAcrossRemovable ({z | riemannZeta z = 0}) Θ hSchur
+      U hUopen hUconn hUsub ρ hρΩ hρU hρZ g hg hΘU hUminusSub hExt hval
+  -- Contradiction: g must be identically 1 on U
+  have : g z = 1 := hAllOne z hzU
+  exact (hgzne this)
+
 /-- Maximum-modulus corollary for Schur maps. -/
 lemma NoInteriorZeros
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S)
