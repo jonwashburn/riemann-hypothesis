@@ -56,7 +56,7 @@ theorem PPlus_of_certificate
     (hP : RH.Cert.PPlusFromCarleson_exists F) :
     PPlus F := by
   -- Extract a nonnegative combined constant Cζ = K0 + Kξ from the Kξ interface
-  rcases RH.Cert.KxiWhitney.Cbox_zeta_of_Kxi (α := α) (c := c) hKxi with ⟨Cbox, hCbox0, hCboxEq⟩
+  rcases RH.Cert.KxiWhitney.Cbox_zeta_of_Kxi (α := α) (c := c) hKxi with ⟨Cbox, hCbox0, _⟩
   -- Package it as a concrete Whitney Carleson budget
   have hCar : ConcreteHalfPlaneCarleson Cbox := by
     refine And.intro hCbox0 ?_;

@@ -102,12 +102,14 @@ This is intentional: it provides a safe, axiom-free placeholder interface
 that other RS modules can call; stronger analytical bounds can later replace
 the definition of `poissonEnergyOnBox` without changing the public lemma name.
 -/
+/-! Uniform Poisson energy bound (placeholder constant).
+This lemma exposes the intended inequality shape for downstream modules. -/
 theorem poisson_energy_bound_for_admissible
     (α' : ℝ) (hα : 1 ≤ α') (I : BaseInterval) (ε : ℝ) :
     ∃ A : ℝ, ∀ {φ : ℝ → ℝ}, φ ∈ W_adm I ε →
       poissonEnergyOnBox α' I φ ≤ A * I.length := by
   refine ⟨0, ?_⟩
   intro φ hφ
-  simpa [poissonEnergyOnBox, BaseInterval.length]
+  simp [poissonEnergyOnBox, BaseInterval.length]
 
 end RS

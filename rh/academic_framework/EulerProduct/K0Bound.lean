@@ -111,9 +111,11 @@ theorem K0_le_series_of_pointwise
     intro k
     have hk : 0 ≤ (((k : ℕ) : ℝ) ^ 2) := by simpa using sq_nonneg (((k : ℕ) : ℝ))
     exact (div_le_div_of_nonneg_right (hpt k) hk)
-  have hsum := tsum_le_tsum hpt' hPL hBL
-  simpa [K0Const, mul_comm, mul_left_comm, mul_assoc] using
-    (mul_le_mul_of_nonneg_left hsum (by norm_num : (0 : ℝ) ≤ 1/4))
+  have hsum : (∑' k : {n // 2 ≤ n}, P k / (((k : ℕ) : ℝ) ^ 2))
+            ≤ (∑' k : {n // 2 ≤ n}, B k / (((k : ℕ) : ℝ) ^ 2)) :=
+    tsum_le_tsum hpt' hPL hBL
+  have hmul := mul_le_mul_of_nonneg_left hsum (by norm_num : (0 : ℝ) ≤ 1/4)
+  simpa [K0Const, mul_comm, mul_left_comm, mul_assoc] using hmul
 
 /-- Numeric plan skeleton (finite block + tail decomposition): if for each `k≥2`
 `integerTail k ≤ F k + T k` and both weighted series converge, then
