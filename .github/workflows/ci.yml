@@ -20,13 +20,13 @@ jobs:
       - name: Show toolchain
         run: |
           cat lean-toolchain
-          lean --version || true
+          $HOME/.elan/bin/lean --version || true
       - name: Install pinned toolchain
         run: |
-          elan toolchain install $(cat lean-toolchain)
-          elan default $(cat lean-toolchain)
-          elan show
-          lake --version || true
+          $HOME/.elan/bin/elan toolchain install $(cat lean-toolchain)
+          $HOME/.elan/bin/elan default $(cat lean-toolchain)
+          $HOME/.elan/bin/elan show
+          $HOME/.elan/bin/lake --version || true
       - name: Cache Lake packages
         uses: actions/cache@v4
         with:
@@ -36,10 +36,10 @@ jobs:
             lake-
       - name: Lake update
         run: |
-          lake update
+          $HOME/.elan/bin/lake update
       - name: Lake build
         run: |
-          lake build
+          $HOME/.elan/bin/lake build
       - name: Verify (holes/axioms and theorems)
         run: |
           bash scripts/verify.sh
