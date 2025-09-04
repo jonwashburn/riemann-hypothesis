@@ -21,6 +21,12 @@ jobs:
         run: |
           cat lean-toolchain
           lean --version || true
+      - name: Install pinned toolchain
+        run: |
+          elan toolchain install $(cat lean-toolchain)
+          elan default $(cat lean-toolchain)
+          elan show
+          lake --version || true
       - name: Cache Lake packages
         uses: actions/cache@v4
         with:
