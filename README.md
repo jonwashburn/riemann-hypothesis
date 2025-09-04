@@ -1,3 +1,5 @@
+[![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
+
 # Machine-checked boundary-product proof of the Riemann Hypothesis
 
 ## Summary
@@ -49,3 +51,6 @@ rm -rf .lake && lake update && lake build
 - SHA256(Riemann.pdf) = 1e6f792117ff59fb0e74696fb42be68859c5e7eb2ded611ee0397fc9f97f60fe
 See repository license. Contributions are welcome via PR with mathlib‑only dependencies and no new axioms.
 
+
+
+**Build scope**: only the `rh/` tree participates in the Lean build.
