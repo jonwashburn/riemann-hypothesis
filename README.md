@@ -1,5 +1,10 @@
 [![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
 
+> IMPORTANT: This repository is the finished Lean artifact. For the exploratory meta-proof project, see https://github.com/jonwashburn/riemann.
+> Use the release tag v1.0-annals for reproducible verification.
+
+[![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
+
 # Machine-checked boundary-product proof of the Riemann Hypothesis
 
 ## Summary
