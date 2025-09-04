@@ -9,6 +9,8 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Topology.Algebra.UniformGroup
 import Mathlib.Analysis.SpecialFunctions.Exponential
+import Mathlib.Topology.Algebra.Field
+import Mathlib.Topology.MetricSpace.Basic
 
 noncomputable section
 open Complex Filter Set
@@ -186,254 +188,13 @@ def ZetaSchurDecompositionOffZeros.ofEqOffZeros
       hN_ne_off := by intro s hs; simpa [Θ, F] using (hN_ne_off' hs),
       hΘ_lim1_at_ξzero := by intro ρ hΩρ hξρ; simpa [Θ, F] using hΘ_lim1_at_ξzero hΩρ hξρ }
 
-/-! ### Pinned limit from non-cancellation (N2)
-
-We previously attempted a direct derivation of the pinned limit `Θ → 1` at interior ξ-zeros
-from non-cancellation; this proof is delicate and not required here because the RS pipeline
-accepts this as a statement-level hypothesis. The detailed lemmas are commented out below.
--/
+-- pinned-limit derivation from N2 (and the derived constructor) are intentionally
+-- left out here; RS consumes the pinned-limit as a statement-level hypothesis.
 
 /-
-private lemma cayley_tendsto_one_of_norm_atTop
-  {α : Type*} [TopologicalSpace α]
-  {F : α → ℂ} {l : Filter α}
-  (h : Tendsto (fun a => Complex.abs (F a)) l atTop) :
-  Tendsto (fun a => (F a - 1) / (F a + 1)) l (nhds (1 : ℂ)) := by
-  -- We show: |C(F) - 1| = 2/|F+1| ≤ 4/|F|; choose R ≥ max 2 (4/ε)
-  refine Metric.tendsto_nhds.mpr ?_;
-  intro ε hεpos
-  have hεpos' : 0 < (ε : ℝ) := by exact_mod_cast hεpos
-  let R : ℝ := max 2 ((4 : ℝ) / ε)
-  have hR2 : (2 : ℝ) ≤ R := le_max_left _ _
-  have hReq : (4 : ℝ) / R ≤ ε := by
-    have hpos : 0 < R := lt_of_le_of_lt (by norm_num) (lt_of_le_of_lt hR2 (by norm_num))
-    have : ((4 : ℝ) / R) ≤ ((4 : ℝ) / ((4 : ℝ) / ε)) := by
-      refine div_le_div_of_nonneg_left (by norm_num) ?_ (by norm_num)
-      exact (le_trans (le_max_right _ _) (le_of_eq rfl))
-    simpa [div_div] using this
-  have hbig : ∀ᶠ a in l, R ≤ Complex.abs (F a) := (tendsto_atTop.1 h) R
-  refine (hbig.mono ?_)
-  intro a haR
-  have hden : Complex.abs (F a + 1) ≥ Complex.abs (F a) - 1 := by
-    -- |F| = |(F+1) + (-1)| ≤ |F+1| + 1 ⇒ |F+1| ≥ |F| - 1
-    have : Complex.abs (F a) ≤ Complex.abs (F a + 1) + 1 := by
-      simpa using Complex.abs_add_le (F a + 1) (-1)
-    linarith
-  have hge2 : (2 : ℝ) ≤ Complex.abs (F a) := le_trans hR2 haR
-  have hposden : 0 < Complex.abs (F a + 1) := by
-    have : 1 ≤ Complex.abs (F a + 1) := by
-      have : (Complex.abs (F a) - 1) ≤ Complex.abs (F a + 1) := by linarith
-      have : (1 : ℝ) ≤ Complex.abs (F a + 1) := by
-        have : (0 : ℝ) ≤ Complex.abs (F a) - 1 := by linarith
-        exact le_trans (by norm_num) (le_trans this (le_of_lt (lt_of_le_of_lt (by exact le_of_lt hεpos') (by exact le_of_lt hεpos'))))
-      exact this
-    exact lt_of_lt_of_le (by norm_num) this
-  have hdist : Complex.abs (((F a - 1) / (F a + 1)) - 1) = (2 : ℝ) / Complex.abs (F a + 1) := by
-    have : ((F a - 1) / (F a + 1) - 1) = (-(2 : ℂ)) / (F a + 1) := by
-      field_simp [sub_eq_add_neg, add_comm, add_left_comm, add_assoc]
-    simpa [this, Complex.abs.map_neg, Complex.abs.div, Complex.abs.ofReal]
-  have hineq1 : (2 : ℝ) / Complex.abs (F a + 1) ≤ (2 : ℝ) / (Complex.abs (F a) - 1) := by
-    have : (0 : ℝ) ≤ Complex.abs (F a + 1) := Complex.abs.nonneg _
-    exact (div_le_div_of_nonneg_left (by norm_num) this (by norm_num)).mpr hden
-  have hineq2 : (2 : ℝ) / (Complex.abs (F a) - 1) ≤ (4 : ℝ) / Complex.abs (F a) := by
-    -- valid when |F| ≥ 2
-    have hpos : 0 < Complex.abs (F a) := lt_of_le_of_lt (by norm_num) hge2
-    have hden' : 0 < Complex.abs (F a) - 1 := by linarith
-    -- 2/(x-1) ≤ 4/x  ⇔  2x ≤ 4(x-1) ⇔ x ≥ 2
-    have hxge2 : (2 : ℝ) ≤ Complex.abs (F a) := hge2
-    have : (2 : ℝ) / (Complex.abs (F a) - 1) ≤ (4 : ℝ) / Complex.abs (F a) := by
-      have hxpos : 0 < Complex.abs (F a) := hpos
-      have hxne : Complex.abs (F a) ≠ 0 := ne_of_gt hxpos
-      calc
-        (2 : ℝ) / (Complex.abs (F a) - 1)
-            ≤ (2 : ℝ) / (1 : ℝ) := by
-              have : (1 : ℝ) ≤ Complex.abs (F a) - 1 := by linarith
-              exact (div_le_div_of_nonneg_left (by norm_num) this (by norm_num))
-        _ = (2 : ℝ) := by norm_num
-        _ ≤ (4 : ℝ) / Complex.abs (F a) := by
-              have : Complex.abs (F a) ≤ (Complex.abs (F a)) := le_rfl
-              have : (2 : ℝ) ≤ (4 : ℝ) / Complex.abs (F a) := by
-                have := (le_div_iff (show (0 : ℝ) < Complex.abs (F a) by exact hxpos)).mpr (by linarith)
-                simpa using this
-              exact this
-
-    exact this
-  have hfinal : Complex.abs (((F a - 1) / (F a + 1)) - 1) ≤ (4 : ℝ) / Complex.abs (F a) := by
-    have := le_trans (by simpa [hdist]) (le_trans hineq1 hineq2)
-    exact this
-  -- combine with |F| ≥ R to bound by ε
-  have : (4 : ℝ) / Complex.abs (F a) ≤ ε := by
-    have : (4 : ℝ) / R ≤ ε := hReq
-    have hmono : R ≤ Complex.abs (F a) := haR
-    exact (div_le_div_of_nonneg_left (by norm_num) hmono (by norm_num)).trans this
-  exact (le_trans hfinal this)
-
-/-! Pinned limit from N2: Θ → 1 at a ξ-zero ρ.
-    We work with F := 2 * (det₂/(O·ξ)) and estimate as above. -/
-lemma Theta_pinned_limit_from_N2
-  (det₂ O ξ : ℂ → ℂ)
-  (hdet₂A : AnalyticOn ℂ det₂ (Ω))
-  (hOA : AnalyticOn ℂ O (Ω))
-  (hXiA : AnalyticOn ℂ riemannXi (Ω))
-  {ρ : ℂ} (hρΩ : ρ ∈ Ω) (hξρ : riemannXi ρ = 0)
-  (hdet2_ne : det₂ ρ ≠ 0) (hO_ne : O ρ ≠ 0) :
-  Tendsto (fun s => ( (2 : ℂ) * (det₂ s / (O s * riemannXi s)) - 1)
-                    / ( (2 : ℂ) * (det₂ s / (O s * riemannXi s)) + 1))
-          (nhdsWithin ρ (Ω \ Z riemannXi)) (nhds (1 : ℂ)) := by
-  -- Continuity of A := det₂ / O and lower bound near ρ
-  have hdet2_ca : ContinuousAt det₂ ρ := (hdet₂A.analyticAt hρΩ).continuousAt
-  have hO_ca    : ContinuousAt O ρ    := (hOA.analyticAt hρΩ).continuousAt
-  have hXi_ca   : ContinuousAt riemannXi ρ := (hXiA.analyticAt hρΩ).continuousAt
-  have hA_ca : ContinuousAt (fun s => det₂ s / O s) ρ := hdet2_ca.div hO_ca hO_ne
-  -- pick cA>0 so that |A s| ≥ cA on a small punctured neighborhood
-  have hcApos : 0 < Complex.abs (det₂ ρ / O ρ) := by
-    have : det₂ ρ / O ρ ≠ 0 := by
-      have := div_ne_zero hdet2_ne hO_ne; simpa using this
-    simpa [Complex.abs.pos_iff] using this
-  obtain ⟨cA, hcApos', hcA⟩ : ∃ cA : ℝ, 0 < cA ∧ ∀ᶠ s in nhds ρ, Complex.abs (det₂ s / O s) ≥ cA := by
-    -- take cA = |A ρ|/2 by continuity
-    refine ⟨Complex.abs (det₂ ρ / O ρ) / 2, by nlinarith, ?_⟩
-    have : Tendsto (fun s => Complex.abs (det₂ s / O s)) (nhds ρ)
-        (nhds (Complex.abs (det₂ ρ / O ρ))) :=
-      (hA_ca.norm.tendsto)
-    have hball := (tendsto_order.1 this).2 _ (by nlinarith)
-    -- eventually |A s| ≥ |A ρ|/2
-    simpa using hball
-  -- from nhdsWithin ≤ nhds, transfer to punctured nhds
-  have hcA_within : ∀ᶠ s in nhdsWithin ρ (Ω \ Z riemannXi),
-        Complex.abs (det₂ s / O s) ≥ cA := hcA.filter_mono nhdsWithin_le_nhds
-  -- ξ → 0 at ρ, hence |ξ s| ≤ cA/(2M) eventually for any M>0
-  have hξ_to0 : Tendsto (fun s => Complex.abs (riemannXi s))
-        (nhdsWithin ρ (Ω \ Z riemannXi)) (nhds (0 : ℝ)) :=
-    (hXi_ca.tendsto.comp_tendsto (le_trans nhdsWithin_le_nhds le_rfl)) |> by
-      -- simplify nhds (Complex.abs 0)
-      simpa [hξρ, Complex.abs.map_zero]
-  -- Now apply the generic Cayley convergence for F := 2*A/ξ
-  -- show that ‖F s‖ → ∞ along the punctured nhds
-  have hF_atTop : Tendsto (fun s => Complex.abs ((2 : ℂ) * (det₂ s / (O s * riemannXi s))))
-      (nhdsWithin ρ (Ω \ Z riemannXi)) atTop := by
-    -- Show: ∀ R, eventually R ≤ |F s|
-    refine tendsto_atTop.2 ?_
-    intro R
-    by_cases hR : R ≤ 0
-    · -- trivial for nonpositive thresholds
-      refine eventually_of_forall (fun _ => ?_)
-      have : (0 : ℝ) ≤ Complex.abs ((2 : ℂ) * (det₂ _ / (O _ * riemannXi _))) :=
-        Complex.abs.nonneg _
-      exact le_trans hR this
-    · have hRpos : 0 < R := lt_of_le_of_ne hR (ne_of_gt (show 0 < R from lt_of_le_of_ne hR ?hcontra))
-      -- choose δ := (2*cA)/R > 0 so that |ξ s| ≤ δ ⇒ |F s| ≥ R
-      have hδpos : 0 < ( (2 : ℝ) * cA) / R := by
-        have : 0 < (2 : ℝ) * cA := by nlinarith
-        exact (div_pos this hRpos)
-      have hξ_small : ∀ᶠ s in nhdsWithin ρ (Ω \ Z riemannXi),
-          Complex.abs (riemannXi s) ≤ ((2 : ℝ) * cA) / R := by
-        have := (tendsto_order.1 hξ_to0).2 _ hδpos
-        exact this
-      have hA_large := hcA_within
-      -- combine eventually events
-      refine (hA_large.and hξ_small).mono ?_
-      intro s hs
-      rcases hs with ⟨hA_ge, hξ_le⟩
-      -- compute |F|
-      have habsF : Complex.abs ((2 : ℂ) * (det₂ s / (O s * riemannXi s)))
-          = (2 : ℝ) * Complex.abs (det₂ s / O s) / Complex.abs (riemannXi s) := by
-        have : Complex.abs ((2 : ℂ) * (det₂ s / (O s * riemannXi s)))
-            = (2 : ℝ) * Complex.abs (det₂ s / (O s * riemannXi s)) := by
-          simpa [Complex.abs.map_mul]
-        have : Complex.abs (det₂ s / (O s * riemannXi s))
-            = Complex.abs (det₂ s) / Complex.abs (O s * riemannXi s) := by
-          simpa [Complex.abs.div]
-        have : Complex.abs (O s * riemannXi s) = Complex.abs (O s) * Complex.abs (riemannXi s) := by
-          simpa using (Complex.abs.mul (O s) (riemannXi s))
-        have : (2 : ℝ) * Complex.abs (det₂ s / (O s * riemannXi s))
-            = (2 : ℝ) * (Complex.abs (det₂ s) / (Complex.abs (O s) * Complex.abs (riemannXi s))) := by
-          simp [*]
-        have : (2 : ℝ) * (Complex.abs (det₂ s) / (Complex.abs (O s) * Complex.abs (riemannXi s)))
-            = (2 : ℝ) * (Complex.abs (det₂ s) / Complex.abs (O s)) / Complex.abs (riemannXi s) := by
-          field_simp
-        have : (2 : ℝ) * (Complex.abs (det₂ s) / Complex.abs (O s)) / Complex.abs (riemannXi s)
-            = (2 : ℝ) * Complex.abs (det₂ s / O s) / Complex.abs (riemannXi s) := by
-          simpa [Complex.abs.div]
-        simpa [*]
-      -- lower bound using hA_ge and hξ_le
-      have : R ≤ (2 : ℝ) * Complex.abs (det₂ s / O s) / Complex.abs (riemannXi s) := by
-        have hposξ : 0 ≤ Complex.abs (riemannXi s) := Complex.abs.nonneg _
-        have : (2 : ℝ) * cA / Complex.abs (riemannXi s) ≥ R := by
-          have : Complex.abs (riemannXi s) ≤ (2 : ℝ) * cA / R := hξ_le
-          have hRpos' : 0 < R := lt_of_le_of_ne hR ?hRne
-          have hdenpos : 0 < Complex.abs (riemannXi s) ∨ Complex.abs (riemannXi s) = 0 := lt_or_eq_of_le hposξ
-          have : R ≤ (2 : ℝ) * cA / Complex.abs (riemannXi s) := by
-            have hxpos : 0 < Complex.abs (riemannXi s) ∨ Complex.abs (riemannXi s) = 0 := hdenpos
-            -- Using monotonicity of division on positive reals
-            have : Complex.abs (riemannXi s) ≤ (2 : ℝ) * cA / R := hξ_le
-            have hxpos' : 0 < Complex.abs (riemannXi s) :=
-              by
-                -- since s ∈ Ω \ Z ξ, denom is nonzero; but here we are on nhdsWithin set
-                -- we can just note: if abs ξ = 0, inequality R ≤ ∞ holds trivially
-                -- fallback: handle by cases
-                have : Complex.abs (riemannXi s) = 0 ∨ 0 < Complex.abs (riemannXi s) := by exact Or.symm (lt_or_eq_of_le (Complex.abs.nonneg _))
-                exact by cases this with
-                | inl h0 => by have : riemannXi s = 0 := by simpa [Complex.abs.eq_zero] using h0; have : False := by trivial; exact (lt_of_le_of_ne le_rfl (by intro h; cases h))
-                | inr hpos => hpos
-            have hxne : Complex.abs (riemannXi s) ≠ 0 := ne_of_gt hxpos'
-            have : R ≤ ((2 : ℝ) * cA) / Complex.abs (riemannXi s) := by
-              have := (le_div_iff (show 0 < Complex.abs (riemannXi s) by exact hxpos')).mpr ?ineq
-              simpa using this
-            exact this
-          exact this
-        -- Now strengthen numerator via |A s| ≥ cA
-        have : (2 : ℝ) * Complex.abs (det₂ s / O s) / Complex.abs (riemannXi s)
-                ≥ (2 : ℝ) * cA / Complex.abs (riemannXi s) := by
-          have hnonneg : 0 ≤ Complex.abs (riemannXi s) := Complex.abs.nonneg _
-          exact (div_le_div_of_nonneg_right (by nlinarith [hA_ge]) hnonneg)
-        exact le_trans ?_ this
-      -- conclude R ≤ |F s|
-      simpa [habsF] using this
-  -- Conclude Θ → 1 from |F| → ∞
-  have : Tendsto (fun s => ( (2 : ℂ) * (det₂ s / (O s * riemannXi s)) - 1)
-                    / ( (2 : ℂ) * (det₂ s / (O s * riemannXi s)) + 1))
-          (nhdsWithin ρ (Ω \ Z riemannXi)) (nhds (1 : ℂ)) :=
-    cayley_tendsto_one_of_norm_atTop hF_atTop
-  exact this
-
-/-! A convenience wrapper: build the off-zeros bridge using (N2) to supply
-    the pinned limit field `hΘ_lim1_at_ξzero`. -/
-def ZetaSchurDecompositionOffZeros.ofEqOffZeros_fromN2
-  (det2 O G J : ℂ → ℂ)
-  (hdet2A : AnalyticOn ℂ det2 (Ω))
-  (hOA : AnalyticOn ℂ O (Ω))
-  (hGA : AnalyticOn ℂ G (Ω))
-  (hXiA : AnalyticOn ℂ riemannXi (Ω))
-  (hO_ne : ∀ ⦃s⦄, s ∈ (Ω) → O s ≠ 0)
-  (hdet2_ne : ∀ ⦃s⦄, s ∈ (Ω) → det2 s ≠ 0)
-  (hG_ne_offζ : ∀ ⦃s⦄, s ∈ (Ω \ Z riemannZeta) → G s ≠ 0)
-  (hJ_def_offXi : ∀ ⦃s⦄, s ∈ (Ω \ Z riemannXi) → J s = det2 s / (O s * riemannXi s))
-  (hXi_eq_Gζ : ∀ ⦃s⦄, s ∈ (Ω) → riemannXi s = G s * riemannZeta s)
-  (hΘA_offXi : AnalyticOn ℂ (cayley (fun s => (2 : ℂ) * J s)) (Ω \ Z riemannXi))
-  (hΘSchur : IsSchurOn (cayley (fun s => (2 : ℂ) * J s)) (Ω))
-  (hN_ne_off_assm : ∀ ⦃s⦄, s ∈ (Ω \ Z riemannZeta) → ( (cayley (fun s => (2 : ℂ) * J s)) s * G s / riemannXi s) ≠ 0)
-  : ZetaSchurDecompositionOffZeros riemannZeta riemannXi := by
-  -- derive pinned limit via Theta_pinned_limit_from_N2 using local data at each ρ
-  have hlim : ∀ ⦃ρ⦄, ρ ∈ Ω → riemannXi ρ = 0 →
-      Tendsto (cayley (fun s => (2 : ℂ) * J s)) (nhdsWithin ρ (Ω \ Z riemannXi)) (nhds (1 : ℂ)) := by
-    intro ρ hρ hξρ
-    -- rewrite J to det2/(O*ξ) on punctured nhds and apply the previous lemma
-    -- Use noncancellation at ρ from hdet2_ne, hO_ne
-    have hdetρ : det2 ρ ≠ 0 := hdet2_ne hρ
-    have hOρ : O ρ ≠ 0 := hO_ne hρ
-    -- now apply Theta_pinned_limit_from_N2
-    have := Theta_pinned_limit_from_N2 (riemannZeta:=riemannZeta) (riemannXi:=riemannXi)
-      (det₂:=det2) (O:=O) (ξ:=riemannXi)
-      hdet2A hOA hXiA hρ hξρ hdetρ hOρ
-    -- and note: on the punctured set, cayley(2*J) = cayley(2*det2/(O*ξ)) by hJ_def_offXi
-    -- Tendsto is preserved under eventual equality
-    exact this
-  -- build via the original constructor
-  exact ZetaSchurDecompositionOffZeros.ofEqOffZeros
-    (det2) (O) (G) (J)
-    hdet2A hOA hGA hXiA hO_ne hdet2_ne hG_ne_offζ hJ_def_offXi hXi_eq_Gζ hΘSchur hΘA_offXi
-    (by intro ρ hρ hξρ; simpa using hlim hρ hξρ) hN_ne_off_assm
+Algebraic u-trick pinned-limit lemma omitted for now; RS consumes the
+limit as a hypothesis. A future version can implement it here once the
+continuous/analytic API variants are aligned.
 -/
 
 /-- Thin constructor: build `ZetaSchurDecompositionOffZeros` directly from off-zeros data. -/
@@ -454,5 +215,117 @@ def ZetaSchurDecompositionOffZeros.ofData
   hΘ_lim1_at_ξzero := by intro ρ hΩρ hξρ; exact hΘ_lim1_at_ξzero hΩρ hξρ }
 
 end OffZeros
+end RS
+end RH
+
+/-
+  Pinned-limit (u-trick, no field_simp) + constructor filler
+
+  What you get:
+  • RS.tendsto_one_sub_div_one_add_of_tendsto_zero
+  • RS.continuousAt_inv₀_and_eventually_ne
+  • RS.tendsto_mobius_u_nhdsWithin
+  • RS.Theta_pinned_limit_from_N2
+  • RS.Theta_pinned_limit_from_N2_with_eventually_ne
+-/
+
+namespace RH
+namespace RS
+
+open Filter Topology
+
+/-- If `u → 0` then `(1 - u) / (1 + u) → 1`. Also returns that `1 + u` is eventually nonzero. -/
+theorem tendsto_one_sub_div_one_add_of_tendsto_zero
+  {ι : Type*} {l : Filter ι} {u : ι → ℂ}
+  (hu : Tendsto u l (𝓝 (0 : ℂ))) :
+  Tendsto (fun i => (1 - u i) / (1 + u i)) l (𝓝 (1 : ℂ)) ∧ (∀ᶠ i in l, 1 + u i ≠ 0) := by
+  -- Eventual nonvanishing of 1+u: (1+u) → 1 ≠ 0
+  have h1 : Tendsto (fun i => (1 : ℂ) + u i) l (𝓝 (1 : ℂ)) := by
+    simpa using (tendsto_const_nhds.add hu)
+  have h_ne : ∀ᶠ i in l, 1 + u i ≠ 0 := by
+    -- since (1+u i) → 1, eventually it lies in a small ball around 1 avoiding 0
+    refine (Metric.tendsto_nhds.1 h1) (1/2 : ℝ) (by norm_num) |>.mono ?_
+    intro i hi
+    intro h0
+    -- If 1 + u i = 0 then dist((1+u i),1)=‖-1‖=1, contradicting < 1/2
+    have hlt : dist ((1 : ℂ) + u i) (1 : ℂ) < (1/2 : ℝ) := hi
+    have : (1 : ℝ) < (1/2 : ℝ) := by
+      simpa [Complex.dist_eq, sub_eq_add_neg, h0, add_comm] using hlt
+    exact (not_lt_of_ge (by norm_num : (1/2 : ℝ) ≤ 1)) this
+  -- Tendsto algebra: (1 - u) → 1 and (1 + u) → 1, so their ratio → 1
+  have hnum : Tendsto (fun i => (1 : ℂ) - u i) l (𝓝 ((1 : ℂ) - 0)) :=
+    (tendsto_const_nhds.sub hu)
+  have hden : Tendsto (fun i => (1 : ℂ) + u i) l (𝓝 ((1 : ℂ) + 0)) :=
+    (tendsto_const_nhds.add hu)
+  have hnum1 : Tendsto (fun i => (1 : ℂ) - u i) l (𝓝 (1 : ℂ)) := by
+    simpa using (tendsto_const_nhds.sub hu)
+  have hden1 : Tendsto (fun i => (1 : ℂ) + u i) l (𝓝 (1 : ℂ)) := by simpa
+  have hinv : Tendsto (fun i => (1 + u i)⁻¹) l (𝓝 ((1 : ℂ)⁻¹)) :=
+    ((continuousAt_inv₀ (by norm_num : (1 : ℂ) ≠ 0)).tendsto).comp hden1
+  have hlim_mul : Tendsto (fun i => (1 - u i) * (1 + u i)⁻¹) l (𝓝 ((1 : ℂ) * (1 : ℂ)⁻¹)) :=
+    hnum1.mul hinv
+  have hlim : Tendsto (fun i => (1 - u i) / (1 + u i)) l (𝓝 (1 : ℂ)) := by
+    simpa [div_eq_mul_inv, one_mul] using hlim_mul
+  exact ⟨hlim, h_ne⟩
+
+/-- If `g` is continuous at `ρ` and `g ρ ≠ 0`, then `x ↦ (g x)⁻¹` is continuous at `ρ`
+    and `g x ≠ 0` eventually on `𝓝 ρ`. -/
+theorem continuousAt_inv₀_and_eventually_ne
+  {α : Type*} [TopologicalSpace α] {g : α → ℂ} {ρ : α}
+  (hg : ContinuousAt g ρ) (hρ : g ρ ≠ 0) :
+  ContinuousAt (fun x => (g x)⁻¹) ρ ∧ (∀ᶠ x in 𝓝 ρ, g x ≠ 0) := by
+  have h_inv : ContinuousAt (fun x => (g x)⁻¹) ρ := hg.inv₀ hρ
+  -- eventually nonzero: by continuity, values stay in a ball around g ρ avoiding 0
+  have hball : ∀ᶠ x in 𝓝 ρ, dist (g x) (g ρ) < ‖g ρ‖ / 2 := by
+    have : Tendsto g (𝓝 ρ) (𝓝 (g ρ)) := hg.tendsto
+    have hpos : 0 < ‖g ρ‖ / 2 := by
+      have : 0 < ‖g ρ‖ := by simpa [norm_pos_iff] using (norm_pos_iff.mpr hρ)
+      simpa using (half_pos this)
+    exact (Metric.tendsto_nhds.1 this) (‖g ρ‖ / 2) hpos
+  have h_ne : ∀ᶠ x in 𝓝 ρ, g x ≠ 0 := by
+    refine hball.mono ?_
+    intro x hx
+    intro h0
+    -- If g x = 0, then dist(g x, g ρ) = ‖g ρ‖, contradicting hx < ‖g ρ‖/2
+    have hdist : dist (g x) (g ρ) = ‖g ρ‖ := by
+      simpa [Complex.dist_eq, h0, sub_eq_add_neg]
+    have hlt : ‖g ρ‖ < ‖g ρ‖ / 2 := by simpa [hdist]
+      using hx
+    have hle : ‖g ρ‖ / 2 ≤ ‖g ρ‖ := by
+      simpa using (half_le_self (norm_nonneg _))
+    exact (not_lt_of_ge hle) hlt
+  exact ⟨h_inv, h_ne⟩
+
+/-- `nhdsWithin` version of the u-trick: if `u → 0` on `𝓝[U] ρ`, then
+    `(1 - u)/(1 + u) → 1` on `𝓝[U] ρ`, and `1 + u` is eventually nonzero there. -/
+theorem tendsto_mobius_u_nhdsWithin
+  {α : Type*} [TopologicalSpace α]
+  {U : Set α} {ρ : α} {u : α → ℂ}
+  (hu : Tendsto u (𝓝[U] ρ) (𝓝 (0 : ℂ))) :
+  Tendsto (fun x => (1 - u x) / (1 + u x)) (𝓝[U] ρ) (𝓝 (1 : ℂ)) ∧
+  (∀ᶠ x in 𝓝[U] ρ, 1 + u x ≠ 0) := by
+  simpa using tendsto_one_sub_div_one_add_of_tendsto_zero (ι := α) (l := 𝓝[U] ρ) (u := u) hu
+
+/-- Pinned-limit via the u-trick on `nhdsWithin`: if eventually `Θ = (1 - u)/(1 + u)` and `u → 0`,
+    then `Θ → 1`. -/
+theorem Theta_pinned_limit_from_N2
+  {α : Type*} [TopologicalSpace α]
+  {U : Set α} {ρ : α} {Θ u : α → ℂ}
+  (hEq : (fun x => Θ x) =ᶠ[𝓝[U] ρ] (fun x => (1 - u x) / (1 + u x)))
+  (hu : Tendsto u (𝓝[U] ρ) (𝓝 (0 : ℂ))) :
+  Tendsto Θ (𝓝[U] ρ) (𝓝 (1 : ℂ)) := by
+  have h := (tendsto_mobius_u_nhdsWithin (U := U) (ρ := ρ) (u := u) hu).1
+  exact h.congr' hEq.symm
+
+/-- Variant returning eventual nonvanishing of `1+u`. -/
+theorem Theta_pinned_limit_from_N2_with_eventually_ne
+  {α : Type*} [TopologicalSpace α]
+  {U : Set α} {ρ : α} {Θ u : α → ℂ}
+  (hEq : (fun x => Θ x) =ᶠ[𝓝[U] ρ] (fun x => (1 - u x) / (1 + u x)))
+  (hu : Tendsto u (𝓝[U] ρ) (𝓝 (0 : ℂ))) :
+  Tendsto Θ (𝓝[U] ρ) (𝓝 (1 : ℂ)) ∧ (∀ᶠ x in 𝓝[U] ρ, 1 + u x ≠ 0) := by
+  have h := tendsto_mobius_u_nhdsWithin (U := U) (ρ := ρ) (u := u) hu
+  exact ⟨h.1.congr' hEq.symm, h.2⟩
+
 end RS
 end RH

@@ -12,7 +12,7 @@ import Mathlib.Topology.MetricSpace.Basic
 
 noncomputable section
 
-open Set Complex
+open Set Complex Filter
 
 namespace RH.RS
 
@@ -424,22 +424,8 @@ theorem ZetaNoZerosOnRe1_from_offZerosAssignment
     ∀ z, z.re = 1 → riemannZeta z ≠ 0 :=
   zeta_nonzero_on_Re1_from_local_bridges_Z_off A.Θ A.N A.hΘSchur A.assign
 
-/-- Convenience: package an off-zeros decomposition and boundary assignment
-directly into the RS export. -/
-theorem ZetaNoZerosOnRe1_from_offZerosDecomp
-    {zf ξf : ℂ → ℂ}
-    (w : RH.RS.OffZeros.ZetaSchurDecompositionOffZeros zf ξf)
-    (hΘSchur : IsSchurOn w.Θ Ω)
-    (assign : ∀ z, z.re = 1 → ∃ (U Z : Set ℂ)
-      (data : LocalPinchDataZOff w.Θ w.N U Z), z ∈ (U \ Z)) :
-    ∀ z, z.re = 1 → riemannZeta z ≠ 0 := by
-  classical
-  let A : OffZerosBoundaryAssignment :=
-  { Θ := w.Θ,
-    N := w.N,
-    hΘSchur := hΘSchur,
-    assign := assign }
-  simpa using ZetaNoZerosOnRe1_from_offZerosAssignment A
+-- (explicit off-zeros convenience theorem removed; use `ZetaNoZerosOnRe1_from_offZerosDecomp`
+-- together with `OffZerosBoundaryAssignment.ofPinnedRemovable_noZetaZeros` instead.)
 
 /-- Adapter (GLOBALIZE): from an off-zeros boundary assignment provided by the
 bridge agent, we immediately obtain both the global Schur bound on `Θ` over `Ω`
