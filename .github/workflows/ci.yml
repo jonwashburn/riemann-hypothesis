@@ -17,8 +17,8 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          curl -fsSL https://github.com/leanprover/elan/releases/latest/download/elan-init.sh -o elan-init.sh
-          bash elan-init.sh -y --default-toolchain none
+          # Robust bootstrap (avoid release asset 404)
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
           ~/.elan/bin/elan toolchain install $(cat lean-toolchain)
           ~/.elan/bin/elan default $(cat lean-toolchain)
@@ -33,10 +33,10 @@ jobs:
             lake-
       - name: Lake update
         run: |
-          lake update
+          ~/.elan/bin/lake update
       - name: Lake build
         run: |
-          lake build
+          ~/.elan/bin/lake build
       - name: Verify (holes/axioms and theorems)
         run: |
           bash scripts/verify.sh
