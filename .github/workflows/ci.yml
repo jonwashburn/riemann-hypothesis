@@ -21,14 +21,14 @@ jobs:
         run: |
           cat lean-toolchain
           lean --version || true
-      - name: Lake update
       - name: Cache Lake packages
         uses: actions/cache@v4
         with:
           path: .lake/packages
-          key: lake-${{ hashFiles("lean-toolchain", "lake-manifest.json") }}
+          key: lake-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}
           restore-keys: |
             lake-
+      - name: Lake update
         run: |
           lake update
       - name: Lake build
