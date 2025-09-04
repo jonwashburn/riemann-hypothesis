@@ -27,9 +27,6 @@ Only the `rh/` tree participates in the Lean build.
 
 See docs/PROOF_TRACK.md for the single proof track and module map.
 
-> IMPORTANT: This repository is the finished Lean artifact. For the exploratory meta-proof project, see https://github.com/jonwashburn/riemann.
-> Use the release tag v1.0.1-annals for reproducible verification.
-
 # Machine-checked boundary-product proof of the Riemann Hypothesis
 
 ## Summary
