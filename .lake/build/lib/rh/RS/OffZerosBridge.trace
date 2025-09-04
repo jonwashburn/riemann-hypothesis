@@ -3,27 +3,33 @@
    ".> LEAN_PATH=././.lake/packages/batteries/.lake/build/lib:././.lake/packages/Qq/.lake/build/lib:././.lake/packages/aesop/.lake/build/lib:././.lake/packages/proofwidgets/.lake/build/lib:././.lake/packages/Cli/.lake/build/lib:././.lake/packages/importGraph/.lake/build/lib:././.lake/packages/LeanSearchClient/.lake/build/lib:././.lake/packages/mathlib/.lake/build/lib:././.lake/build/lib DYLD_LIBRARY_PATH= /Users/jonathanwashburn/.elan/toolchains/leanprover--lean4---v4.12.0/bin/lean -Dpp.unicode.fun=true -Dpp.proofs.withType=false -DautoImplicit=false -DrelaxedAutoImplicit=false ././././rh/RS/OffZerosBridge.lean -R ./././. -o ././.lake/build/lib/rh/RS/OffZerosBridge.olean -i ././.lake/build/lib/rh/RS/OffZerosBridge.ilean -c ././.lake/build/ir/rh/RS/OffZerosBridge.c --json",
    "level": "trace"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:104:14: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "././././rh/RS/OffZerosBridge.lean:50:14: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:118:14: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "././././rh/RS/OffZerosBridge.lean:50:10: unused variable `hs`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:122:4: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "././././rh/RS/OffZerosBridge.lean:154:14: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:52:3: unused variable `hdet2A`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/OffZerosBridge.lean:168:14: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:53:3: unused variable `hOA`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/OffZerosBridge.lean:172:4: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:56:3: unused variable `hO_ne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/OffZerosBridge.lean:102:3: unused variable `hdet2A`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:57:3: unused variable `hdet2_ne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/OffZerosBridge.lean:103:3: unused variable `hOA`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/OffZerosBridge.lean:59:3: unused variable `hJ_def_offXi`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/OffZerosBridge.lean:106:3: unused variable `hO_ne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/OffZerosBridge.lean:107:3: unused variable `hdet2_ne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/OffZerosBridge.lean:109:3: unused variable `hJ_def_offXi`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "17424526854087242921"}
+ "depHash": "14784065188154668973"}

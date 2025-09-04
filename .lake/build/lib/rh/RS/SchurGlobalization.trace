@@ -78,45 +78,57 @@
    "././././rh/RS/SchurGlobalization.lean:420:44: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:432:5: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:434:7: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:476:8: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "././././rh/RS/SchurGlobalization.lean:463:5: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:493:34: try 'simp at this' instead of 'simpa using this'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "././././rh/RS/SchurGlobalization.lean:482:23: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:447:5: unused variable `hZsub`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:523:8: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:448:27: unused variable `hρZ`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:540:34: try 'simp at this' instead of 'simpa using this'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:451:5: unused variable `hΘU`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:494:5: unused variable `hZsub`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:506:48: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:495:27: unused variable `hρZ`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:516:44: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:498:5: unused variable `hΘU`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:536:45: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:553:48: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:549:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:563:44: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:575:43: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:583:45: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:588:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:596:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:622:6: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "././././rh/RS/SchurGlobalization.lean:622:43: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   "././././rh/RS/SchurGlobalization.lean:633:5: unused variable `hΘU`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "././././rh/RS/SchurGlobalization.lean:635:50: unused variable `data`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:669:6: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:680:5: unused variable `hΘU`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:757:8: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
+   "level": "warning"},
+  {"message":
+   "././././rh/RS/SchurGlobalization.lean:765:6: try 'simp' instead of 'simpa'\nnote: this linter can be disabled with `set_option linter.unnecessarySimpa false`",
    "level": "warning"}],
- "depHash": "4884771263249971169"}
+ "depHash": "2542700486700824061"}

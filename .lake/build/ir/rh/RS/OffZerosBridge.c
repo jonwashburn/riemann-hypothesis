@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.RS.OffZerosBridge
-// Imports: Init Mathlib.Analysis.Complex.Basic Mathlib.Analysis.Complex.RemovableSingularity Mathlib.Topology.Algebra.UniformGroup
+// Imports: Init Mathlib.Analysis.Complex.Basic Mathlib.Analysis.Complex.RemovableSingularity Mathlib.Topology.Algebra.UniformGroup Mathlib.Analysis.SpecialFunctions.Exponential
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -46,6 +46,7 @@ lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_Complex_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Analysis_Complex_RemovableSingularity(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Topology_Algebra_UniformGroup(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_Analysis_SpecialFunctions_Exponential(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_rh_RS_OffZerosBridge(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -61,6 +62,9 @@ res = initialize_Mathlib_Analysis_Complex_RemovableSingularity(builtin, lean_io_
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_Topology_Algebra_UniformGroup(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_Mathlib_Analysis_SpecialFunctions_Exponential(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 l_RH_RS_OffZeros__u03a9 = _init_l_RH_RS_OffZeros__u03a9();

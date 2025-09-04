@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: rh.Proof.Main
-// Imports: Init rh.academic_framework.Certificate
+// Imports: Init rh.academic_framework.Certificate rh.RS.SchurGlobalization rh.academic_framework.EulerProductMathlib
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -15,6 +15,8 @@ extern "C" {
 #endif
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_rh_academic__framework_Certificate(uint8_t builtin, lean_object*);
+lean_object* initialize_rh_RS_SchurGlobalization(uint8_t builtin, lean_object*);
+lean_object* initialize_rh_academic__framework_EulerProductMathlib(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_rh_Proof_Main(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -24,6 +26,12 @@ res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_rh_academic__framework_Certificate(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_rh_RS_SchurGlobalization(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_rh_academic__framework_EulerProductMathlib(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));

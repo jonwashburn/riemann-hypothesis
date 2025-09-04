@@ -1,4 +1,6 @@
 \documentclass[11pt]{article}
+% arXiv PDF output directive (safe for journal submission as no effect there)
+\pdfoutput=1
 \usepackage{booktabs}
 \usepackage{float}
 % Robust CSV tables
@@ -38,6 +40,16 @@
 % Optional appendix lock for numeric sections
 \newif\ifshownumerics
 \shownumericsfalse
+% Submission mode toggle (minimal arXiv/journal preamble variant)
+\newif\ifsubmission
+\submissiontrue
+\ifsubmission
+  % Override link styling to hidelinks for clean b/w PDFs
+  \hypersetup{hidelinks}
+  % Ensure diagnostics stay gated in submission builds
+  \numericlockfalse
+  \shownumericsfalse
+\fi
 % Optional numeric overrides (diagnostic only; non-load-bearing)
 \ifnumericlock
   \renewcommand{\Kxi}{0.16000000}
@@ -151,7 +163,7 @@ We retain two compatible RHS bounds (CR–Green + box energy, and the Hilbert en
 \end{itemize}
 
 \paragraph{One-route outline (what actually happens).}
-Section~\ref{thm:phase-velocity-quant} establishes the phase–velocity identity with outer normalization and boundary passage. We then bound the window constants: the derivative envelope (Lemma~\ref{lem:CH-derivative-explicit}) and the H$^1$–BMO mean–oscillation link (Lemma~\ref{lem:Mpsi-correct}). The box energy is quantified as $C_{\rm box}^{(\zeta)}=K_0+K_\xi$ (Cor.~\ref{cor:conservative-closure}), with $K_0$ (prime tail) and $K_\xi$ (neutralized zeros) derived in the main text and Appendix~\ref{app:vk-annuli-kxi}. The product certificate closes the boundary wedge (Theorem~\ref{thm:psc-certificate-stage2}), yielding $2\mathcal J$ Herglotz and $\Theta$ Schur on $\Omega\setminus Z(\xi)$. Finally, Section~\ref{sec:globalization} removes singularities across $Z(\xi)$ via the Schur–Herglotz pinch, after which Herglotz/Schur hold on $\Omega$ and RH follows. Appendices record numeric audits and self-contained standard facts used for cross-references.
+Theorem~\ref{thm:phase-velocity-quant} establishes the phase–velocity identity with outer normalization and boundary passage. We then bound the window constants: the derivative envelope (Lemma~\ref{lem:CH-derivative-explicit}) and the H$^1$–BMO mean–oscillation link (Lemma~\ref{lem:Mpsi-correct}). The box energy is quantified as $C_{\rm box}^{(\zeta)}=K_0+K_\xi$ (Cor.~\ref{cor:conservative-closure}), with $K_0$ (prime tail) and $K_\xi$ (neutralized zeros) derived in the main text and Appendix~\ref{app:vk-annuli-kxi}. The product certificate closes the boundary wedge (Theorem~\ref{thm:psc-certificate-stage2}), yielding $2\mathcal J$ Herglotz and $\Theta$ Schur on $\Omega\setminus Z(\xi)$. Finally, Section~\ref{sec:globalization} removes singularities across $Z(\xi)$ via the Schur–Herglotz pinch, after which Herglotz/Schur hold on $\Omega$ and RH follows. Appendices record numeric audits and self-contained standard facts used for cross-references.
 The Riemann Hypothesis (RH) admits several analytic formulations. In this paper we pursue a bounded-real (BRF) route on the right half-plane
 \[
  \Omega\;:=\;\Half,
@@ -177,7 +189,7 @@ Our method combines four ingredients:
   \log\dettwo(I-T)\;=\;\log\dettwo(I-A)\; +\; \log\det(I-S),\qquad S\;:=\;D-C(I-A)^{-1}B,
  \]
  which separates the Hilbert--Schmidt (\(k\ge 2\)) terms from the finite block.
- \item \textbf{HS continuity for \(\dettwo\).} Prime truncations \(A_N\to A\) in the HS topology, uniformly on compacts in \(\Omega\), imply local-uniform convergence of \(\dettwo(I-A_N)\) (Section~\ref{prop:hs-det2-continuity}). Division by \(\xi\) is justified only on compacts avoiding its zeros; throughout we explicitly state such hypotheses when needed.
+ \item \textbf{HS continuity for \(\dettwo\).} Prime truncations \(A_N\to A\) in the HS topology, uniformly on compacts in \(\Omega\), imply local-uniform convergence of \(\dettwo(I-A_N)\) (Proposition~\ref{prop:hs-det2-continuity}). Division by \(\xi\) is justified only on compacts avoiding its zeros; throughout we explicitly state such hypotheses when needed.
  % optional finite-stage and interior-rectangle route removed to enforce single proof route
 \end{itemize}
 % interior rectangles header removed (single-route only)
@@ -467,13 +479,6 @@ Factor $F_\varepsilon=I_\varepsilon\,O_\varepsilon$ with $O_\varepsilon$ outer o
 Passage $\varepsilon\downarrow 0$ follows from the smoothed bounds and de-smoothing: $u_\varepsilon\to u$ in $L^1_{\rm loc}$ (Lemmas~\ref{lem:det2-unsmoothed},~\ref{lem:xi-deriv-L1} and Lemma~\ref{lem:desmooth-L1}), hence $\Hilb[u_\varepsilon']\to \Hilb[u']$ in $\mathcal D'(\R)$. The Poisson kernels converge in distributions, and boundary atoms (critical-line zeros of $\xi$) appear in the limit as $\varepsilon\downarrow 0$ through the argument jump, giving the claimed atomic terms in Theorem~\ref{thm:phase-velocity-quant}.
 \end{proof}
 % (Removed duplicate proof that repeated the CR–Green pairing justification.)
-\begin{proof}
-Fix an interval $I=[t_0-L,t_0+L]$. By \eqref{eq:window-certificate} and the all-interval Carleson bound,
-\[
- \int_{\R} \varphi_{L,t_0}(t)(-w')(t)\,dt\ \le\ C(\psi)\,\sqrt{C_{\rm box}^{(\zeta)}}\,L^{1/2}.
-\]
-Combining the preceding estimate with Lemma~\ref{lem:local-to-global-wedge} and Lemma~\ref{lem:mu-to-lebesgue} yields $\mu(\mathcal Q)=0$ and hence \eqref{eq:Pplus}.
-\end{proof}
 % Lead-in: From (P+) we lift positivity to the interior (Poisson), pass to Schur via Cayley, and pinch across $Z(\xi)$ using (N1)–(N2).
 \section{Globalization across $Z(\xi)$ via a Schur--Herglotz pinch}\label{sec:globalization}
 \noindent This section upgrades the a.e. boundary wedge \emph{(P+)} to an interior Herglotz/Schur conclusion on $\Omega\setminus Z(\xi)$ via the Poisson integral and the Cayley map, then removes singularities across $Z(\xi)$ using non-cancellation \textnormal{(N2)} and the right-edge normalization \textnormal{(N1)}.
@@ -567,7 +572,7 @@ We combine: (i) the boundary wedge (P+) from the product certificate (Theorem~\r
 We record explicit bounds ensuring $\Theta(\sigma+it)\to-1$ uniformly for $t$ in compact $t$-intervals as $\sigma\to+\infty$.
 \begin{itemize}
 \item Zeta/gamma growth: For $\sigma\ge 2$ and all $t\in\R$, $|\zeta(\sigma+it)-1|\le 2^{1-\sigma}$, hence $|\zeta(\sigma+it)|\le 1+2^{1-\sigma}$. Stirling's formula on vertical strips gives $|\pi^{-s/2}\Gamma(s/2)|\asymp (1+|t|)^{\sigma/2-1/2} e^{-\pi|t|/4}$. For each fixed $t$ (indeed uniformly on compact $t$-intervals), $|\xi(\sigma+it)|\to\infty$ as $\sigma\to\infty$.
-\item Outer factor: By Corollary~\ref{cor:bmo-boundary} and Lemma~\ref{lem:poisson-bmo-strip}, the boundary modulus $u=\log|\dettwo/\xi|$ has uniform BMO control; thus its Poisson extension $U=\Re\log\mathcal O$ is bounded on vertical strips $\{\Re s\ge 1\}$ by a constant $C_\mathcal O$, yielding $e^{-C_\mathcal O}\le |\mathcal O(\sigma+it)|\le e^{C_\mathcal O}$ for $\sigma\ge 1$.
+\item Outer factor: By Lemma~\ref{lem:poisson-bmo-strip} and the Carleson/BMO bounds recorded earlier, the boundary modulus $u=\log|\dettwo/\xi|$ has uniform BMO control; thus its Poisson extension $U=\Re\log\mathcal O$ is bounded on vertical strips $\{\Re s\ge 1\}$ by a constant $C_\mathcal O$, yielding $e^{-C_\mathcal O}\le |\mathcal O(\sigma+it)|\le e^{C_\mathcal O}$ for $\sigma\ge 1$.
 \item Det$_2$ limit: For $\sigma\ge 1$, $\|A(\sigma+it)\|\le 2^{-\sigma}\le \tfrac12$. By the product representation in Lemma~\ref{lem:hs-diagonal} and since $\sum_p p^{-2\sigma}\to0$ as $\sigma\to\infty$, one has $|\dettwo(I-A(\sigma+it)) - 1|\le C\sum_p p^{-2\sigma}\to 0$ (uniformly for $t$ in compact intervals).
 \end{itemize}
 Combining, for $\sigma\ge 2$,
@@ -647,11 +652,13 @@ and therefore we retain only the inequality display (sanity check), without a nu
 These numbers provide quantitative diagnostics. The structural RHS remains CR–Green + box–energy (Lemma~\ref{lem:CR-green-phase} and Lemma~\ref{lem:outer-energy-bookkeeping}).
 
 \medskip
+\ifshownumerics
 \noindent\textbf{Diagnostics (sanity check only).} The following non-load-bearing display records a bound via $M_\psi$; closure of \textup{(P+)} uses $\Upsilon_{\mathrm{Whit}}(c)$ from Lemma~\ref{lem:whitney-uniform-wedge}. Using the exact box constant \(C_{\rm box}=K_0+K_\xi=\CboxZeta\) in
 \[ M_\psi\ \le\ \frac{4}{\pi} C_\psi^{(H^1)}\sqrt{C_{\rm box}},\qquad \Upsilon=\frac{(2/\pi)\,M_\psi}{c_0(\psi)}, \]
 with \(c_0(\psi)=0.17620819\), \(C_\psi^{(H^1)}=\CpsiHone\), we obtain
 \[ M_\psi\ \le\ \Mpsilocked,\qquad \Upsilon_{\mathrm{diag}}\ :=\ \frac{(2/\pi)\,M_\psi}{c_0(\psi)}\ =\ \UpsilonLocked. \]
 All inputs are unconditional and independently enclosed.
+\fi
 \end{corollary}
 % \fi
 \medskip
@@ -1041,6 +1048,7 @@ with the implied constant independent of $T$ and $k$.
 Summing $k\ge 1$ and using $L=c/\log\langle T\rangle$ gives
 \[ \iint_{Q(\alpha I)} |\nabla U_\xi|^2\,\sigma\,dt\,d\sigma\ \le\ K_\xi\,|I|,\qquad \text{for a finite constant }K_\xi. \]
 \medskip
+\ifshownumerics
 \noindent\fbox{\begin{minipage}{0.98\textwidth}
 \textbf{Boxed $K_\xi$ audit (parametric; diagnostic).} With $C_\alpha$ from Lemma~\ref{lem:annular-balayage},
 \[
@@ -1048,6 +1056,7 @@ Summing $k\ge 1$ and using $L=c/\log\langle T\rangle$ gives
   \ =\ C_\alpha\!\left(\frac{\pi}{12} \ +\ 2\,\zeta(3)\right).
 \]
 \end{minipage}}
+\fi
 Combining,
 \[
 \boxed{\ C_{\rm box}^{(\zeta)}\ :=\ \sup_{I}\ \frac{1}{|I|}\iint_{Q(\alpha I)} |\nabla U|^2\,\sigma\,dt\,d\sigma\ \le\ K_0+K_\xi\ =\ \CboxZeta\ .\ }
@@ -1146,7 +1155,7 @@ With the notation of Lemma~\ref{lem:CR-green-phase}, replace $U$ by $U-\Re\log\m
 \begin{proof}
 On the bottom edge, replacing $U$ by $U-\Re\log\mathcal O$ changes the boundary term by
 $\int_{\mathbb R}\psi_{L,t_0}(t)\,\partial_t\Arg\mathcal O(\tfrac12+it)\,dt
-=\int_{\mathbb R}\psi_{L,t_0}(t)\,\mathsf H[u'](t)\,dt$
+=\int_{\mathbb R}\psi_{L,t_0}(t)\,\Hilb[u'](t)\,dt$
 (Lemma~\ref{lem:outer-phase-HT}), which cancels against the outer contribution already subsumed in $-w'$. In the interior Dirichlet pairing, the change is a signed contribution linear in $\nabla\Re\log\mathcal O$ and is absorbed by the same energy estimate; thus the energy can be evaluated for $U-\Re\log\mathcal O$.
 \end{proof}
 \begin{corollary}[Explicit remainder control]
@@ -1177,7 +1186,7 @@ and let $O$ be the outer on $\Omega$ with boundary modulus
 \(
 |O(\tfrac12+it)|=\exp\!\big(u_0(t)-u_\xi(t)\big).
 \)
-Set
+ 
 \[
 J(s):=\frac{\det\nolimits_2(I-A(s))}{O(s)\,\xi(s)},\qquad
 \log J=U+iW,\qquad U_0:=\Re\log\det\nolimits_2(I-A),\quad U_\xi:=\Re\log\xi.
@@ -1489,6 +1498,7 @@ With $U=U_{\det_2}+U_{\xi}$ on the boundary in the $\zeta$–normalized route, t
 No separate $\Gamma$–area term enters the certificate path.
 
 % shownumerics gated section (disabled)
+\ifshownumerics
 \paragraph{Numeric instantiation (diagnostic; gated).}
 All concrete values (audited constants for $K_0$, $K_\xi$, the $\zeta$–side box constant $C_{\mathrm{box}}^{(\zeta)}$, the evaluation of $C_\psi^{(H^1)}$, and the locked $M_\psi$) are collected for reproducibility; the proof of (P+) uses only the CR–Green right-hand side with the box constant.
 \begin{itemize}
@@ -1499,6 +1509,7 @@ All concrete values (audited constants for $K_0$, $K_\xi$, the $\zeta$–side bo
   \item \textbf{Inequality form.} With $M_\psi= (4/\pi)\,C_\psi^{(H^1)}\,\sqrt{C_{\mathrm{box}}^{(\zeta)}}$, the display $\frac{(2/\pi)\,M_\psi}{c_0(\psi)}<\frac{\pi}{2}$ is diagnostic.
 \end{itemize}
  
+\fi
 \subsection*{Explicit proofs and constants for key lemmas (archimedean, prime-tail, Hilbert)}
 We record complete proofs with explicit constants, making finiteness and dependence on the window $\psi$ transparent.
 % Duplicate prime-tail subsection removed (see earlier \S{subsec:prime-tail})
@@ -1801,7 +1812,9 @@ Define
  c_0(\psi)\ :=\ \inf_{0<b\le 1,\ |x|\le 1}\ (\Poisson_{b}*\psi)(x)\ \ge\ 0.1762081912\,.
 \]
 For the printed flat--top window this is locked as
-
+\[
+  c_0(\psi)=0.17620819.
+\]
 \subsection*{Product certificate $\Rightarrow$ boundary wedge and (P+)}
 \noindent\textit{Route status.} We prove (P+) via the product certificate. PSC sum/density material is archived and not used in the main chain. \emph{Closure uses the quantitative wedge criterion with a Whitney–uniform smallness $\Upsilon_{\mathrm{Whit}}(c)<\tfrac12$ for some small absolute $c$ (no numeric lock), obtained from unconditional bounds on $c_0(\psi)$, $C_\psi^{(H^1)}$, and $C_{\rm box}^{(\zeta)}$.}
 
