@@ -4,7 +4,7 @@
 ![axioms 0](https://img.shields.io/badge/axioms-0-brightgreen)
 ![sorries 0](https://img.shields.io/badge/sorries-0-brightgreen)
 
-## Start here (for reviewers and AIs)
+## Start here
 - Use the artifact repo, not the meta-proof scaffold.
 - Checkout the release tag below for a reproducible build.
 
