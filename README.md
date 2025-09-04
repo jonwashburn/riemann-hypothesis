@@ -1,7 +1,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17055989.svg)](https://doi.org/10.5281/zenodo.17055989)
 [![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
 ![Lean](https://img.shields.io/badge/Lean-4.12.0-blue)
-![No axioms / No sorries](https://img.shields.io/badge/axioms-0%20%7C%20sorries-0-success)
+![axioms 0](https://img.shields.io/badge/axioms-0-brightgreen)
+![sorries 0](https://img.shields.io/badge/sorries-0-brightgreen)
 
 ## Start here (for reviewers and AIs)
 - Use the artifact repo, not the meta-proof scaffold.
