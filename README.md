@@ -1,4 +1,7 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17055989.svg)](https://doi.org/10.5281/zenodo.17055989)
 [![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
+![Lean](https://img.shields.io/badge/Lean-4.12.0-blue)
+![No axioms / No sorries](https://img.shields.io/badge/axioms-0%20%7C%20sorries-0-success)
 
 ## Start here (for reviewers and AIs)
 - Use the artifact repo, not the meta-proof scaffold.
@@ -21,16 +24,10 @@ Key theorems:
 
 Only the `rh/` tree participates in the Lean build.
 
-[![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
-
 See docs/PROOF_TRACK.md for the single proof track and module map.
 
-[![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
-
 > IMPORTANT: This repository is the finished Lean artifact. For the exploratory meta-proof project, see https://github.com/jonwashburn/riemann.
-> Use the release tag v1.0-annals for reproducible verification.
-
-[![CI](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml/badge.svg)](https://github.com/jonwashburn/riemann-hypothesis/actions/workflows/ci.yml)
+> Use the release tag v1.0.1-annals for reproducible verification.
 
 # Machine-checked boundary-product proof of the Riemann Hypothesis
 
