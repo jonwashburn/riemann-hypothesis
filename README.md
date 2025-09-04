@@ -11,10 +11,14 @@ Key mathematical ingredients:
 - A symmetry wrapper shows: if Ξ has no zeros in Ω and zeros are symmetric under s ↦ 1 − s, then all zeros lie on Re s = 1/2. Instantiated with Ξ = ξ, this yields RH.
 
 ## How to verify
-1) Install Lean 4 toolchain and mathlib (or let Lake fetch them).
+1) Use the pinned Lean toolchain in `lean-toolchain`.
 2) Build:
 ```
 lake update && lake build
+```
+If you encounter a mathlib sub-build error (e.g. Batteries/Aesop), refresh deps and rebuild:
+```
+rm -rf .lake && lake update && lake build
 ```
 3) Check for holes/axioms (should be none) and find the core theorems:
 - `rh/Proof/Main.lean`: theorem `RH.Proof.RH` (symmetry pinch wrapper).
@@ -38,5 +42,10 @@ lake update && lake build
 - `Riemann.pdf`: compiled manuscript with the narrative and references.
 
 ## License
+
+## Verify locally
+- lake update && lake build
+- bash scripts/verify.sh
+- SHA256(Riemann.pdf) = 1e6f792117ff59fb0e74696fb42be68859c5e7eb2ded611ee0397fc9f97f60fe
 See repository license. Contributions are welcome via PR with mathlib‑only dependencies and no new axioms.
 
