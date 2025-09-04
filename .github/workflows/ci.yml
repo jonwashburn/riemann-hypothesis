@@ -13,20 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up elan (Lean toolchain)
+      - name: Install Lean toolchain via elan
+        shell: bash
         run: |
-          curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-init.sh | sh -s -- -y
+          set -euxo pipefail
+          curl -fsSL https://github.com/leanprover/elan/releases/latest/download/elan-init.sh -o elan-init.sh
+          bash elan-init.sh -y --default-toolchain none
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - name: Show toolchain
-        run: |
-          cat lean-toolchain
-          $HOME/.elan/bin/lean --version || true
-      - name: Install pinned toolchain
-        run: |
-          $HOME/.elan/bin/elan toolchain install $(cat lean-toolchain)
-          $HOME/.elan/bin/elan default $(cat lean-toolchain)
-          $HOME/.elan/bin/elan show
-          $HOME/.elan/bin/lake --version || true
+          ~/.elan/bin/elan toolchain install $(cat lean-toolchain)
+          ~/.elan/bin/elan default $(cat lean-toolchain)
+          ~/.elan/bin/lean --version
+          ~/.elan/bin/lake --version || true
       - name: Cache Lake packages
         uses: actions/cache@v4
         with:
@@ -36,10 +33,10 @@ jobs:
             lake-
       - name: Lake update
         run: |
-          $HOME/.elan/bin/lake update
+          lake update
       - name: Lake build
         run: |
-          $HOME/.elan/bin/lake build
+          lake build
       - name: Verify (holes/axioms and theorems)
         run: |
           bash scripts/verify.sh
