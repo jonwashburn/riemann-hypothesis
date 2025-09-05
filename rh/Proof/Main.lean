@@ -44,6 +44,31 @@ theorem boundary_nonvanishing_from_offzeros_pointwise
 
 end RH.Proof.Assembly
 
+namespace RH.Proof.Assembly
+
+/-- Pack the RS data needed to drive RH for a supplied `riemannXi`. -/
+structure XiOffZerosBridge where
+  riemannXi : ℂ → ℂ
+  G : ℂ → ℂ
+  symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0
+  hXiEq : ∀ s, riemannXi s = G s * riemannZeta s
+  hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0
+  Θ : ℂ → ℂ
+  hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \ {z | riemannZeta z = 0})
+  assign : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
+    ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
+      (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+      ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+        Set.EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1
+
+/-- From an `XiOffZerosBridge`, conclude RH for the packaged `riemannXi`. -/
+theorem RH_xi_from_bridge (B : XiOffZerosBridge) :
+    ∀ ρ, B.riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  refine RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros (riemannXi := B.riemannXi)
+    B.symXi B.G B.hXiEq B.hGnz B.Θ B.hSchur B.assign
+
+end RH.Proof.Assembly
+
 namespace RH.Proof
 
 open Complex
