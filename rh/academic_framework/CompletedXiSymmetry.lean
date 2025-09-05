@@ -1,3 +1,7 @@
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.NumberTheory.LSeries.RiemannZeta
+import rh.academic_framework.CompletedXi
+
 /-!
 Zero-symmetry for completed ξ from the functional equation (statement level).
 
@@ -10,11 +14,6 @@ balances as `G(s)·χ(s) = G(1−s)`, then
 `ξ(s) = G(s)·ζ(s) = G(s)·χ(s)·ζ(1−s) = G(1−s)·ζ(1−s) = ξ(1−s)`.
 From this equality, zeros of `ξ` are symmetric under `s ↦ 1−s`.
 -/
-
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.SpecialFunctions.Gamma
-import Mathlib.NumberTheory.LSeries.RiemannZeta
-import ./CompletedXi
 
 noncomputable section
 
@@ -30,6 +29,14 @@ theorem zero_symmetry_from_fe
   intro ρ hρ
   have hfe : riemannXi (1 - ρ) = riemannXi ρ := by simpa [eq_comm] using (funcEq ρ)
   simpa [hfe]
+
+-- Optional: a direct `xi_functional_equation` can be supplied by callers from
+-- the completed ζ equation; we omit it here to keep imports minimal.
+
+/-- Zero symmetry for `ξ` as a consequence of its functional equation. -/
+theorem xi_zero_symmetry : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0 := by
+  refine zero_symmetry_from_fe riemannXi ?hfe
+  intro s; exact xi_functional_equation s
 
 /-
 Functional equation for `ξ` from a ζ functional equation and the Γ/π balance.

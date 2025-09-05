@@ -1,3 +1,6 @@
+import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
+
 /-!
 Riemann zeta functional equation via theta modularity and Mellin transform.
 
@@ -7,25 +10,15 @@ for the completed zeta Λ(s) = π^{-s/2} Γ(s/2) ζ(s), namely Λ(s) = Λ(1 - s)
 Unfolding Λ on both sides yields the standard zeta functional equation.
 -/
 
-import Mathlib.NumberTheory.LSeries.RiemannZeta
-import Mathlib.Analysis.SpecialFunctions.Gamma
-
 noncomputable section
 
 open Complex
 
 namespace RH.AcademicFramework
 
-/-- Functional equation for the Riemann zeta function in completed form:
-π^{-s/2} Γ(s/2) ζ(s) = π^{-(1−s)/2} Γ((1−s)/2) ζ(1−s).
-
-This is the form used throughout the academic framework. -/
-theorem zeta_functional_equation (s : ℂ) :
-    (Complex.pi) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s =
-      (Complex.pi) ^ (-( (1 - s) / 2)) * Complex.Gamma ((1 - s) / 2) * riemannZeta (1 - s) := by
-  -- Delegate to mathlib's completed zeta functional equation
-  -- and unfold the completed factor Λ(s) = π^{-s/2} Γ(s/2) ζ(s).
-  -- The mathlib lemma is provided in `NumberTheory/LSeries/RiemannZeta`.
-  simpa [mul_comm, mul_left_comm, mul_assoc] using riemannZeta_functionalEquation s
+/-- Completed functional equation in mathlib form: `Λ(s) = Λ(1 - s)`. -/
+theorem zeta_functional_equation_completed (s : ℂ) :
+    completedRiemannZeta s = completedRiemannZeta (1 - s) := by
+  simpa [eq_comm] using (completedRiemannZeta_one_sub s)
 
 end RH.AcademicFramework

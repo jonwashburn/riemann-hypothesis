@@ -23,7 +23,7 @@ open scoped Real BigOperators
 namespace Theta
 
 /-- Jacobi theta function `θ(t) = ∑_{n∈ℤ} e^{-π t n^2}` for `t > 0`. -/
-def theta (t : ℝ) : ℝ := 
+def theta (t : ℝ) : ℝ :=
   ∑' n : ℤ, Real.exp (-Real.pi * t * (n : ℝ) ^ 2)
 
 lemma theta_def (t : ℝ) :
@@ -47,5 +47,3 @@ end Theta
 export Theta (theta_modularity)
 
 end RH.AcademicFramework
-
-

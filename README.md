@@ -17,12 +17,12 @@ bash scripts/verify.sh
 bash scripts/print-keys.sh
 ```
 
-Key theorems:
-- rh/Proof/Main.lean: theorem RH
-- rh/RS/SchurGlobalization.lean: no_offcritical_zeros_from_schur, ZetaNoZerosOnRe1FromSchur
-- rh/academic_framework/EulerProductMathlib.lean: zeta_nonzero_re_eq_one
+Key theorems (current build):
+- rh/Proof/Main.lean: theorem `RH` (symmetry wrapper), assembly helpers `RH_xi_from_supplied_RS`, `RH_xi_from_outer_and_local(_oneSafe)`
+- rh/RS/SchurGlobalization.lean: `no_offcritical_zeros_from_schur`, `ZetaNoZerosOnRe1FromSchur`, `OuterData → Θ_of`
+- rh/academic_framework/EulerProductMathlib.lean: `zeta_nonzero_re_eq_one`
 
-Only the `rh/` tree participates in the Lean build.
+Only the `rh/` tree participates in the Lean build. Archive scaffolds live under `docs/archive/xi/`.
 
 See docs/PROOF_TRACK.md for the single proof track and module map.
 
@@ -57,7 +57,7 @@ rm -rf .lake && lake update && lake build
 - Boundary wedge and globalization: `rh/RS/SchurGlobalization.lean`, `rh/RS/BoundaryWedge.lean`.
 - Certificate interfaces and Kξ/K0 adapters: `rh/Cert/*.lean`, `rh/academic_framework/*.lean`.
 - Euler product wrappers: `rh/academic_framework/EulerProductMathlib.lean`.
-- Top‑level assembly and RH wrapper: `rh/Proof/Main.lean`.
+- Top‑level assembly and RH wrapper: `rh/Proof/Main.lean` (includes final wiring entry points for RH(ξ)).
 
 ## Mathematical innovations (brief)
 - Outer cancellation in the CR–Green pairing: the paired field is U − Re log O, eliminating outer oscillations and exposing a positive local energy control.

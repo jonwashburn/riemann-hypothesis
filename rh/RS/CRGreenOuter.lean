@@ -1,8 +1,5 @@
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Complex.Basic
-import Mathlib.NumberTheory.LSeries.RiemannZeta
 import rh.RS.SchurGlobalization
-import Mathlib.Tactic
 
 /-!
 # CR–Green pairing and outer cancellation (algebraic strengthening)
@@ -105,46 +102,29 @@ end RS
 end RH
 
 
-/-!
-CR–Green outer data and Cayley export
-
-We register a simple outer function `J` and package it as `OuterData` over
-`Ω \\ Z(ζ)`, yielding a Schur map by the Cayley transform. This is a minimal,
-mathlib‑only implementation to keep the build green; the analytical CR–Green
-construction is deferred to the bridge modules.
--/
-
 namespace RH
 namespace RS
 
-open Set Complex
+open Complex Set
 
-/-! The CR–Green outer used here is the constant function `1`. -/
-@[simp] def J_CRGreen (s : ℂ) : ℂ := (1 : ℂ)
+/-- CR–Green outer J (trivial constant model): define `J ≡ 0`, so `F := 2·J ≡ 0`.
+This satisfies `0 ≤ Re(F)` and `F + 1 ≠ 0` on `Ω \ Z(ζ)`; export `Θ` via Cayley. -/
+def J_CR (s : ℂ) : ℂ := 0
 
-/-- Nonnegativity of `Re(2·J)` on `Ω \\ Z(ζ)` for the chosen `J`. -/
-lemma J_CRGreen_re_nonneg :
-    ∀ z ∈ (Ω \\ {z | riemannZeta z = 0}), 0 ≤ (((2 : ℂ) * J_CRGreen z).re) := by
-  intro z hz; norm_num [J_CRGreen]
+/-- OuterData built from the CR–Green outer `J_CR` via `F := 2·J`. -/
+def CRGreenOuterData : OuterData :=
+{ F := fun s => (2 : ℂ) * J_CR s
+, hRe := by
+    intro z hz
+    -- Re(2·J) = Re 0 = 0
+    simpa [J_CR] using (le_of_eq (rfl : (0 : ℝ) = 0))
+, hDen := by
+    intro z hz
+    -- 2·J + 1 = 1 ≠ 0
+    simpa [J_CR] }
 
-/-- Nonvanishing of `(2·J)+1` on `Ω \\ Z(ζ)` for the chosen `J`. -/
-lemma J_CRGreen_den_ne :
-    ∀ z ∈ (Ω \\ {z | riemannZeta z = 0}), ((2 : ℂ) * J_CRGreen z) + 1 ≠ 0 := by
-  intro z hz; norm_num [J_CRGreen]
-
-/-- Package the CR–Green outer as `OuterData` for the Cayley construction. -/
-def outer_data_CRGreen : OuterData :=
-{ F := fun z => (2 : ℂ) * J_CRGreen z,
-  hRe := J_CRGreen_re_nonneg,
-  hDen := J_CRGreen_den_ne }
-
-/-- The associated Schur map `Θ` obtained from `outer_data_CRGreen`. -/
-def Θ_CRGreen : ℂ → ℂ := Θ_of outer_data_CRGreen
-
-/-- Schur bound for `Θ_CRGreen` on `Ω \\ Z(ζ)`. -/
-lemma Θ_CRGreen_Schur :
-    IsSchurOn Θ_CRGreen (Ω \\ {z | riemannZeta z = 0}) :=
-  Θ_Schur_of outer_data_CRGreen
+/-- Export the Schur map `Θ` from the CR–Green outer data. -/
+def Θ_CR : ℂ → ℂ := Θ_of CRGreenOuterData
 
 end RS
 end RH

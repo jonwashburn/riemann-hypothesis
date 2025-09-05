@@ -1,5 +1,5 @@
 import Mathlib.NumberTheory.LSeries.RiemannZeta
-import Mathlib.Analysis.SpecialFunctions.Gamma
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 /-!
 Mellin identities linking the theta function and zeta on vertical strips.
@@ -25,10 +25,10 @@ namespace RH.AcademicFramework
 
 /-- The completed zeta factor Λ(s) = π^{-s/2} Γ(s/2) ζ(s). -/
 def completedZeta (s : ℂ) : ℂ :=
-  (Complex.pi) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s
+  (Real.pi : ℂ) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s
 
 @[simp] lemma completedZeta_def (s : ℂ) :
-    completedZeta s = (Complex.pi) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s := rfl
+    completedZeta s = (Real.pi : ℂ) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s := rfl
 
 /-- Mellin link from the Jacobi theta side to zeta on a vertical strip.
 
@@ -42,7 +42,7 @@ Note: This lemma is designed to be compatible with the usual `theta_modularity`
 route; it does not depend on any project-local RS modules. -/
 theorem zeta_from_theta_mellin
     (s : ℂ) (hs : 1 < s.re) :
-    completedZeta s = (Complex.pi) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s := by
+    completedZeta s = (Real.pi : ℂ) ^ (-(s / 2)) * Complex.Gamma (s / 2) * riemannZeta s := by
   -- This is a definitional restatement exposing Λ(s) on the Mellin side.
   -- The classical Mellin identity identifies this quantity with
   -- ∫_0^∞ (θ(t) - 1) t^{s/2 - 1} dt on 1 < Re(s) < 2.
