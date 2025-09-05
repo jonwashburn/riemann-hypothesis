@@ -24,5 +24,3 @@ theorem zero_symmetry_from_fe
   simpa [hfe]
 
 end RH.AcademicFramework.CompletedXi
-
-

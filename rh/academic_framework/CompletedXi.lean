@@ -26,5 +26,3 @@ def riemannXi (s : ℂ) : ℂ := G s * riemannZeta s
 @[simp] theorem xi_factorization (s : ℂ) : riemannXi s = G s * riemannZeta s := rfl
 
 end RH.AcademicFramework.CompletedXi
-
-

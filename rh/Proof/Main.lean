@@ -4,6 +4,7 @@ import rh.academic_framework.EulerProductMathlib
 import rh.academic_framework.CompletedXi
 import rh.academic_framework.CompletedXiSymmetry
 import rh.RS.OffZerosBridge
+import rh.RS.SchurGlobalization
 -- CompletedXi import deferred until formalization lands
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.Tactic
@@ -175,3 +176,25 @@ theorem RH_riemannXi_from_RS_offZeros
   exact RH_riemannXi riemannXi hΞnz symXi
 
 end RH.Proof.Assembly
+
+namespace RH.Proof.Final
+
+open RH.AcademicFramework.CompletedXi
+open RH.AcademicFramework.CompletedXi (zero_symmetry_from_fe)
+
+/-- RH for `riemannXi` from supplied FE, Schur map Θ, assignment, and nonvanishing of G on Ω. -/
+theorem RH_xi_from_supplied_RS
+    (fe : ∀ s, riemannXi s = riemannXi (1 - s))
+    (Θ : ℂ → ℂ)
+    (hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \ {z | riemannZeta z = 0}))
+    (assign : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
+        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+          Set.EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
+    (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
+    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros
+    riemannXi (zero_symmetry_from_fe riemannXi fe) G xi_factorization hGnz Θ hSchur assign
+
+end RH.Proof.Final

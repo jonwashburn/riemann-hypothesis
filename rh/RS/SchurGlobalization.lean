@@ -150,6 +150,15 @@ lemma Θ_Schur_of (O : OuterData) :
     IsSchurOn (Θ_of O) (Ω \ {z | riemannZeta z = 0}) := by
   exact schur_of_cayley_re_nonneg_on O.F (Ω \ {z | riemannZeta z = 0}) O.hRe O.hDen
 
+/-- A simple concrete outer: constant `F ≡ 1`, yielding `Θ ≡ 0`. -/
+def OuterData.constOne : OuterData where
+  F := fun _ => (1 : ℂ)
+  hRe := by intro z hz; norm_num
+  hDen := by intro z hz; norm_num
+
+/-- Concrete Schur map from `OuterData.constOne` (constant zero). -/
+def Θ_const : ℂ → ℂ := Θ_of OuterData.constOne
+
 lemma PinchConstantOfOne
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S)
     (Θ : ℂ → ℂ) (hΘ : AnalyticOn ℂ Θ S) (hSchur : IsSchurOn Θ S)

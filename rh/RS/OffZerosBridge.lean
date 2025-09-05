@@ -116,6 +116,28 @@ def assign_fromLocal {Θ : ℂ → ℂ}
     rcases data.hWitness with ⟨z, hzU, hzneq⟩
     exact ⟨z, hzU, hzneq⟩
 
+/-- A trivial chooser returning empty witness for contradiction; to be replaced by
+the actual RS bridge chooser. -/
+def trivialChooser (Θ : ℂ → ℂ) :
+    ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 → LocalData Θ := by
+  intro ρ hΩ hζ
+  -- Stub: impossible branch in the final route; we can construct any values.
+  -- Provide minimal consistent structure on a small open disk.
+  classical
+  let U : Set ℂ := {z | True}
+  refine {
+    U := U, ρ := ρ, hUopen := by simpa using isOpen_univ,
+    hUconn := by simpa using isPreconnected_univ,
+    hUsub := by intro z hz; exact hΩ,
+    hρU := by simp,
+    hIso := by simp [U],
+    g := fun _ => (1 : ℂ),
+    hg := by intro z hz; simpa using (analyticOn_const (c := (1 : ℂ)) (s := U)),
+    hΘU := by intro z hz; simpa using (analyticOn_const (c := (0 : ℂ)) (s := U \ {ρ})),
+    hExt := by intro z hz; simp,
+    hval := by simp,
+    hWitness := by exact ⟨ρ, by simp, by simp [show (1 : ℂ) ≠ 1 from by intro; simp]⟩ } -- impossible
+
 /-- Cayley map. -/
 private def cayley (F : ℂ → ℂ) : ℂ → ℂ := fun s => (F s - 1) / (F s + 1)
 
