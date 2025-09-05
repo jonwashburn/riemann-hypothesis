@@ -79,6 +79,42 @@ lemma G_nonzero_on_Ω_offZeta {G : ℂ → ℂ}
     ∀ ⦃s⦄, s ∈ ((Ω) \ Z riemannZeta) → G s ≠ 0 := h
 
 end NonCancellation
+/-! Local removable-set assignment builder -/
+
+/-- Local data at a zero ρ suitable to build the assignment for
+`no_offcritical_zeros_from_schur`. Mirrors the archive shape. -/
+structure LocalData (Θ : ℂ → ℂ) where
+  U : Set ℂ
+  ρ : ℂ
+  hUopen : IsOpen U
+  hUconn : IsPreconnected U
+  hUsub : U ⊆ Ω
+  hρU : ρ ∈ U
+  hIso : (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ)
+  g : ℂ → ℂ
+  hg : AnalyticOn ℂ g U
+  hΘU : AnalyticOn ℂ Θ (U \ {ρ})
+  hExt : EqOn Θ g (U \ {ρ})
+  hval : g ρ = 1
+  hWitness : ∃ z, z ∈ U ∧ g z ≠ 1
+
+/-- Build the RS-shaped assignment from a chooser that supplies `LocalData` at each
+putative zero `ρ` in Ω. -/
+def assign_fromLocal {Θ : ℂ → ℂ}
+    (choose : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 → LocalData Θ) :
+    ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+          EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 := by
+  intro ρ hΩ hζ
+  classical
+  let data := choose ρ hΩ hζ
+  refine ⟨data.U, data.hUopen, data.hUconn, ?_, data.hρU, data.hIso, ?_⟩
+  · intro z hz; exact data.hUsub hz
+  · refine ⟨data.g, data.hg, data.hΘU, data.hExt, data.hval, ?_⟩
+    rcases data.hWitness with ⟨z, hzU, hzneq⟩
+    exact ⟨z, hzU, hzneq⟩
 
 /-- Cayley map. -/
 private def cayley (F : ℂ → ℂ) : ℂ → ℂ := fun s => (F s - 1) / (F s + 1)

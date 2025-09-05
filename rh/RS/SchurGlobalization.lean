@@ -136,6 +136,20 @@ lemma SchurOnRectangles
     exact False.elim ((lt_irrefl _) this)
   exact schur_of_cayley_re_nonneg_on F R hRe hDen
 
+/-- Outer data sufficient to build a Schur map by the Cayley transform on
+`Ω \\ Z(ζ)`. -/
+structure OuterData where
+  F : ℂ → ℂ
+  hRe : ∀ z ∈ (Ω \ {z | riemannZeta z = 0}), 0 ≤ (F z).re
+  hDen : ∀ z ∈ (Ω \ {z | riemannZeta z = 0}), F z + 1 ≠ 0
+
+/-- Build a Schur function on `Ω \\ Z(ζ)` from outer data via the Cayley transform. -/
+def Θ_of (O : OuterData) : ℂ → ℂ := fun z => (O.F z - 1) / (O.F z + 1)
+
+lemma Θ_Schur_of (O : OuterData) :
+    IsSchurOn (Θ_of O) (Ω \ {z | riemannZeta z = 0}) := by
+  exact schur_of_cayley_re_nonneg_on O.F (Ω \ {z | riemannZeta z = 0}) O.hRe O.hDen
+
 lemma PinchConstantOfOne
     (S : Set ℂ) (hSopen : IsOpen S) (hSconn : IsPreconnected S)
     (Θ : ℂ → ℂ) (hΘ : AnalyticOn ℂ Θ S) (hSchur : IsSchurOn Θ S)
