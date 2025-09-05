@@ -1,6 +1,7 @@
 import rh.academic_framework.Certificate
 import rh.RS.SchurGlobalization
 import rh.academic_framework.EulerProductMathlib
+-- CompletedXi import deferred until formalization lands
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.Tactic
 
@@ -60,12 +61,6 @@ structure XiOffZerosBridge where
       (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
       ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
         Set.EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1
-
-/-- From an `XiOffZerosBridge`, conclude RH for the packaged `riemannXi`. -/
-theorem RH_xi_from_bridge (B : XiOffZerosBridge) :
-    ∀ ρ, B.riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  refine RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros (riemannXi := B.riemannXi)
-    B.symXi B.G B.hXiEq B.hGnz B.Θ B.hSchur B.assign
 
 end RH.Proof.Assembly
 
