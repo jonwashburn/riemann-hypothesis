@@ -23,6 +23,8 @@ theorem pipeline_ready_unconditional : PipelineReady := by
 
 end RH.Proof
 
+-- Specialized wrappers are placed after `theorem RH` below
+
 namespace RH.Proof.Assembly
 
 /-- Boundary nonvanishing from the RS off-zeros boundary hypothesis (statement-level). -/
@@ -82,3 +84,71 @@ theorem RH
     exact False.elim ((noRightZeros ρ hΩ) h0)
 
 end RH.Proof
+
+-- Specialized RH wrappers (defined after the core RH theorem)
+namespace RH.Proof
+
+/-- RH specialized to an arbitrary function `Ξ` under the standard two hypotheses. -/
+theorem RH_for
+    (Ξ : ℂ → ℂ)
+    (noRightZeros : ∀ ρ ∈ RH.RS.Ω, Ξ ρ ≠ 0)
+    (sym : ∀ ρ, Ξ ρ = 0 → Ξ (1 - ρ) = 0) :
+    ∀ ρ, Ξ ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  simpa using (RH (Ξ := Ξ) noRightZeros sym)
+
+/-- RH specialized to a provided symbol `riemannXi` (completed zeta),
+    assuming no zeros on Ω and symmetry of zeros. -/
+theorem RH_riemannXi
+    (riemannXi : ℂ → ℂ)
+    (noRightZeros : ∀ ρ ∈ RH.RS.Ω, riemannXi ρ ≠ 0)
+    (sym : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0) :
+    ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  simpa using (RH (Ξ := riemannXi) noRightZeros sym)
+
+end RH.Proof
+
+namespace RH.Proof.Assembly
+
+/-- Factorization transfer: if `Ξ = G · Z` on a set `Ω` and both `G` and `Z`
+    are nonvanishing on `Ω`, then `Ξ` is nonvanishing on `Ω`. -/
+theorem nonvanishing_of_factor
+    (Ω : Set ℂ) (Ξ Z G : ℂ → ℂ)
+    (hEq : ∀ s, Ξ s = G s * Z s)
+    (hG : ∀ ρ ∈ Ω, G ρ ≠ 0)
+    (hZ : ∀ ρ ∈ Ω, Z ρ ≠ 0) :
+    ∀ ρ ∈ Ω, Ξ ρ ≠ 0 := by
+  intro ρ hΩ
+  have hGρ := hG ρ hΩ
+  have hZρ := hZ ρ hΩ
+  simpa [hEq ρ] using mul_ne_zero hGρ hZρ
+
+/-- Route assembly: assuming
+    1) symmetry of zeros for a provided `riemannXi`,
+    2) a factorization `riemannXi = G · ζ` with `G` zero‑free on `Ω`, and
+    3) an RS Schur–pinch off‑zeros assignment excluding ζ‑zeros in `Ω`,
+    we obtain RH for `riemannXi`. -/
+theorem RH_riemannXi_from_RS_offZeros
+    (riemannXi : ℂ → ℂ)
+    (symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0)
+    (G : ℂ → ℂ)
+    (hXiEq : ∀ s, riemannXi s = G s * riemannZeta s)
+    (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
+    (Θ : ℂ → ℂ)
+    (hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \ {z | riemannZeta z = 0}))
+    (assign : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
+        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+          Set.EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
+    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  -- ζ has no zeros on Ω by the RS off‑zeros Schur–pinch route
+  have hζnz : ∀ ρ ∈ RH.RS.Ω, riemannZeta ρ ≠ 0 :=
+    RH.RS.no_offcritical_zeros_from_schur Θ hSchur assign
+  -- Transfer to Ξ via the factorization Ξ = G·ζ with G nonzero on Ω
+  have hΞnz : ∀ ρ ∈ RH.RS.Ω, riemannXi ρ ≠ 0 :=
+    nonvanishing_of_factor (Ω := RH.RS.Ω)
+      (Ξ := riemannXi) (Z := riemannZeta) (G := G) hXiEq hGnz hζnz
+  -- Conclude RH for Ξ by symmetry wrapper
+  exact RH_riemannXi riemannXi hΞnz symXi
+
+end RH.Proof.Assembly
