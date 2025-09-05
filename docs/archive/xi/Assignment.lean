@@ -40,13 +40,13 @@ def assignOfChoice
 def assign_fromLocal
     (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → LocalData Θ) :
     ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U 
-        ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U 
-        ∧ (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) 
-        ∧ ∃ g : ℂ → ℂ, AnalyticOn ℂ g U 
-          ∧ AnalyticOn ℂ Θ (U \ {ρ}) 
-          ∧ Set.EqOn Θ g (U \ {ρ}) 
-          ∧ g ρ = 1 
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U
+        ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U
+        ∧ (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ)
+        ∧ ∃ g : ℂ → ℂ, AnalyticOn ℂ g U
+          ∧ AnalyticOn ℂ Θ (U \ {ρ})
+          ∧ Set.EqOn Θ g (U \ {ρ})
+          ∧ g ρ = 1
           ∧ ∃ z, z ∈ U ∧ g z ≠ 1 := by
   intro ρ hΩ hζ
   classical

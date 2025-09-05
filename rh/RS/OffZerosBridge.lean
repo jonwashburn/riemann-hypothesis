@@ -116,27 +116,33 @@ def assign_fromLocal {Θ : ℂ → ℂ}
     rcases data.hWitness with ⟨z, hzU, hzneq⟩
     exact ⟨z, hzU, hzneq⟩
 
-/-- A trivial chooser returning empty witness for contradiction; to be replaced by
-the actual RS bridge chooser. -/
-def trivialChooser (Θ : ℂ → ℂ) :
-    ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 → LocalData Θ := by
+/-- Choice wrapper (CR): from an existence-style assignment returning the RS export
+shape, build a `LocalData` chooser suitable for `assign_fromLocal`.
+
+This is a pure packaging helper: given, for each `ρ ∈ Ω` with `ζ ρ = 0`, an
+open, preconnected `U ⊆ Ω` isolating the zero together with an analytic
+extension `g` across `ρ` satisfying `EqOn Θ g (U \\ {ρ})` and `g ρ = 1` and a
+nontriviality witness, it produces a `LocalData Θ`.
+
+No new analysis is performed here; this just rewraps the provided data. -/
+noncomputable def choose_CR {Θ : ℂ → ℂ}
+  (assign : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+    ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+      (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+      ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \\ {ρ}) ∧
+        EqOn Θ g (U \\ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
+  : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 → LocalData Θ := by
   intro ρ hΩ hζ
-  -- Stub: impossible branch in the final route; we can construct any values.
-  -- Provide minimal consistent structure on a small open disk.
   classical
-  let U : Set ℂ := {z | True}
+  rcases assign ρ hΩ hζ with
+    ⟨U, hUopen, hUconn, hUsub, hρU, hIso, g, hg, hΘU, hExt, hval, z, hzU, hzneq⟩
   refine {
-    U := U, ρ := ρ, hUopen := by simpa using isOpen_univ,
-    hUconn := by simpa using isPreconnected_univ,
-    hUsub := by intro z hz; exact hΩ,
-    hρU := by simp,
-    hIso := by simp [U],
-    g := fun _ => (1 : ℂ),
-    hg := by intro z hz; simpa using (analyticOn_const (c := (1 : ℂ)) (s := U)),
-    hΘU := by intro z hz; simpa using (analyticOn_const (c := (0 : ℂ)) (s := U \ {ρ})),
-    hExt := by intro z hz; simp,
-    hval := by simp,
-    hWitness := by exact ⟨ρ, by simp, by simp [show (1 : ℂ) ≠ 1 from by intro; simp]⟩ } -- impossible
+    U := U, ρ := ρ,
+    hUopen := hUopen, hUconn := hUconn, hUsub := hUsub, hρU := hρU,
+    hIso := ?_, g := g, hg := hg, hΘU := by simpa using hΘU,
+    hExt := by simpa using hExt, hval := hval,
+    hWitness := ⟨z, hzU, hzneq⟩ };
+  simpa using hIso
 
 /-- Cayley map. -/
 private def cayley (F : ℂ → ℂ) : ℂ → ℂ := fun s => (F s - 1) / (F s + 1)

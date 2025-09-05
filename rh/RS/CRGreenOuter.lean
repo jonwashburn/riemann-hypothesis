@@ -148,4 +148,3 @@ lemma Θ_CRGreen_Schur :
 
 end RS
 end RH
-

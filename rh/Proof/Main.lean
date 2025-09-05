@@ -2,6 +2,7 @@ import rh.academic_framework.Certificate
 import rh.RS.SchurGlobalization
 import rh.academic_framework.EulerProductMathlib
 import rh.academic_framework.CompletedXi
+import rh.academic_framework.Theta
 import rh.academic_framework.CompletedXiSymmetry
 import rh.RS.OffZerosBridge
 import rh.RS.SchurGlobalization
@@ -177,6 +178,41 @@ theorem RH_riemannXi_from_RS_offZeros
 
 end RH.Proof.Assembly
 
+namespace RH.Proof.Assembly
+
+/-- Route assembly (one-safe variant): allow `G ≠ 0` on `Ω \\ {1}` and a separate
+    nonvanishing fact `riemannXi 1 ≠ 0`. -/
+theorem RH_riemannXi_from_RS_offZeros_oneSafe
+    (riemannXi : ℂ → ℂ)
+    (symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0)
+    (G : ℂ → ℂ)
+    (hXiEq : ∀ s, riemannXi s = G s * riemannZeta s)
+    (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
+    (hXiOne : riemannXi 1 ≠ 0)
+    (Θ : ℂ → ℂ)
+    (hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \\ {z | riemannZeta z = 0}))
+    (assign : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
+        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \\ {ρ}) ∧
+          Set.EqOn Θ g (U \\ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
+    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  -- ζ has no zeros on Ω
+  have hζnz : ∀ ρ ∈ RH.RS.Ω, riemannZeta ρ ≠ 0 :=
+    RH.RS.no_offcritical_zeros_from_schur Θ hSchur assign
+  -- Build Ξ nonvanishing on Ω pointwise using the one-safe guard at 1
+  have hΞnz : ∀ ρ ∈ RH.RS.Ω, riemannXi ρ ≠ 0 := by
+    intro ρ hΩ
+    by_cases h1 : ρ = (1 : ℂ)
+    · simpa [h1] using hXiOne
+    · have hG : G ρ ≠ 0 := hGnzAway ρ hΩ h1
+      have hZ : riemannZeta ρ ≠ 0 := hζnz ρ hΩ
+      simpa [hXiEq ρ] using mul_ne_zero hG hZ
+  -- Conclude RH for Ξ by symmetry wrapper
+  exact RH_riemannXi riemannXi hΞnz symXi
+
+end RH.Proof.Assembly
+
 namespace RH.Proof.Final
 
 open RH.AcademicFramework.CompletedXi
@@ -196,5 +232,50 @@ theorem RH_xi_from_supplied_RS
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
   exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros
     riemannXi (zero_symmetry_from_fe riemannXi fe) G xi_factorization hGnz Θ hSchur assign
+
+end RH.Proof.Final
+
+namespace RH.Proof.Final
+
+open RH.AcademicFramework.CompletedXi
+
+/-- RH for `riemannXi` from: functional equation `fe`, outer data `O` producing a Schur map
+Θ via the Cayley transform, a local chooser `choose` yielding removable-set data at each
+putative ζ-zero inside Ω, and nonvanishing of `G` on Ω. -/
+theorem RH_xi_from_outer_and_local
+    (fe : ∀ s, riemannXi s = riemannXi (1 - s))
+    (O : RH.RS.OuterData)
+    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (RH.RS.Θ_of O))
+    (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
+    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  -- Build Θ and Schur bound from outer data
+  let Θ : ℂ → ℂ := RH.RS.Θ_of O
+  have hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \ {z | riemannZeta z = 0}) :=
+    RH.RS.Θ_Schur_of O
+  -- Build assign via the local chooser
+  let assign := RH.RS.OffZeros.assign_fromLocal (Θ := Θ) (choose := choose)
+  -- Invoke the supplied RS assembly
+  exact RH_xi_from_supplied_RS fe Θ hSchur assign hGnz
+
+end RH.Proof.Final
+
+namespace RH.Proof.Final
+
+open RH.AcademicFramework.CompletedXi
+open RH.AcademicFramework.CompletedXi (zero_symmetry_from_fe)
+
+/-- RH for `riemannXi` using the one-safe assembly variant. -/
+theorem RH_xi_from_outer_and_local_oneSafe
+    (fe : ∀ s, riemannXi s = riemannXi (1 - s))
+    (O : RH.RS.OuterData)
+    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (RH.RS.Θ_of O))
+    (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
+    (hXiOne : riemannXi 1 ≠ 0)
+    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  let Θ : ℂ → ℂ := RH.RS.Θ_of O
+  have hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \\ {z | riemannZeta z = 0}) := RH.RS.Θ_Schur_of O
+  let assign := RH.RS.OffZeros.assign_fromLocal (Θ := Θ) (choose := choose)
+  exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros_oneSafe
+    riemannXi (zero_symmetry_from_fe riemannXi fe) G xi_factorization hGnzAway hXiOne Θ hSchur assign
 
 end RH.Proof.Final
