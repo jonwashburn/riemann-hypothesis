@@ -27,6 +27,10 @@ structure LocalData where
   hExt : Set.EqOn Θ g (U \ {ρ})
   hval : g ρ = 1
 
+/-- Sketch: build `assign` from a choice function that returns `LocalData` per ρ. -/
+def assignOfChoice
+    (choose : ∀ ρ, ∃ data : LocalData Θ, data.ρ = ρ) :
+    ∀ ρ, ρ ∈ { s : ℂ | (1/2 : ℝ) < s.re } → Prop := by
+  intro ρ hρ; exact True
+
 end ArchiveXi
-
-
