@@ -16,14 +16,14 @@ Targets to instantiate (all already present in build under rh/):
      G(s) := (1/2)·s·(1−s)·π^{−s/2}·Γ(s/2)
      xi(s) := G(s)·ζ(s)
      xi_factorization: xi = G * ζ
-   - Show hGnz on Ω = {Re > 1/2} (Gamma(·) and polynomial factor are nonzero there).
+   - Show hGnz on Ω = {Re > 1/2} (Gamma(·) and polynomial factor are nonzero there, away from s = 0,1). Handle boundary cancellation via ξ where needed.
 
 3) Formalize (a) symmetry (archive→rh move once stable)
    - From functional equation ξ(s) = ξ(1 − s): derive symXi.
 
 4) Provide (d)–(e) via RS layer
    - Θ Schur on Ω \ Z(ζ) using the Cayley of J with outer cancellation as in RS.
-   - assign: for each ρ with ζ(ρ)=0 in Ω, provide U ⊆ Ω, removable set Z, analytic g, with g ρ = 1 and Θ = g on U\Z.
+   - assign: for each ρ with ζ(ρ)=0 in Ω, provide U ⊆ Ω, removable set Z, analytic g, with g ρ = 1 and Θ = g on U\\{ρ}, plus a witness point where g ≠ 1.
 
 5) Single wire-up edit in rh/ (build)
    - Import/formally expose G, xi_factorization, symXi, Θ, assign.

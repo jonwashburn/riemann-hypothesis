@@ -37,7 +37,7 @@ theorem xi_factorization (s : ℂ) : xi s = G s * riemannZeta s := rfl
 lemma G_nonzero_on_Ω : ∀ s ∈ RH.RS.Ω, G s ≠ 0 := by
   -- TODO: use that Γ has no zeros, π ≠ 0, and restrict to a domain avoiding 0,1.
   -- Alternatively, avoid this lemma in the final route and argue directly with ξ.
-  intro s hs; 
+  intro s hs;
   admit
 
 end ArchiveXi
