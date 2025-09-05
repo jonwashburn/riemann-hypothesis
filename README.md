@@ -55,6 +55,22 @@ rm -rf .lake && lake update && lake build
 
 CI replicates the above via `.github/workflows/ci.yml` and `scripts/verify.sh`.
 
+## Quantitative persistence export (YM)
+- The module `ym/Interfaces.lean` exposes
+  - `YM.persistence_of_quant : QuantPersistence sf γ0 → PersistenceCert sf γ0` and
+  - `YM.mass_gap_final (sf γ0)`: builds a continuum mass gap `MassGapCont γ0` from a base-scale OS/PF input and a quantitative persistence bundle across scales.
+  Example sketch:
+```lean
+open YM
+
+variable (sf : ScalingFamily) (γ0 : ℝ)
+variable (hQuant : QuantPersistence sf γ0)
+variable (hOS0 : OSPositivity (sf.μ_at ⟨0⟩))
+variable (hPF0 : TransferPFGap (sf.μ_at ⟨0⟩) (sf.K_at ⟨0⟩) γ0)
+
+#check mass_gap_final sf γ0 hQuant hOS0 hPF0
+```
+
 ## What’s proved where
 - Boundary wedge and globalization: `rh/RS/SchurGlobalization.lean`, `rh/RS/BoundaryWedge.lean`.
 - Certificate interfaces and Kξ/K0 adapters: `rh/Cert/*.lean`, `rh/academic_framework/*.lean`.
