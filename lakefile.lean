@@ -30,6 +30,10 @@ lean_lib «rh» where
     .submodules `rh.Proof
   ]
 
+-- YM interface library (interface-first scaffolding)
+lean_lib «ym» where
+  globs := #[.submodules `ym]
+
 -- Test library for verification and validation
 lean_lib «test» where
   globs := #[.submodules `test]
