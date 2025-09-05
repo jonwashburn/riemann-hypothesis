@@ -24,7 +24,6 @@ require mathlib from git
 lean_lib «rh» where
   globs := #[
     .submodules `rh.academic_framework,
-    .submodules `rh.academic_framework.CompletedXi,
     .submodules `rh.Cert,
     .submodules `rh.Blockers,
     .submodules `rh.RS,

@@ -1,6 +1,9 @@
 import rh.academic_framework.Certificate
 import rh.RS.SchurGlobalization
 import rh.academic_framework.EulerProductMathlib
+import rh.academic_framework.CompletedXi
+import rh.academic_framework.CompletedXiSymmetry
+import rh.RS.OffZerosBridge
 -- CompletedXi import deferred until formalization lands
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.Tactic
