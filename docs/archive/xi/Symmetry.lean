@@ -16,14 +16,16 @@ theorem xi_zero_symmetry
     (funcEq : ∀ s, xi s = xi (1 - s)) :
     ∀ ρ, xi ρ = 0 → xi (1 - ρ) = 0 := by
   intro ρ hρ
-  simpa [funcEq ρ] using congrArg id hρ
+  -- From the functional equation, xi (1 - ρ) = xi ρ
+  have hfe : xi (1 - ρ) = xi ρ := by simpa [eq_comm] using (funcEq ρ)
+  -- Hence xi (1 - ρ) = 0
+  simpa [hfe]
 
-/-- Skeleton: functional equation for a candidate completed ξ.
-    Replace with a proven equality in the final move to rh/. -/
-axiom xi_functional_equation (xi : ℂ → ℂ) : ∀ s, xi s = xi (1 - s)
-
-theorem xi_zero_symmetry_from_fe (xi : ℂ → ℂ) :
+/-- Zero-symmetry derived from a supplied functional equation for `xi`. -/
+theorem xi_zero_symmetry_from_fe
+    (xi : ℂ → ℂ)
+    (funcEq : ∀ s, xi s = xi (1 - s)) :
     ∀ ρ, xi ρ = 0 → xi (1 - ρ) = 0 :=
-  xi_zero_symmetry xi (xi_functional_equation xi)
+  xi_zero_symmetry xi funcEq
 
 end ArchiveXi

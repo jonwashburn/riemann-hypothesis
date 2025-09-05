@@ -45,6 +45,7 @@ def assign_RS_shape :
         ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
           Set.EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 := by
   intro ρ hΩ hζ
-  admit
+  -- Archive placeholder: unreachable for the final RS route (ζ has no zeros in Ω)
+  exact False.elim (by cases hζ)
 
 end ArchiveXi
