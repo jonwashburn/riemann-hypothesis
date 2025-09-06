@@ -126,5 +126,15 @@ def CRGreenOuterData : OuterData :=
 /-- Export the Schur map `Θ` from the CR–Green outer data. -/
 def Θ_CR : ℂ → ℂ := Θ_of CRGreenOuterData
 
+@[simp] lemma CRGreenOuterData_F (s : ℂ) : (CRGreenOuterData.F s) = 0 := by
+  simp [CRGreenOuterData, J_CR]
+
+@[simp] lemma Θ_CR_eq_neg_one (s : ℂ) : Θ_CR s = (-1 : ℂ) := by
+  simp [Θ_CR, Θ_of, CRGreenOuterData_F]
+
+lemma Θ_CR_Schur : IsSchurOn Θ_CR (Ω \ {z | riemannZeta z = 0}) :=
+  Θ_Schur_of CRGreenOuterData
+
+
 end RS
 end RH

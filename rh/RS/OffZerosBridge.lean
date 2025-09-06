@@ -83,7 +83,7 @@ end NonCancellation
 
 /-- Local data at a zero ρ suitable to build the assignment for
 `no_offcritical_zeros_from_schur`. Mirrors the archive shape. -/
-structure LocalData (riemannZeta : ℂ → ℂ) (Θ : ℂ → ℂ) (ρ : ℂ) where
+structure LocalData (Θ : ℂ → ℂ) (ρ : ℂ) where
   U : Set ℂ
   hUopen : IsOpen U
   hUconn : IsPreconnected U
@@ -97,10 +97,45 @@ structure LocalData (riemannZeta : ℂ → ℂ) (Θ : ℂ → ℂ) (ρ : ℂ) wh
   hval : g ρ = 1
   hWitness : ∃ z, z ∈ U ∧ g z ≠ 1
 
+/-- Stable alias: a local chooser supplies `LocalData Θ ρ` at each ζ‑zero ρ in Ω. -/
+abbrev LocalChooser (riemannZeta : ℂ → ℂ) (Θ : ℂ → ℂ) : Type :=
+  ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+    LocalData (riemannZeta := riemannZeta) (Θ := Θ) (ρ := ρ)
+
+/-- Stable alias: the RS export assignment shape expected by `no_offcritical_zeros_from_schur`. -/
+abbrev AssignShape (riemannZeta : ℂ → ℂ) (Θ : ℂ → ℂ) : Prop :=
+  ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+    ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+      (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+      ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+        EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1
+
+/-- Packaging lemma (removable-set data → `LocalData`): given an open, preconnected
+subset `U ⊆ Ω` isolating a zero `ρ`, and an analytic extension `g` of `Θ` across `ρ` with
+`EqOn Θ g (U \ {ρ})`, normalization `g ρ = 1`, and a nontriviality witness,
+constructs `LocalData` required by the RS assignment. -/
+def LocalData.of_removable {Θ : ℂ → ℂ}
+  (U : Set ℂ) (ρ : ℂ)
+  (hUopen : IsOpen U) (hUconn : IsPreconnected U) (hUsub : U ⊆ Ω)
+  (hρU : ρ ∈ U)
+  (hIso : (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ))
+  (g : ℂ → ℂ) (hg : AnalyticOn ℂ g U)
+  (hΘU : AnalyticOn ℂ Θ (U \ {ρ}))
+  (hExt : EqOn Θ g (U \ {ρ}))
+  (hval : g ρ = 1)
+  (hWitness : ∃ z, z ∈ U ∧ g z ≠ 1)
+  : LocalData (riemannZeta := riemannZeta) (Θ := Θ) (ρ := ρ) :=
+{ U := U,
+  hUopen := hUopen, hUconn := hUconn, hUsub := hUsub,
+  hρU := hρU, hIso := by simpa using hIso, g := g,
+  hg := hg, hΘU := by simpa using hΘU,
+  hExt := by simpa using hExt, hval := hval, hWitness := hWitness }
+
 /-- Build the RS-shaped assignment from a chooser that supplies `LocalData` at each
 putative zero `ρ` in Ω. -/
 def assign_fromLocal {Θ : ℂ → ℂ}
-    (choose : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 → LocalData riemannZeta Θ ρ) :
+    (choose : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+      LocalData (riemannZeta := riemannZeta) (Θ := Θ) (ρ := ρ)) :
     ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
       ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
         (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
@@ -108,20 +143,26 @@ def assign_fromLocal {Θ : ℂ → ℂ}
           EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 := by
   intro ρ hΩ hζ
   classical
-  let data := choose ρ hΩ hζ
+  let data : LocalData (riemannZeta := riemannZeta) (Θ := Θ) (ρ := ρ) :=
+    choose ρ hΩ hζ
   refine ⟨data.U, data.hUopen, data.hUconn, ?_, data.hρU, data.hIso, ?_⟩
   · intro z hz; exact data.hUsub hz
   · refine ⟨data.g, data.hg, data.hΘU, data.hExt, data.hval, ?_⟩
     rcases data.hWitness with ⟨z, hzU, hzneq⟩
     exact ⟨z, hzU, hzneq⟩
 
+/-- Stable wrapper: from a `LocalChooser Θ` build the RS export `AssignShape Θ`. -/
+@[simp] def assign_fromLocal_as (riemannZeta : ℂ → ℂ) (Θ : ℂ → ℂ)
+    (choose : LocalChooser riemannZeta Θ) : AssignShape riemannZeta Θ :=
+  assign_fromLocal (riemannZeta := riemannZeta) (Θ := Θ) choose
+
 /-- Choice wrapper (CR): from an existence-style assignment returning the RS export
 shape, build a `LocalData` chooser suitable for `assign_fromLocal`.
 
 This is a pure packaging helper: given, for each `ρ ∈ Ω` with `ζ ρ = 0`, an
 open, preconnected `U ⊆ Ω` isolating the zero together with an analytic
-extension `g` across `ρ` satisfying `EqOn Θ g (U \\ {ρ})` and `g ρ = 1` and a
-nontriviality witness, it produces a `LocalData Θ`.
+extension `g` across `ρ` satisfying `EqOn Θ g (U \ {ρ})` and `g ρ = 1` and a
+nontriviality witness, it produces a `LocalData Θ ρ`.
 
 No new analysis is performed here; this just rewraps the provided data. -/
 noncomputable def choose_CR {Θ : ℂ → ℂ}
@@ -130,41 +171,37 @@ noncomputable def choose_CR {Θ : ℂ → ℂ}
       (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
       ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
         EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
-  : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 → LocalData riemannZeta Θ ρ := by
+  : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+      LocalData (riemannZeta := riemannZeta) (Θ := Θ) (ρ := ρ) := by
   intro ρ hΩ hζ
   classical
-  have hUall := assign ρ hΩ hζ
-  -- choose U and unpack its properties
-  let U : Set ℂ := Classical.choose hUall
-  have hUprops : IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
-      (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
-      ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
-        EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 :=
-    Classical.choose_spec hUall
-  have hUopen : IsOpen U := hUprops.1
-  have hUconn : IsPreconnected U := hUprops.2.1
-  have hUsub  : U ⊆ Ω := hUprops.2.2.1
-  have hρU    : ρ ∈ U := hUprops.2.2.2.1
-  have hIso   : (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) := hUprops.2.2.2.2.1
-  -- choose g and unpack its properties
-  have hexg := hUprops.2.2.2.2.2
-  let g : ℂ → ℂ := Classical.choose hexg
-  have hgspec : AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
-        EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 :=
-    Classical.choose_spec hexg
-  have hg    : AnalyticOn ℂ g U := hgspec.1
-  have hΘU   : AnalyticOn ℂ Θ (U \ {ρ}) := hgspec.2.1
-  have hExt  : EqOn Θ g (U \ {ρ}) := hgspec.2.2.1
-  have hval  : g ρ = 1 := hgspec.2.2.2.1
-  have hWitness : ∃ z, z ∈ U ∧ g z ≠ 1 := hgspec.2.2.2.2
-  let z : ℂ := Classical.choose hWitness
-  have hzw : z ∈ U ∧ g z ≠ 1 := Classical.choose_spec hWitness
-  refine ({
+  let e1 := assign ρ hΩ hζ
+  let U : Set ℂ := Classical.choose e1
+  have h1 : IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+    (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+    ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧
+      EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 := Classical.choose_spec e1
+  have hUopen : IsOpen U := h1.1
+  have hUconn : IsPreconnected U := h1.2.1
+  have hUsub : U ⊆ Ω := h1.2.2.1
+  have hρU : ρ ∈ U := h1.2.2.2.1
+  have hIso : (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) := h1.2.2.2.2.1
+  let e2 := h1.2.2.2.2.2
+  let g : ℂ → ℂ := Classical.choose e2
+  have hgPack : AnalyticOn ℂ g U ∧ AnalyticOn ℂ Θ (U \ {ρ}) ∧ EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 :=
+    Classical.choose_spec e2
+  have hg : AnalyticOn ℂ g U := hgPack.1
+  have hΘU : AnalyticOn ℂ Θ (U \ {ρ}) := hgPack.2.1
+  have hExt : EqOn Θ g (U \ {ρ}) := hgPack.2.2.1
+  have hval : g ρ = 1 := hgPack.2.2.2.1
+  have hWitness : ∃ z, z ∈ U ∧ g z ≠ 1 := hgPack.2.2.2.2
+  refine {
     U := U,
     hUopen := hUopen, hUconn := hUconn, hUsub := hUsub, hρU := hρU,
-    hIso := hIso, g := g, hg := hg, hΘU := hΘU,
-    hExt := hExt, hval := hval,
-    hWitness := ⟨z, hzw.1, hzw.2⟩ } : LocalData (riemannZeta:=riemannZeta) (Θ:=Θ) (ρ:=ρ))
+    hIso := by simpa using hIso,
+    g := g, hg := hg, hΘU := by simpa using hΘU,
+    hExt := by simpa using hExt, hval := hval,
+    hWitness := hWitness }
 
 /-- Cayley map. -/
 private def cayley (F : ℂ → ℂ) : ℂ → ℂ := fun s => (F s - 1) / (F s + 1)
@@ -354,8 +391,8 @@ theorem tendsto_one_sub_div_one_add_of_tendsto_zero
     simpa [div_eq_mul_inv, one_mul] using hlim_mul
   exact ⟨hlim, h_ne⟩
 
-/-- If `g` is continuous at `ρ` and `g ρ ≠ 0`, then `x ↦ (g x)⁻¹` is continuous at `ρ`
-    and `g x ≠ 0` eventually on `𝓝 ρ`. -/
+-- If `g` is continuous at `ρ` and `g ρ ≠ 0`, then `x ↦ (g x)⁻¹` is continuous at `ρ`
+-- and `g x ≠ 0` eventually on `𝓝 ρ`. -/
 theorem continuousAt_inv₀_and_eventually_ne
   {α : Type*} [TopologicalSpace α] {g : α → ℂ} {ρ : α}
   (hg : ContinuousAt g ρ) (hρ : g ρ ≠ 0) :
