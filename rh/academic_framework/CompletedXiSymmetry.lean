@@ -28,35 +28,22 @@ namespace RH.AcademicFramework.CompletedXi
     riemannXi s = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
   classical
   by_cases hs0 : s = 0
-  · -- direct zero at s = 0 with a tiny calc (no simp recursion)
-    have hLeft : riemannXi s = 0 := by
-      calc
-        riemannXi s = G s * riemannZeta s := rfl
-        _ = (((1 : ℂ) / 2) * s * (1 - s) * (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s := rfl
-        _ = 0 := by
-          have : s = 0 := hs0;
-          have hfac : ((1 : ℂ) / 2) * s * (1 - s) = 0 := by
-            have : s = 0 := hs0; simpa [this]
-          simpa [hfac, mul_left_comm, mul_assoc]
+  · -- direct zero at s = 0 via factor zero
+    have hf : ((1 : ℂ) / 2) * s * (1 - s) = 0 := by simpa [hs0]
+    have hG0 : G s = 0 := by simpa [G, hs0, hf, mul_left_comm, mul_assoc]
+    have hLeft : riemannXi s = 0 := by simpa [riemannXi, hG0]
     have hRight : ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s = 0 := by
-      have : s = 0 := hs0
-      have hfac : ((1 : ℂ) / 2) * s * (1 - s) = 0 := by simpa [this]
-      simpa [hfac, mul_left_comm, mul_assoc]
+      simpa [hf, mul_left_comm, mul_assoc]
     exact hLeft.trans hRight.symm
   by_cases hs1 : s = 1
-  · -- direct zero at s = 1 with a tiny calc (no simp recursion)
-    have hLeft : riemannXi s = 0 := by
-      calc
-        riemannXi s = G s * riemannZeta s := rfl
-        _ = (((1 : ℂ) / 2) * s * (1 - s) * (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s := rfl
-        _ = 0 := by
-          have : (1 - s) = 0 := by simpa [hs1]
-          have hfac : ((1 : ℂ) / 2) * s * (1 - s) = 0 := by simpa [this]
-          simpa [hfac, mul_left_comm, mul_assoc]
-    have hRight : ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s = 0 := by
+  · -- direct zero at s = 1 via factor zero
+    have hf : ((1 : ℂ) / 2) * s * (1 - s) = 0 := by
       have : (1 - s) = 0 := by simpa [hs1]
-      have hfac : ((1 : ℂ) / 2) * s * (1 - s) = 0 := by simpa [this]
-      simpa [hfac, mul_left_comm, mul_assoc]
+      simpa [this]
+    have hG0 : G s = 0 := by simpa [G, hs1, hf, mul_left_comm, mul_assoc]
+    have hLeft : riemannXi s = 0 := by simpa [riemannXi, hG0]
+    have hRight : ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s = 0 := by
+      simpa [hf, mul_left_comm, mul_assoc]
     exact hLeft.trans hRight.symm
   -- For s ≠ 0, express completedRiemannZeta via Γℝ and ζ, then cancel
   have hζ : riemannZeta s = completedRiemannZeta s / s.Gammaℝ :=

@@ -381,13 +381,6 @@ theorem RH_xi_from_outer_and_local_oneSafe
   -- Local zero-symmetry from FE
   have symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0 := by
     intro ρ hρ; have := fe ρ; simpa [this] using hρ
-  -- rewrite the guard to the (1 - ρ) form expected by the assembly
-  have hGnzAway' : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G (1 - ρ) ≠ 0 := by
-    intro ρ hΩ hne;
-    have : 1 - (1 - ρ) = ρ := by ring
-    -- use the provided nonvanishing at (1 - ρ)
-    exact hGnzAway (1 - ρ) ?hΩ' ?hne'
-  have assign' := assign
   exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros_oneSafe
     riemannXi symXi G (by intro z; exact xi_factorization z) hGnzAway hXiOne Θ hSchur assign
 
