@@ -28,50 +28,48 @@ namespace RH.AcademicFramework.CompletedXi
     riemannXi s = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
   classical
   by_cases hs0 : s = 0
-  · calc
-      riemannXi s = 0 := by
-        simp [riemannXi, G, hs0]
-      _ = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
-        simp [hs0]
+  · -- direct zero at s = 0 without global simp
+    have hLeft : riemannXi s = 0 := by simpa [riemannXi, G, hs0]
+    have hRight : ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s = 0 := by
+      have : s = 0 := hs0
+      simpa [this]
+    exact hLeft.trans hRight.symm
   by_cases hs1 : s = 1
-  · calc
-      riemannXi s = 0 := by
-        simp [riemannXi, G, hs1]
-      _ = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
-        simp [hs1]
+  · -- direct zero at s = 1 without global simp
+    have hLeft : riemannXi s = 0 := by simpa [riemannXi, G, hs1]
+    have hRight : ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s = 0 := by
+      -- factor has (1 - s) and s = 1
+      have : (1 - s) = 0 := by simpa [hs1]
+      simpa [this]
+    exact hLeft.trans hRight.symm
   -- For s ≠ 0, express completedRiemannZeta via Γℝ and ζ, then cancel
-  have hζ : riemannZeta s = completedRiemannZeta s / Gammaℝ s :=
+  have hζ : riemannZeta s = completedRiemannZeta s / s.Gammaℝ :=
     riemannZeta_def_of_ne_zero (s := s) (by simpa using hs0)
   -- identify Gammaℝ s with the explicit (Real.pi : ℂ)^(-s/2) * Gamma(s/2)
-  have hΓ : (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) = Gammaℝ s := by rfl
+  have hΓ : (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) = s.Gammaℝ := rfl
   have hswap : ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
-              = riemannZeta s * Gammaℝ s := by
+              = riemannZeta s * s.Gammaℝ := by
     calc
       ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
           = riemannZeta s * ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) := by
                 rw [mul_comm]
-      _   = riemannZeta s * Gammaℝ s := by
+      _   = riemannZeta s * s.Gammaℝ := by
                 -- rewrite to Gammaℝ s using hΓ in the correct direction
                 rw [hΓ]
-  have hRG : riemannZeta s * Gammaℝ s = completedRiemannZeta s := by
-    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
-      congrArg (fun t => t * Gammaℝ s) hζ
+  have hRG : riemannZeta s * s.Gammaℝ = completedRiemannZeta s := by
+    -- avoid simp recursion; rewrite directly from hζ
+    have := congrArg (fun t => t * s.Gammaℝ) hζ
+    -- riemannZeta s * Γℝ s = (completedZeta s / Γℝ s) * Γℝ s = completedZeta s
+    -- rearrange the RHS by definally unfolding division
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using this
   calc
     riemannXi s
         = ((1 : ℂ) / 2) * s * (1 - s) *
           ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s := by
             simp only [riemannXi, G]
-    _   = ((1 : ℂ) / 2) * s * (1 - s) * (riemannZeta s * Gammaℝ s) := by
-            -- regroup the last two factors using hswap
-            -- (((poly) * A) * ζ) = ((poly) * (ζ * Γℝ))
-            -- rewrite by factoring common prefix
-            have :
-                ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
-                  = riemannZeta s * Gammaℝ s := hswap
-            -- apply congrArg with the common prefix
-            exact congrArg
-              (fun t => ((1 : ℂ) / 2) * s * (1 - s) * t)
-              this
+    _   = ((1 : ℂ) / 2) * s * (1 - s) * (riemannZeta s * s.Gammaℝ) := by
+            -- use the prepared swap equality without global simp
+            exact congrArg (fun t => ((1 : ℂ) / 2) * s * (1 - s) * t) hswap
     _   = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
             -- replace ζ * Γℝ with completedRiemannZeta
             exact congrArg
