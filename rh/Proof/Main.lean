@@ -282,63 +282,21 @@ namespace RH.Proof.Final
 
 open RH.AcademicFramework.CompletedXi
 
-/-- Hxi from the CR-outer full route: plug `fe := xi_functional_equation`. -/
-theorem Hxi_from_CR_outer
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      RH.RS.OffZeros.LocalData (riemannZeta := riemannZeta)
-        (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
-    (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
-    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  -- inline call to the already-defined outer/local wrapper to avoid forward ref
-  exact RH.Proof.Final.RH_xi_from_outer_and_local (fe := xi_functional_equation)
-    (choose := choose) (hGnz := hGnz)
-
-/-- Hxi from the CR-outer one-safe route: plug `fe := xi_functional_equation`. -/
-theorem Hxi_from_CR_outer_oneSafe
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      RH.RS.OffZeros.LocalData (riemannZeta := riemannZeta)
-        (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
-    (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
-    (hXiOne : riemannXi 1 ≠ 0)
-    : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  -- inline call to avoid forward ref; use the one-safe outer/local wrapper
-  exact RH.Proof.Final.RH_xi_from_outer_and_local_oneSafe (fe := xi_functional_equation)
-    (O := RH.RS.CRGreenOuterData) (choose := choose) (hGnzAway := hGnzAway) (hXiOne := hXiOne)
-
-/-- Convert Hxi to mathlib's `RiemannZeta.RiemannHypothesis`. -/
-theorem RH_mathlib_from_xi
-    (Hxi : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ))
-    : RiemannHypothesis := by
-  intro s hζ _hneTriv hne1
-  -- `Ξ(s) = G(s)·ζ(s)` vanishes at every ζ-zero
-  have hXi0 : riemannXi s = 0 := by simpa [xi_factorization s, hζ]
-  -- Apply Hxi
-  exact Hxi s hXi0
-
-/-- Compose the CR-outer full route with `RH_mathlib_from_xi`. -/
-theorem RH_mathlib_from_CR_outer
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      RH.RS.OffZeros.LocalData (riemannZeta := riemannZeta)
-        (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
-    (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
-    : RiemannHypothesis :=
-  RH_mathlib_from_xi (Hxi_from_CR_outer choose hGnz)
-
-/-- Compose the CR-outer one-safe route with `RH_mathlib_from_xi`. -/
-theorem RH_mathlib_from_CR_outer_oneSafe_final
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      RH.RS.OffZeros.LocalData (riemannZeta := riemannZeta)
-        (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
-    (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
-    (hXiOne : riemannXi 1 ≠ 0)
-    : RiemannHypothesis :=
-  RH_mathlib_from_xi (Hxi_from_CR_outer_oneSafe choose hGnzAway hXiOne)
+-- (Moved below outer/local wrappers to avoid forward references.)
 
 end RH.Proof.Final
 
 namespace RH.Proof.Final
 
 open RH.AcademicFramework.CompletedXi
+
+/-/ Convert Hxi to mathlib's `RiemannZeta.RiemannHypothesis`. -/
+theorem RH_mathlib_from_xi
+    (Hxi : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ))
+    : RiemannHypothesis := by
+  intro s hζ _hneTriv _hne1
+  have hXi0 : riemannXi s = 0 := by simpa [xi_factorization s, hζ]
+  exact Hxi s hXi0
 
 /-- RH for `riemannXi` from: functional equation `fe`, outer data `O` producing a Schur map
 Θ via the Cayley transform, a local chooser `choose` yielding removable-set data at each
