@@ -28,36 +28,55 @@ namespace RH.AcademicFramework.CompletedXi
     riemannXi s = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
   classical
   by_cases hs0 : s = 0
-  · -- Both sides vanish due to the polynomial prefactor
-    simp [riemannXi, G, hs0, mul_comm, mul_left_comm, mul_assoc]
+  · calc
+      riemannXi s = 0 := by
+        simp [riemannXi, G, hs0]
+      _ = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
+        simp [hs0]
+  by_cases hs1 : s = 1
+  · calc
+      riemannXi s = 0 := by
+        simp [riemannXi, G, hs1]
+      _ = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
+        simp [hs1]
   -- For s ≠ 0, express completedRiemannZeta via Γℝ and ζ, then cancel
   have hζ : riemannZeta s = completedRiemannZeta s / Gammaℝ s :=
     riemannZeta_def_of_ne_zero (s := s) (by simpa using hs0)
-  have hΓ : Gammaℝ s = (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) := rfl
-  -- Compute directly without aggressive simp to avoid Hurwitz expansion
-  have :
-      ((1 : ℂ) / 2) * s * (1 - s) *
-        ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
-      = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
-    -- Replace ζ using completedRiemannZeta / Γℝ and cancel Γℝ
+  -- identify Gammaℝ s with the explicit (Real.pi : ℂ)^(-s/2) * Gamma(s/2)
+  have hΓ : (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) = Gammaℝ s := by rfl
+  have hswap : ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
+              = riemannZeta s * Gammaℝ s := by
     calc
-      ((1 : ℂ) / 2) * s * (1 - s) *
-          ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
-          = ((1 : ℂ) / 2) * s * (1 - s) * (Gammaℝ s) * riemannZeta s := by
-                simp [hΓ, mul_comm, mul_left_comm, mul_assoc]
-      _   = ((1 : ℂ) / 2) * s * (1 - s) * (riemannZeta s * Gammaℝ s) := by
-                ring_nf [mul_comm, mul_left_comm, mul_assoc]
-      _   = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
-                -- from ζ = completed / Γℝ
-                have h' : riemannZeta s * Gammaℝ s = completedRiemannZeta s := by
-                  -- multiply both sides of hζ by Γℝ s
-                  have := hζ
-                  -- ζ = completed / Γℝ ⇒ ζ * Γℝ = completed
-                  simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
-                    congrArg (fun t => t * Gammaℝ s) this
-                simp [h', mul_comm, mul_left_comm, mul_assoc]
-  -- Unfold ξ and finish
-  simpa [riemannXi, G, mul_comm, mul_left_comm, mul_assoc] using this
+      ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
+          = riemannZeta s * ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) := by
+                rw [mul_comm]
+      _   = riemannZeta s * Gammaℝ s := by
+                -- rewrite to Gammaℝ s using hΓ in the correct direction
+                rw [hΓ]
+  have hRG : riemannZeta s * Gammaℝ s = completedRiemannZeta s := by
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
+      congrArg (fun t => t * Gammaℝ s) hζ
+  calc
+    riemannXi s
+        = ((1 : ℂ) / 2) * s * (1 - s) *
+          ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s := by
+            simp only [riemannXi, G]
+    _   = ((1 : ℂ) / 2) * s * (1 - s) * (riemannZeta s * Gammaℝ s) := by
+            -- regroup the last two factors using hswap
+            -- (((poly) * A) * ζ) = ((poly) * (ζ * Γℝ))
+            -- rewrite by factoring common prefix
+            have :
+                ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
+                  = riemannZeta s * Gammaℝ s := hswap
+            -- apply congrArg with the common prefix
+            exact congrArg
+              (fun t => ((1 : ℂ) / 2) * s * (1 - s) * t)
+              this
+    _   = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
+            -- replace ζ * Γℝ with completedRiemannZeta
+            exact congrArg
+              (fun t => ((1 : ℂ) / 2) * s * (1 - s) * t)
+              hRG
 
 /-- Zero symmetry derived from a supplied functional equation. -/
 theorem zero_symmetry_from_fe
