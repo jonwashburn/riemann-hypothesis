@@ -136,5 +136,22 @@ lemma Θ_CR_Schur : IsSchurOn Θ_CR (Ω \ {z | riemannZeta z = 0}) :=
   Θ_Schur_of CRGreenOuterData
 
 
+/-- Minimal assumption: local removable-extension hypothesis for `Θ := Θ_of CRGreenOuterData`
+at ζ-zeros in Ω. Given this, produce the pointwise `assignPinned` witness used by the
+final assembly. -/
+def assignPinned_of_removable
+    (hRem : ∀ ρ ∈ Ω, riemannZeta ρ = 0 →
+      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ EqOn (Θ_of CRGreenOuterData) g (U \ {ρ}) ∧
+          g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
+    : ∀ ρ, ρ ∈ Ω → riemannZeta ρ = 0 →
+        ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ Ω ∧ ρ ∈ U ∧
+          (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
+          ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ EqOn (Θ_of CRGreenOuterData) g (U \ {ρ}) ∧
+            g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1 :=
+  hRem
+
+
 end RS
 end RH

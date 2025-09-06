@@ -26,17 +26,38 @@ namespace RH.AcademicFramework.CompletedXi
 /-- Polynomial–completed factorization for ξ. -/
 @[simp] theorem xi_eq_poly_completed (s : ℂ) :
     riemannXi s = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
-  -- Expand ξ and regroup to factor out the completed Λ(s)
-  have hΛ : (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) * riemannZeta s =
-      completedRiemannZeta s := rfl
-  calc
-    riemannXi s
-        = (((1 : ℂ) / 2) * s * (1 - s) * (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s := by
-            simp [riemannXi, G, mul_comm, mul_left_comm, mul_assoc]
-    _   = ((1 : ℂ) / 2) * s * (1 - s) * ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) * riemannZeta s) := by
-            simp [mul_comm, mul_left_comm, mul_assoc]
-    _   = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
-            simpa [hΛ]
+  classical
+  by_cases hs0 : s = 0
+  · -- Both sides vanish due to the polynomial prefactor
+    simp [riemannXi, G, hs0, mul_comm, mul_left_comm, mul_assoc]
+  -- For s ≠ 0, express completedRiemannZeta via Γℝ and ζ, then cancel
+  have hζ : riemannZeta s = completedRiemannZeta s / Gammaℝ s :=
+    riemannZeta_def_of_ne_zero (s := s) (by simpa using hs0)
+  have hΓ : Gammaℝ s = (Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2) := rfl
+  -- Compute directly without aggressive simp to avoid Hurwitz expansion
+  have :
+      ((1 : ℂ) / 2) * s * (1 - s) *
+        ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
+      = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
+    -- Replace ζ using completedRiemannZeta / Γℝ and cancel Γℝ
+    calc
+      ((1 : ℂ) / 2) * s * (1 - s) *
+          ((Real.pi : ℂ) ^ (-(s / 2)) * Gamma (s / 2)) * riemannZeta s
+          = ((1 : ℂ) / 2) * s * (1 - s) * (Gammaℝ s) * riemannZeta s := by
+                simp [hΓ, mul_comm, mul_left_comm, mul_assoc]
+      _   = ((1 : ℂ) / 2) * s * (1 - s) * (riemannZeta s * Gammaℝ s) := by
+                ring_nf [mul_comm, mul_left_comm, mul_assoc]
+      _   = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := by
+                -- from ζ = completed / Γℝ
+                have h' : riemannZeta s * Gammaℝ s = completedRiemannZeta s := by
+                  -- multiply both sides of hζ by Γℝ s
+                  have := hζ
+                  -- ζ = completed / Γℝ ⇒ ζ * Γℝ = completed
+                  simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
+                    congrArg (fun t => t * Gammaℝ s) this
+                simp [h', mul_comm, mul_left_comm, mul_assoc]
+  -- Unfold ξ and finish
+  simpa [riemannXi, G, mul_comm, mul_left_comm, mul_assoc] using this
 
 /-- Zero symmetry derived from a supplied functional equation. -/
 theorem zero_symmetry_from_fe
@@ -53,19 +74,14 @@ theorem zero_symmetry_from_fe
   -- expand ξ on both sides using the polynomial–completed factorization
   have h1 : riemannXi s = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s :=
     xi_eq_poly_completed (s := s)
-  have h2 : riemannXi (1 - s) = ((1 : ℂ) / 2) * (1 - s) * s * completedRiemannZeta (1 - s) :=
-    by
-      -- instantiate the lemma at (1 - s) and reorder factors
-      simpa [mul_comm, mul_left_comm, mul_assoc] using
-        xi_eq_poly_completed (s := 1 - s)
+  have h2 : riemannXi (1 - s) = ((1 : ℂ) / 2) * (1 - s) * s * completedRiemannZeta (1 - s) := by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using xi_eq_poly_completed (s := 1 - s)
   calc
     riemannXi s
         = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta s := h1
     _   = ((1 : ℂ) / 2) * s * (1 - s) * completedRiemannZeta (1 - s) := by
-            -- completed ζ FE
-            simpa using
-              congrArg (fun t => ((1 : ℂ) / 2) * s * (1 - s) * t)
-                (RH.AcademicFramework.zeta_functional_equation s)
+            -- completed ζ FE in our restated form
+            simpa using (by simpa using RH.AcademicFramework.zeta_functional_equation s)
     _   = ((1 : ℂ) / 2) * (1 - s) * s * completedRiemannZeta (1 - s) := by
             simp [mul_comm, mul_left_comm, mul_assoc]
     _   = riemannXi (1 - s) := by

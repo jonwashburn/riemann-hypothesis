@@ -3,7 +3,6 @@ import rh.RS.SchurGlobalization
 import rh.academic_framework.EulerProductMathlib
 import rh.academic_framework.CompletedXi
 import rh.academic_framework.Theta
-import rh.academic_framework.CompletedXiSymmetry
 import rh.RS.OffZerosBridge
 import rh.RS.SchurGlobalization
 import rh.RS.CRGreenOuter
@@ -181,7 +180,7 @@ end RH.Proof.Assembly
 
 namespace RH.Proof.Assembly
 
-/-- Route assembly (one-safe variant): allow `G ≠ 0` on `Ω \\ {1}` and a separate
+/-- Route assembly (one-safe variant): allow `G ≠ 0` on `Ω \ {1}` and a separate
     nonvanishing fact `riemannXi 1 ≠ 0`. -/
 theorem RH_riemannXi_from_RS_offZeros_oneSafe
     (riemannXi : ℂ → ℂ)
@@ -218,8 +217,8 @@ namespace RH.Proof.Assembly
 
 /-- Route assembly (one-safe, local equality variant): allow
     1) zero-symmetry for a provided `riemannXi`,
-    2) factorization `riemannXi = G · ζ` only on `Ω \\ {1}`,
-    3) nonvanishing of `G` on `Ω \\ {1}` plus a separate center value `riemannXi 1 ≠ 0`, and
+    2) factorization `riemannXi = G · ζ` only on `Ω \ {1}`,
+    3) nonvanishing of `G` on `Ω \ {1}` plus a separate center value `riemannXi 1 ≠ 0`, and
     4) RS Schur–pinch off‑zeros assignment excluding ζ‑zeros in `Ω`.
 
     Concludes RH for the provided `riemannXi`. -/
@@ -231,7 +230,7 @@ theorem RH_riemannXi_from_RS_offZeros_oneSafe_localEq
     (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
     (hXiOne : riemannXi 1 ≠ 0)
     (Θ : ℂ → ℂ)
-    (hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \\ {z | riemannZeta z = 0}))
+    (hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \ {z | riemannZeta z = 0}))
     (assign : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
       ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
         (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
@@ -258,7 +257,6 @@ end RH.Proof.Assembly
 namespace RH.Proof.Final
 
 open RH.AcademicFramework.CompletedXi
-open RH.AcademicFramework.CompletedXi (zero_symmetry_from_fe)
 
 /-- RH for `riemannXi` from supplied FE, Schur map Θ, assignment, and nonvanishing of G on Ω. -/
 theorem RH_xi_from_supplied_RS
@@ -272,69 +270,11 @@ theorem RH_xi_from_supplied_RS
           Set.EqOn Θ g (U \ {ρ}) ∧ g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
     (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
+  -- Derive zero-symmetry from the supplied functional equation locally
+  have symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0 := by
+    intro ρ hρ; have := fe ρ; simpa [this] using hρ
   exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros
-    riemannXi (zero_symmetry_from_fe riemannXi fe) G xi_factorization hGnz Θ hSchur assign
-
-end RH.Proof.Final
-
-namespace RH.Proof.Final
-
-open RH.AcademicFramework.CompletedXi
-open RH.AcademicFramework.CompletedXi (zero_symmetry_from_fe)
-
-/-- Hxi for the extended `riemannXi_ext` via the CR-outer one-safe route, using
-    the local equality `riemannXi_ext = G · ζ` on `Ω \\ {1}`. The RS input is a
-    pinned-removable assignment packaged for `Θ := Θ_of CRGreenOuterData`. -/
-theorem Hxi_ext_from_CR_outer_oneSafe
-    (assignPinned : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
-        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
-        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ EqOn (RH.RS.Θ_of RH.RS.CRGreenOuterData) g (U \ {ρ}) ∧
-          g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1)
-    : ∀ ρ, riemannXi_ext ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  -- Outer data and Schur map
-  let Θ : ℂ → ℂ := RH.RS.Θ_of RH.RS.CRGreenOuterData
-  have hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \\ {z | riemannZeta z = 0}) :=
-    RH.RS.Θ_Schur_of RH.RS.CRGreenOuterData
-  -- Local chooser from pinned-removable data
-  let choose := RH.RS.choose_Θ_CR_fromPinnedRemovable (riemannZeta := riemannZeta) assignPinned
-  let assign := RH.RS.OffZeros.assign_fromLocal (Θ := Θ) (choose := choose)
-  -- Symmetry from FE for the extension
-  have symXi : ∀ ρ, riemannXi_ext ρ = 0 → riemannXi_ext (1 - ρ) = 0 :=
-    zero_symmetry_from_fe riemannXi_ext xi_ext_functional_equation
-  -- One-safe assembly with local equality on Ω \\ {1}
-  exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros_oneSafe_localEq
-    riemannXi_ext symXi G
-    (fun ρ hΩ hne1 => xi_ext_factorization_on_Ω_away_one ρ hΩ hne1)
-    hGnzAway xi_ext_one_ne_zero Θ hSchur assign
-
-/-- Convert Hxi for the extended `riemannXi_ext` to mathlib's `RiemannHypothesis`.
-    Uses that for any `s ≠ 0,1`, we have `riemannXi_ext s = riemannXi s`. -/
-theorem RH_mathlib_from_xi_ext
-    (Hxi_ext : ∀ ρ, riemannXi_ext ρ = 0 → ρ.re = (1 / 2 : ℝ)) : RiemannHypothesis := by
-  intro s hζ _hneTriv hne1
-  -- `Ξ(s) = G(s)·ζ(s)` vanishes at every ζ-zero for the native ξ
-  have hXi0 : riemannXi s = 0 := by simpa [xi_factorization s, hζ]
-  -- Away from {0,1}, the extension agrees with ξ
-  have hExtEq : riemannXi_ext s = riemannXi s := by
-    by_cases h0 : s = 0
-    · simp [riemannXi_ext, h0]
-    by_cases h1 : s = (1 : ℂ)
-    · exact (False.elim (hne1 h1)).elim
-    simp [riemannXi_ext, h0, h1, xi_eq_poly_completed, riemannXi, G,
-          completedRiemannZeta, mul_comm, mul_left_comm, mul_assoc]
-  -- Apply Hxi_ext via equality
-  have hXi0_ext : riemannXi_ext s = 0 := by simpa [hExtEq] using hXi0
-  exact Hxi_ext s hXi0_ext
-
-/-- Compose the CR-outer one-safe route (with the extension) with the mathlib export. -/
-theorem RH_mathlib_from_CR_outer_oneSafe_ext_final
-    (assignPinned : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 →
-      ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U ⊆ RH.RS.Ω ∧ ρ ∈ U ∧
-        (U ∩ {z | riemannZeta z = 0}) = ({ρ} : Set ℂ) ∧
-        ∃ g : ℂ → ℂ, AnalyticOn ℂ g U ∧ EqOn (RH.RS.Θ_of RH.RS.CRGreenOuterData) g (U \ {ρ}) ∧
-          g ρ = 1 ∧ ∃ z, z ∈ U ∧ g z ≠ 1) : RiemannHypothesis :=
-  RH_mathlib_from_xi_ext (Hxi_ext_from_CR_outer_oneSafe assignPinned)
+    riemannXi symXi G xi_factorization hGnz Θ hSchur assign
 
 end RH.Proof.Final
 
@@ -400,7 +340,7 @@ putative ζ-zero inside Ω, and nonvanishing of `G` on Ω. -/
 theorem RH_xi_from_outer_and_local
     (fe : ∀ s, riemannXi s = riemannXi (1 - s))
     (O : RH.RS.OuterData)
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (RH.RS.Θ_of O) ρ)
+    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (Θ := RH.RS.Θ_of O) (ρ := ρ))
     (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
   -- Build Θ and Schur bound from outer data
@@ -423,20 +363,23 @@ open RH.AcademicFramework.CompletedXi (zero_symmetry_from_fe)
 theorem RH_xi_from_outer_and_local_oneSafe
     (fe : ∀ s, riemannXi s = riemannXi (1 - s))
     (O : RH.RS.OuterData)
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (RH.RS.Θ_of O) ρ)
+    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (Θ := RH.RS.Θ_of O) (ρ := ρ))
     (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
     (hXiOne : riemannXi 1 ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
   let Θ : ℂ → ℂ := RH.RS.Θ_of O
   have hSchur : RH.RS.IsSchurOn Θ (RH.RS.Ω \ {z | riemannZeta z = 0}) := RH.RS.Θ_Schur_of O
   let assign := RH.RS.OffZeros.assign_fromLocal (Θ := Θ) (choose := choose)
+  -- Local zero-symmetry from FE
+  have symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0 := by
+    intro ρ hρ; have := fe ρ; simpa [this] using hρ
   exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros_oneSafe
-    riemannXi (zero_symmetry_from_fe riemannXi fe) G xi_factorization hGnzAway hXiOne Θ hSchur assign
+    riemannXi symXi G xi_factorization hGnzAway hXiOne Θ hSchur assign
 
 /-- CR-outer one-safe route: instantiate the outer data with CRGreenOuterData. -/
 theorem RiemannHypothesis_from_CR_outer_oneSafe
     (fe : ∀ s, riemannXi s = riemannXi (1 - s))
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (RH.RS.Θ_of RH.RS.CRGreenOuterData) ρ)
+    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
     (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
     (hXiOne : riemannXi 1 ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
@@ -445,7 +388,7 @@ theorem RiemannHypothesis_from_CR_outer_oneSafe
 /-- CR-outer full route (if global nonvanishing for G on Ω is available). -/
 theorem RiemannHypothesis_from_CR_outer
     (fe : ∀ s, riemannXi s = riemannXi (1 - s))
-    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (RH.RS.Θ_of RH.RS.CRGreenOuterData) ρ)
+    (choose : ∀ ρ, ρ ∈ RH.RS.Ω → riemannZeta ρ = 0 → RH.RS.OffZeros.LocalData (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
     (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
   exact RH_xi_from_outer_and_local fe RH.RS.CRGreenOuterData choose hGnz
