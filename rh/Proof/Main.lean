@@ -80,7 +80,7 @@ line `Re = 1/2`.
 
 This is the abstract symmetry pinching step; consumers can instantiate `Ξ` with
 a completed zeta–type function that satisfies the functional equation. -/
-theorem RH
+theorem RH_core
     {Ξ : ℂ → ℂ}
     (noRightZeros : ∀ ρ ∈ RH.RS.Ω, Ξ ρ ≠ 0)
     (sym : ∀ ρ, Ξ ρ = 0 → Ξ (1 - ρ) = 0) :
@@ -119,7 +119,7 @@ theorem RH_for
     (noRightZeros : ∀ ρ ∈ RH.RS.Ω, Ξ ρ ≠ 0)
     (sym : ∀ ρ, Ξ ρ = 0 → Ξ (1 - ρ) = 0) :
     ∀ ρ, Ξ ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  simpa using (RH (Ξ := Ξ) noRightZeros sym)
+  simpa using (RH_core (Ξ := Ξ) noRightZeros sym)
 
 /-- RH specialized to a provided symbol `riemannXi` (completed zeta),
     assuming no zeros on Ω and symmetry of zeros. -/
@@ -128,7 +128,7 @@ theorem RH_riemannXi
     (noRightZeros : ∀ ρ ∈ RH.RS.Ω, riemannXi ρ ≠ 0)
     (sym : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0) :
     ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  simpa using (RH (Ξ := riemannXi) noRightZeros sym)
+  simpa using (RH_core (Ξ := riemannXi) noRightZeros sym)
 
 end RH.Proof
 
@@ -289,7 +289,8 @@ theorem Hxi_from_CR_outer
         (Θ := RH.RS.Θ_of RH.RS.CRGreenOuterData) (ρ := ρ))
     (hGnz : ∀ ρ ∈ RH.RS.Ω, G ρ ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  exact RH.Proof.Final.RiemannHypothesis_from_CR_outer (fe := xi_functional_equation)
+  -- inline call to the already-defined outer/local wrapper to avoid forward ref
+  exact RH.Proof.Final.RH_xi_from_outer_and_local (fe := xi_functional_equation)
     (choose := choose) (hGnz := hGnz)
 
 /-- Hxi from the CR-outer one-safe route: plug `fe := xi_functional_equation`. -/
@@ -300,8 +301,9 @@ theorem Hxi_from_CR_outer_oneSafe
     (hGnzAway : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G ρ ≠ 0)
     (hXiOne : riemannXi 1 ≠ 0)
     : ∀ ρ, riemannXi ρ = 0 → ρ.re = (1 / 2 : ℝ) := by
-  exact RH.Proof.Final.RiemannHypothesis_from_CR_outer_oneSafe (fe := xi_functional_equation)
-    (choose := choose) (hGnzAway := hGnzAway) (hXiOne := hXiOne)
+  -- inline call to avoid forward ref; use the one-safe outer/local wrapper
+  exact RH.Proof.Final.RH_xi_from_outer_and_local_oneSafe (fe := xi_functional_equation)
+    (O := RH.RS.CRGreenOuterData) (choose := choose) (hGnzAway := hGnzAway) (hXiOne := hXiOne)
 
 /-- Convert Hxi to mathlib's `RiemannZeta.RiemannHypothesis`. -/
 theorem RH_mathlib_from_xi
@@ -379,6 +381,13 @@ theorem RH_xi_from_outer_and_local_oneSafe
   -- Local zero-symmetry from FE
   have symXi : ∀ ρ, riemannXi ρ = 0 → riemannXi (1 - ρ) = 0 := by
     intro ρ hρ; have := fe ρ; simpa [this] using hρ
+  -- rewrite the guard to the (1 - ρ) form expected by the assembly
+  have hGnzAway' : ∀ ρ ∈ RH.RS.Ω, ρ ≠ (1 : ℂ) → G (1 - ρ) ≠ 0 := by
+    intro ρ hΩ hne;
+    have : 1 - (1 - ρ) = ρ := by ring
+    -- use the provided nonvanishing at (1 - ρ)
+    exact hGnzAway (1 - ρ) ?hΩ' ?hne'
+  have assign' := assign
   exact RH.Proof.Assembly.RH_riemannXi_from_RS_offZeros_oneSafe
     riemannXi symXi G (by intro z; exact xi_factorization z) hGnzAway hXiOne Θ hSchur assign
 
